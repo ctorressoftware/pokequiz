@@ -1,0 +1,329 @@
+databaseChangeLog:
+- changeSet:
+    id: 1757272605020-1
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: answer_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: question_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: canonical_key
+            type: VARCHAR(100)
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(1000)
+        tableName: answer
+- changeSet:
+    id: 1757272605020-2
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            constraints:
+              nullable: false
+            name: correct
+            type: BOOLEAN
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_answer_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: question_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: canonical_key
+            type: VARCHAR(100)
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(1000)
+        tableName: user_answer
+- changeSet:
+    id: 1757272605020-3
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: users_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: username
+            type: VARCHAR(30)
+        - column:
+            constraints:
+              nullable: false
+            name: password
+            type: VARCHAR(100)
+        tableName: users
+- changeSet:
+    id: 1757272605020-4
+    author: cetorres (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: question_id
+        constraintName: answer_question_id_key
+        tableName: answer
+- changeSet:
+    id: 1757272605020-5
+    author: cetorres (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: question_id
+        constraintName: user_answer_question_id_key
+        tableName: user_answer
+- changeSet:
+    id: 1757272605020-6
+    author: cetorres (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: username
+        constraintName: users_username_key
+        tableName: users
+- changeSet:
+    id: 1757272605020-7
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: difficult_level_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(100)
+        tableName: difficult_level
+- changeSet:
+    id: 1757272605020-8
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: question_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: quiz_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(1000)
+        tableName: question
+- changeSet:
+    id: 1757272605020-9
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: end_date
+            type: date
+        - column:
+            constraints:
+              nullable: false
+            name: initial_date
+            type: date
+        - column:
+            name: difficult_level_id
+            type: BIGINT
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: quiz_pkey
+            name: id
+            type: BIGINT
+        - column:
+            name: state_id
+            type: BIGINT
+        - column:
+            name: user_id
+            type: BIGINT
+        tableName: quiz
+- changeSet:
+    id: 1757272605020-10
+    author: cetorres (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: active
+            type: BOOLEAN
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: state_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: description
+            type: VARCHAR(100)
+        tableName: state
+- changeSet:
+    id: 1757272605020-11
+    author: cetorres (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: question_id
+        baseTableName: answer
+        constraintName: fk8frr4bcabmmeyyu60qt7iiblo
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: question
+        validate: true
+- changeSet:
+    id: 1757272605020-12
+    author: cetorres (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: quiz_id
+        baseTableName: question
+        constraintName: fkb0yh0c1qaxfwlcnwo9dms2txf
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: quiz
+        validate: true
+- changeSet:
+    id: 1757272605020-13
+    author: cetorres (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: state_id
+        baseTableName: quiz
+        constraintName: fkn7jhbnisuqnjg1efgcipb714x
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: state
+        validate: true
+- changeSet:
+    id: 1757272605020-14
+    author: cetorres (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: quiz
+        constraintName: fkoj71coq74ryc5c9c9o482p8mm
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1757272605020-15
+    author: cetorres (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: question_id
+        baseTableName: user_answer
+        constraintName: fkpsk90eok3ounaet92hku3gny1
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: question
+        validate: true
+- changeSet:
+    id: 1757272605020-16
+    author: cetorres (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: difficult_level_id
+        baseTableName: quiz
+        constraintName: fkrpsckfmmmojw04kjico9jg7kb
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: difficult_level
+        validate: true
+
