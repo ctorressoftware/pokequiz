@@ -1,46 +1,37 @@
-package com.ctorres.pokequiz.model;
-
-import java.util.Objects;
+package com.ctorres.pokequiz.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Question {
+public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 100)
     private String description;
 
     @Column(nullable = false)
     private boolean active;
 
-    @ManyToOne(targetEntity = Quiz.class)
-    private Quiz quiz;
-
-    public Question() {
+    public State() {
     }
 
-    public Question(Long id, String description, boolean active, Quiz quiz) {
+    public State(Long id, String description, boolean active) {
         this.id = id;
         this.description = description;
         this.active = active;
-        this.quiz = quiz;
     }
 
-    public Question(String description, boolean active, Quiz quiz) {
+    public State(String description, boolean active) {
         this.description = description;
         this.active = active;
-        this.quiz = quiz;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -65,34 +56,28 @@ public class Question {
         this.active = active;
     }
 
-    public Quiz getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
     @Override
     public String toString() {
-        return "Question{" +
+        return "State{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", active=" + active +
-                ", quiz=" + (quiz != null ? quiz.getId() : null) +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Question)) return false;
-        Question question = (Question) o;
-        return id != null && id.equals(question.id);
+        if (this == o)
+            return true;
+        if (!(o instanceof State))
+            return false;
+        State state = (State) o;
+        return id != null && id.equals(state.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return java.util.Objects.hash(id);
     }
+
 }

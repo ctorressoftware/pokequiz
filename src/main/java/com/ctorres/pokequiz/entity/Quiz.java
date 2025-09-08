@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.model;
+package com.ctorres.pokequiz.entity;
 
 import java.time.LocalDate;
 

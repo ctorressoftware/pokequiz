@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.model;
+package com.ctorres.pokequiz.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
