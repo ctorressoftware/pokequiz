@@ -10,6 +10,9 @@ import org.springframework.web.client.RestTemplate;
 public class ApiConfig {
     
     private String baseUrl;
+    private int pokedexMinNumber;
+    private int pokedexMaxNumber;
+    private String endpointGetPokemon;
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
@@ -17,6 +20,30 @@ public class ApiConfig {
 
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public void setEndpointGetPokemon(String endpointGetPokemon) {
+        this.endpointGetPokemon = endpointGetPokemon;
+    }
+
+    public String getEndpointGetPokemon() {
+        return endpointGetPokemon;
+    }
+
+    public void setPokedexMinNumber(int pokedexMinNumber) {
+        this.pokedexMinNumber = pokedexMinNumber;
+    }
+
+    public int getPokedexMinNumber() {
+        return pokedexMinNumber;
+    }
+
+    public void setPokedexMaxNumber(int pokedexMaxNumber) {
+        this.pokedexMaxNumber = pokedexMaxNumber;
+    }
+
+    public int getPokedexMaxNumber() {
+        return pokedexMaxNumber;
     }
 
     @Bean
