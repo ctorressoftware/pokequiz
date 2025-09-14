@@ -40,7 +40,6 @@ public class Question {
         this.quiz = quiz;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
