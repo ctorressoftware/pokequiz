@@ -1,9 +1,8 @@
-package com.ctorres.pokequiz.service.generator;
+package com.ctorres.pokequiz.service.generator.name;
 
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 
-public interface QuestionGenerator {
+public interface NameQuestionGenerator {
     
     public GeneratedItem generate();
-
 }

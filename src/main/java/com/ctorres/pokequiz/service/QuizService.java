@@ -3,20 +3,19 @@ package com.ctorres.pokequiz.service;
 import org.springframework.stereotype.Service;
 
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
-import com.ctorres.pokequiz.service.generator.NameQuestionGenerator;
-import com.ctorres.pokequiz.service.generator.QuestionGenerator;
+import com.ctorres.pokequiz.service.coordinator.QuestionCoordinator;
 
 @Service
 public class QuizService {
 
-    private QuestionGenerator generator;
+    private QuestionCoordinator coordinator;
 
-    public QuizService(QuestionGenerator generator) {
-        this.generator = generator;
+    public QuizService(QuestionCoordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     public GeneratedItem createRandomNameQuestion() {
-        return generator.generate();
+        return coordinator.coordinate();
     }
     
 }

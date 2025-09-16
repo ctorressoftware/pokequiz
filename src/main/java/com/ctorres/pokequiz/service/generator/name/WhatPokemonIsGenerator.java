@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api.generator.nameQuestionVariants;
+package com.ctorres.pokequiz.service.generator.name;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,12 +13,12 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 
 @Component
-public class WhatPokemonIsVariant implements NameQuestionVariant {
+public class WhatPokemonIsGenerator implements NameQuestionGenerator {
     
     final String QUESTION_FORM = "Who's this pokemon?";
     final private PokeApiClient client;
 
-    public WhatPokemonIsVariant(PokeApiClient client) {
+    public WhatPokemonIsGenerator(PokeApiClient client) {
         this.client = client;
     }
 

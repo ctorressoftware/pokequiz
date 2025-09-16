@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api.generator.nameQuestionVariants;
+package com.ctorres.pokequiz.service.generator.name;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 
 @Component
-public class StartsWithVariant implements NameQuestionVariant {
+public class StartsWithGenerator implements NameQuestionGenerator {
     
     final String QUESTION_FORM = "Its name starts with...";
 
