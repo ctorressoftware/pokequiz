@@ -5,6 +5,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.ctorres.pokequiz.config.ApiConfig;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
+import com.ctorres.pokequiz.dto.pokeapi.PokemonList;
 import com.ctorres.pokequiz.util.PokeApiUtils;
 
 @Component
@@ -19,8 +20,6 @@ public class PokeApiClient {
         this.utils = utils;
         this.apiConfig = apiConfig;
     }
-
-    // public getAllPokemon() { /* TODO */}
 
     public Pokemon getPokemon(String name) {
 
@@ -74,5 +73,17 @@ public class PokeApiClient {
     public Pokemon getRandomPokemon() {
         int pokemonNumber = utils.getRandomPokemonNumber();
         return getPokemon(pokemonNumber);
+    }
+    
+    public PokemonList getAllPokemon() {
+        
+        String url = new StringBuilder()
+                .append(apiConfig.getBaseUrl())
+                .append(apiConfig.getEndpointGetPokemon())
+                .toString();
+        
+        PokemonList pokemonList = restTemplate.getForObject(url, PokemonList.class);
+
+        return pokemonList;
     }
 }

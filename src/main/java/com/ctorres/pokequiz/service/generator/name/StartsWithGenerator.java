@@ -19,10 +19,10 @@ public class StartsWithGenerator implements NameQuestionGenerator {
         GeneratedItem item = new GeneratedItem();
         GeneratedQuestion question = new GeneratedQuestion(QUESTION_FORM);
         List<GeneratedAnswer> answers = new ArrayList<>();
-        answers.add(new GeneratedAnswer("A", true));
+        /*answers.add(new GeneratedAnswer("A", true));
         answers.add(new GeneratedAnswer("B", false));
         answers.add(new GeneratedAnswer("C", false));
-        answers.add(new GeneratedAnswer("D", false));
+        answers.add(new GeneratedAnswer("D", false));*/
 
         item.setGeneratedQuestion(question);
         item.setGeneratedAnswers(answers);

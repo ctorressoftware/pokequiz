@@ -3,15 +3,26 @@ package com.ctorres.pokequiz.dto.api.generator;
 import java.util.Objects;
 
 public class GeneratedAnswer {
+
+    private String canonicalKey;
     private String description;
     private boolean correct;
 
     public GeneratedAnswer() {
     }
 
-    public GeneratedAnswer(String description, boolean correct) {
+    public GeneratedAnswer(String canonicalKey, String description, boolean correct) {
+        this.canonicalKey = canonicalKey;
         this.description = description;
         this.correct = correct;
+    }
+
+    public String getCanonicalKey() {
+        return canonicalKey;
+    }
+
+    public void setCanonicalKey(String canonicalKey) {
+        this.canonicalKey = canonicalKey;
     }
 
     public String getDescription() {
@@ -33,8 +44,9 @@ public class GeneratedAnswer {
     @Override
     public String toString() {
         return "GeneratedAnswer{" +
-                ", description='" + description + "\'" +
-                ", correct='" + correct + "'\'" +
+                "canonicalKey='" + canonicalKey + '\'' +
+                ", description='" + description + '\'' +
+                ", correct=" + correct +
                 '}';
     }
 
@@ -42,14 +54,16 @@ public class GeneratedAnswer {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof GeneratedQuestion))
+        if (!(o instanceof GeneratedAnswer))
             return false;
-        GeneratedAnswer answer = (GeneratedAnswer) o;
-        return description != null && description.equals(answer.description);
+        GeneratedAnswer that = (GeneratedAnswer) o;
+        return correct == that.correct &&
+                Objects.equals(canonicalKey, that.canonicalKey) &&
+                Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description);
+        return Objects.hash(canonicalKey, description, correct);
     }
 }

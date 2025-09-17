@@ -1,7 +1,6 @@
 package com.ctorres.pokequiz.service;
 
 import org.springframework.stereotype.Service;
-
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.service.coordinator.QuestionCoordinator;
 
