@@ -6,18 +6,15 @@ import org.springframework.web.client.RestTemplate;
 import com.ctorres.pokequiz.config.ApiConfig;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 import com.ctorres.pokequiz.dto.pokeapi.PokemonList;
-import com.ctorres.pokequiz.util.PokeApiUtils;
 
 @Component
 public class PokeApiClient {
 
     final private RestTemplate restTemplate;
-    final private PokeApiUtils utils;
     final private ApiConfig apiConfig;
 
-    public PokeApiClient(RestTemplate restTemplate, PokeApiUtils utils, ApiConfig apiConfig) {
+    public PokeApiClient(RestTemplate restTemplate, ApiConfig apiConfig) {
         this.restTemplate = restTemplate;
-        this.utils = utils;
         this.apiConfig = apiConfig;
     }
 
@@ -68,11 +65,6 @@ public class PokeApiClient {
         Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
 
         return pokemon;
-    }
-
-    public Pokemon getRandomPokemon() {
-        int pokemonNumber = utils.getRandomPokemonNumber();
-        return getPokemon(pokemonNumber);
     }
     
     public PokemonList getAllPokemon() {

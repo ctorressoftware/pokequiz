@@ -33,34 +33,58 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        PokemonList pokemonObjectList = client.getAllPokemon();
-        List<PokemonResult> pokemonList = pokemonObjectList.getResults();
-        List<PokemonResult> distractors = new ArrayList<>();
+        final PokemonList pokemonObjectList = client.getAllPokemon();
+        final List<PokemonResult> pokemonList = pokemonObjectList.getResults();
 
-        PokemonResult pokemonResult = null;
-
-        while (distractors.size() < 4) {
-            int randomIndex = random.nextInt(pokemonList.size());
-            pokemonResult = pokemonList.get(randomIndex);
-            pokemonList.remove(randomIndex);
-            distractors.add(pokemonResult);
+        if (pokemonList.size() < 4) {
+            throw new IllegalStateException("At least four (4) pokemon are required.");
         }
 
-        String questionText = texts.getRandomText(QuestionKeys.WHAT_POKEMON_IS, Locale.ENGLISH);
+        final List<PokemonResult> shuffled = new ArrayList<>(pokemonList);
+        Collections.shuffle(shuffled, random);
+        final List<PokemonResult> distractors = new ArrayList<>(shuffled.subList(0, 4));
+
         Pokemon correctPokemon = client.getPokemon(distractors.get(0).getName());
         Sprites images = correctPokemon.getSprites();
 
-        GeneratedQuestion question = new GeneratedQuestion(questionText, images.getFrontDefault(), images.getBackDefault());
+        final String questionText = texts.getRandomText(QuestionKeys.WHAT_POKEMON_IS, Locale.ENGLISH);
+        final GeneratedQuestion question = new GeneratedQuestion(
+                questionText,
+                images.getFrontDefault(),
+                images.getBackDefault());
+        /*
+         * // Elige como "correcto" el primero con sprites válidos; si no, recorre los
+         * demás
+         * Pokemon correctPokemon = null;
+         * Sprites sprites = null;
+         * int correctIdx = -1;
+         * for (int i = 0; i < picks.size(); i++) {
+         * final String name = picks.get(i).getName();
+         * final Pokemon p = client.getPokemon(name);
+         * final Sprites s = (p != null ? p.getSprites() : null);
+         * final boolean ok = (s != null && s.getFrontDefault() != null &&
+         * s.getBackDefault() != null);
+         * if (ok) {
+         * correctPokemon = p;
+         * sprites = s;
+         * correctIdx = i;
+         * break;
+         * }
+         * }
+         * if (correctPokemon == null) {
+         * throw new
+         * IllegalStateException("No se encontraron sprites válidos para los candidatos elegidos."
+         * );
+         * }
+         */
 
-        List<GeneratedAnswer> answers = new ArrayList<>();
+        final List<GeneratedAnswer> answers = new ArrayList<>(4);
         answers.add(new GeneratedAnswer("what-pokemon-is:name1", correctPokemon.getName(), true));
         answers.add(new GeneratedAnswer("what-pokemon-is:name2", distractors.get(1).getName(), false));
         answers.add(new GeneratedAnswer("what-pokemon-is:name3", distractors.get(2).getName(), false));
         answers.add(new GeneratedAnswer("what-pokemon-is:name4", distractors.get(3).getName(), false));
-        Collections.shuffle(answers);
+        Collections.shuffle(answers, random);
 
-        GeneratedItem item = new GeneratedItem(question, answers);
-
-        return item;
+        return new GeneratedItem(question, answers);
     }
 }
