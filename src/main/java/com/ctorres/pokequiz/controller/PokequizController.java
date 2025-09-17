@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.service.QuizService;
-import com.ctorres.pokequiz.util.Constants;;
+import com.ctorres.pokequiz.util.Constants;
 
 @RestController
 @RequestMapping(Constants.POKEMON)
