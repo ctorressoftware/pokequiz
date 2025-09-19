@@ -163,12 +163,6 @@ class MoveLearnMethodRef extends NamedAPIResource {
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class TypeRef extends NamedAPIResource {
-    public TypeRef() { super(); }
-    public TypeRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 class SpeciesRef extends NamedAPIResource {
     public SpeciesRef() { super(); }
     public SpeciesRef(String name, String url) { super(name, url); }
@@ -284,21 +278,6 @@ class VersionGroupDetail {
     public void setOrder(Integer order) { this.order = order; }
     public VersionGroupRef getVersionGroup() { return versionGroup; }
     public void setVersionGroup(VersionGroupRef versionGroup) { this.versionGroup = versionGroup; }
-}
-
-// ============== TYPES ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class TypeSlot {
-    private int slot;
-    private TypeRef type;
-
-    public TypeSlot() { }
-    public TypeSlot(int slot, TypeRef type) { this.slot = slot; this.type = type; }
-
-    public int getSlot() { return slot; }
-    public void setSlot(int slot) { this.slot = slot; }
-    public TypeRef getType() { return type; }
-    public void setType(TypeRef type) { this.type = type; }
 }
 
 // ============== STATS ==============

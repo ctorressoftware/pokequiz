@@ -5,7 +5,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.ctorres.pokequiz.config.ApiConfig;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
-import com.ctorres.pokequiz.dto.pokeapi.PokemonList;
+import com.ctorres.pokequiz.dto.pokeapi.Type;
+import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 
 @Component
 public class PokeApiClient {
@@ -66,16 +67,42 @@ public class PokeApiClient {
 
         return pokemon;
     }
-    
-    public PokemonList getAllPokemon() {
-        
+
+    public GenericList getAllPokemon() {
+
         String url = new StringBuilder()
                 .append(apiConfig.getBaseUrl())
                 .append(apiConfig.getEndpointGetPokemon())
                 .toString();
-        
-        PokemonList pokemonList = restTemplate.getForObject(url, PokemonList.class);
+
+        GenericList pokemonList = restTemplate.getForObject(url, GenericList.class);
 
         return pokemonList;
+    }
+
+    public GenericList getAllTypes() {
+
+        String url = new StringBuilder()
+                .append(apiConfig.getBaseUrl())
+                .append(apiConfig.getEndpointGetType())
+                .toString();
+
+        GenericList typeList = restTemplate.getForObject(url, GenericList.class);
+
+        return typeList;
+    }
+
+    public Type getType(String typeName) {
+
+        String url = new StringBuilder()
+                .append(apiConfig.getBaseUrl())
+                .append(apiConfig.getEndpointGetType())
+                .append("/")
+                .append(typeName)
+                .toString();
+
+        Type type = restTemplate.getForObject(url, Type.class);
+
+        return type;
     }
 }

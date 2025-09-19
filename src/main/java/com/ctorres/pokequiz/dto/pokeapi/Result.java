@@ -1,6 +1,6 @@
 package com.ctorres.pokequiz.dto.pokeapi;
 
-public class PokemonResult {
+public class Result {
 
     private String name;
     private String url;

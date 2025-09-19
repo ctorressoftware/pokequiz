@@ -2,10 +2,6 @@ package com.ctorres.pokequiz.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.stereotype.Component;
-
-@Component
 public class CommonUtils {
 
     public CommonUtils() {}

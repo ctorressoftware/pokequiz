@@ -12,8 +12,8 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
-import com.ctorres.pokequiz.dto.pokeapi.PokemonList;
-import com.ctorres.pokequiz.dto.pokeapi.PokemonResult;
+import com.ctorres.pokequiz.dto.pokeapi.GenericList;
+import com.ctorres.pokequiz.dto.pokeapi.Result;
 import com.ctorres.pokequiz.dto.pokeapi.Sprites;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
@@ -33,16 +33,16 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        final PokemonList pokemonObjectList = client.getAllPokemon();
-        final List<PokemonResult> pokemonList = pokemonObjectList.getResults();
+        final GenericList pokemonObjectList = client.getAllPokemon();
+        final List<Result> pokemonList = pokemonObjectList.getResults();
 
         if (pokemonList.size() < 4) {
             throw new IllegalStateException("At least four (4) pokemon are required.");
         }
 
-        final List<PokemonResult> shuffled = new ArrayList<>(pokemonList);
+        final List<Result> shuffled = new ArrayList<>(pokemonList);
         Collections.shuffle(shuffled, random);
-        final List<PokemonResult> distractors = new ArrayList<>(shuffled.subList(0, 4));
+        final List<Result> distractors = new ArrayList<>(shuffled.subList(0, 4));
 
         Pokemon correctPokemon = client.getPokemon(distractors.get(0).getName());
         Sprites images = correctPokemon.getSprites();

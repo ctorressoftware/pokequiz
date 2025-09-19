@@ -13,7 +13,7 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
-import com.ctorres.pokequiz.dto.pokeapi.PokemonList;
+import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 import com.ctorres.pokequiz.dto.pokeapi.Sprites;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.CommonUtils;
@@ -34,7 +34,7 @@ public class StartsWithGenerator implements NameQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        final PokemonList pokemonObjectList = client.getAllPokemon();
+        final GenericList pokemonObjectList = client.getAllPokemon();
 
         if (pokemonObjectList.getCount() == 0) {
             throw new IllegalStateException("Required at least one valid pokemon.");

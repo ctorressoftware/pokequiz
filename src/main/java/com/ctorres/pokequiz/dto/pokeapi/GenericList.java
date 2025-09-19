@@ -2,12 +2,12 @@ package com.ctorres.pokequiz.dto.pokeapi;
 
 import java.util.List;
 
-public class PokemonList {
+public class GenericList {
 
     private int count;
     private String next;
     private String previous;
-    private List<PokemonResult> results;
+    private List<Result> results;
 
     public int getCount() {
         return count;
@@ -33,11 +33,11 @@ public class PokemonList {
         this.previous = previous;
     }
 
-    public List<PokemonResult> getResults() {
+    public List<Result> getResults() {
         return results;
     }
 
-    public void setResults(List<PokemonResult> results) {
+    public void setResults(List<Result> results) {
         this.results = results;
     }
 }

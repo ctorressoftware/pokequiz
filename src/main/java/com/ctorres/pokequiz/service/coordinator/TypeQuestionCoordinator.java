@@ -4,22 +4,22 @@ import java.util.List;
 import java.util.Random;
 import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
-import com.ctorres.pokequiz.service.generator.name.NameQuestionGenerator;
+import com.ctorres.pokequiz.service.generator.type.TypeQuestionGenerator;
 
 @Component
-public class NameQuestionCoordinator implements QuestionCoordinator {
+public class TypeQuestionCoordinator implements QuestionCoordinator {
     
-    final private List<NameQuestionGenerator> generators;
+    final private List<TypeQuestionGenerator> generators;
     final private Random random;
 
-    public NameQuestionCoordinator(List<NameQuestionGenerator> generators, Random random) {
+    public TypeQuestionCoordinator(List<TypeQuestionGenerator> generators, Random random) {
         this.generators = generators;
         this.random = random;
     }
 
     public GeneratedItem coordinate() {
         int randomIndex = random.nextInt(generators.size());        
-        NameQuestionGenerator questionGenerator = generators.get(randomIndex);
+        TypeQuestionGenerator questionGenerator = generators.get(randomIndex);
         return questionGenerator.generate();
     }
     
