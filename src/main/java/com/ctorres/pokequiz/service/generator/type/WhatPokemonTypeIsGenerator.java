@@ -46,17 +46,19 @@ public class WhatPokemonTypeIsGenerator implements TypeQuestionGenerator {
 
         final GenericList allTypes = client.getAllTypes();
         
-        final List<Result> typesWithoutCorrects = allTypes.getResults()
+        final List<Result> typesWithoutCorrects = new ArrayList<>(allTypes.getResults())
                 .stream()
                 .filter(type -> !pokemonTypes.contains(type.getName()))
                 .toList();
 
         List<String> distractors = new ArrayList<>(3);
 
-        for (int i = 0; i < 3; i++) {
+        while (distractors.size() < 3) {
             int randomIndex = random.nextInt(typesWithoutCorrects.size()); 
             String wrongType = typesWithoutCorrects.get(randomIndex).getName();
-            distractors.add(wrongType);
+            if (!distractors.contains(wrongType)) {
+                distractors.add(wrongType);
+            }
         }
 
         String correctTypeName = pokemonTypes.get(0);

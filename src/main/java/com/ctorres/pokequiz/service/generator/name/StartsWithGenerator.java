@@ -53,7 +53,7 @@ public class StartsWithGenerator implements NameQuestionGenerator {
         int index = 0;
         while (distractors.size() < 3) {
             final String letter = alphabet.get(index);
-            if (correctAnswer != letter) {
+            if (!correctAnswer.equals(letter)) {
                 distractors.add(letter);
             }
             index++;
