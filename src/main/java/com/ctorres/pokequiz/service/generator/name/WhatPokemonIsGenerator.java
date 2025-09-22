@@ -48,31 +48,6 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
                 questionText,
                 images.getFrontDefault(),
                 images.getBackDefault());
-        /*
-         * // Elige como "correcto" el primero con sprites válidos; si no, recorre los
-         * demás
-         * Pokemon correctPokemon = null;
-         * Sprites sprites = null;
-         * int correctIdx = -1;
-         * for (int i = 0; i < picks.size(); i++) {
-         * final String name = picks.get(i).getName();
-         * final Pokemon p = client.getPokemon(name);
-         * final Sprites s = (p != null ? p.getSprites() : null);
-         * final boolean ok = (s != null && s.getFrontDefault() != null &&
-         * s.getBackDefault() != null);
-         * if (ok) {
-         * correctPokemon = p;
-         * sprites = s;
-         * correctIdx = i;
-         * break;
-         * }
-         * }
-         * if (correctPokemon == null) {
-         * throw new
-         * IllegalStateException("No se encontraron sprites válidos para los candidatos elegidos."
-         * );
-         * }
-         */
 
         final List<GeneratedAnswer> answers = new ArrayList<>(4);
         answers.add(new GeneratedAnswer("what-pokemon-is:name1", correctPokemon.getName(), true));

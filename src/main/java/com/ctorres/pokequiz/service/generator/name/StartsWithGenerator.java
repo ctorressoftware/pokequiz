@@ -34,52 +34,47 @@ public class StartsWithGenerator implements NameQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        try {
-            final List<Result> pokemonList = client.getAllPokemon().getResults();
+        final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-            if (pokemonList == null || pokemonList.size() == 0) {
-                throw new IllegalStateException("Required at least one valid pokemon.");
-            }
-
-            final String randomPokemonName = pokemonList
-                    .get(random.nextInt(pokemonList.size()))
-                    .getName();
-
-            final Pokemon pokemon = client.getPokemon(randomPokemonName);
-            final Pokemon.Sprites images = pokemon.getSprites();
-            final String correctAnswer = String.valueOf(pokemon.getName().charAt(0));
-
-            List<String> alphabet = CommonUtils.getAlphabet();
-            Collections.shuffle(alphabet);
-
-            final List<String> distractors = new ArrayList<>(3);
-
-            int index = 0;
-            while (distractors.size() < 3) {
-                final String letter = alphabet.get(index);
-                if (!correctAnswer.equals(letter)) {
-                    distractors.add(letter);
-                }
-                index++;
-            }
-
-            final String questionText = texts.getRandomText(QuestionKeys.NAME_STARTS_WITH, Locale.ENGLISH);
-            final GeneratedQuestion question = new GeneratedQuestion(
-                    questionText,
-                    images.getFrontDefault(),
-                    images.getBackDefault());
-
-            final List<GeneratedAnswer> answers = new ArrayList<>(4);
-            answers.add(new GeneratedAnswer("pokemon-starts-with:letter1", correctAnswer, true));
-            answers.add(new GeneratedAnswer("pokemon-starts-with:letter2", distractors.get(0), false));
-            answers.add(new GeneratedAnswer("pokemon-starts-with:letter3", distractors.get(1), false));
-            answers.add(new GeneratedAnswer("pokemon-starts-with:letter4", distractors.get(2), false));
-            Collections.shuffle(answers, random);
-
-            return new GeneratedItem(question, answers);
-
-        } catch (PokemonNotFoundException e) {
-            return generate();
+        if (pokemonList == null || pokemonList.size() == 0) {
+            throw new IllegalStateException("Required at least one valid pokemon.");
         }
+
+        final String randomPokemonName = pokemonList
+                .get(random.nextInt(pokemonList.size()))
+                .getName();
+
+        final Pokemon pokemon = client.getPokemon(randomPokemonName);
+        final Pokemon.Sprites images = pokemon.getSprites();
+        final String correctAnswer = String.valueOf(pokemon.getName().charAt(0));
+
+        List<String> alphabet = CommonUtils.getAlphabet();
+        Collections.shuffle(alphabet);
+
+        final List<String> distractors = new ArrayList<>(3);
+
+        int index = 0;
+        while (distractors.size() < 3) {
+            final String letter = alphabet.get(index);
+            if (!correctAnswer.equals(letter)) {
+                distractors.add(letter);
+            }
+            index++;
+        }
+
+        final String questionText = texts.getRandomText(QuestionKeys.NAME_STARTS_WITH, Locale.ENGLISH);
+        final GeneratedQuestion question = new GeneratedQuestion(
+                questionText,
+                images.getFrontDefault(),
+                images.getBackDefault());
+
+        final List<GeneratedAnswer> answers = new ArrayList<>(4);
+        answers.add(new GeneratedAnswer("pokemon-starts-with:letter1", correctAnswer, true));
+        answers.add(new GeneratedAnswer("pokemon-starts-with:letter2", distractors.get(0), false));
+        answers.add(new GeneratedAnswer("pokemon-starts-with:letter3", distractors.get(1), false));
+        answers.add(new GeneratedAnswer("pokemon-starts-with:letter4", distractors.get(2), false));
+        Collections.shuffle(answers, random);
+
+        return new GeneratedItem(question, answers);
     }
 }
