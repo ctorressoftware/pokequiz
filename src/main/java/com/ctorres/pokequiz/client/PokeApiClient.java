@@ -2,6 +2,7 @@ package com.ctorres.pokequiz.client;
 
 import java.util.Optional;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +27,7 @@ public class PokeApiClient {
         this.apiConfig = apiConfig;
     }
 
+    @Cacheable("pokemon-detail")
     public Pokemon getPokemon(String name) {
 
         try {
@@ -57,6 +59,7 @@ public class PokeApiClient {
 
     }
 
+    @Cacheable("pokemon-list")
     public GenericList getAllPokemon() {
 
         try {
@@ -84,6 +87,7 @@ public class PokeApiClient {
         }
     }
 
+    @Cacheable("types-list")
     public GenericList getAllTypes() {
 
         try {
