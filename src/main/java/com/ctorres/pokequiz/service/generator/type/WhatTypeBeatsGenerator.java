@@ -36,7 +36,10 @@ public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
                 .filter(t -> !List.of("unknown", "shadow").contains(t.getName()))
                 .toList();
 
-        final String randomTypeName = allTypes.get(random.nextInt(allTypes.size())).getName();
+        final String randomTypeName = allTypes
+                .get(random.nextInt(allTypes.size()))
+                .getName();
+        
         final Type type = client.getType(randomTypeName);
         final Type.DamageRelations relations = type.getDamageRelations();
         final List<String> beatenTypes = relations.getDoubleDamageFrom()

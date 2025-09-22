@@ -10,7 +10,6 @@ import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
-import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
 import com.ctorres.pokequiz.dto.pokeapi.Type;
 import com.ctorres.pokequiz.service.QuestionTextService;
@@ -29,29 +28,28 @@ public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        final GenericList typesObjectList = client.getAllTypes();
-        final List<Result> allTypes = typesObjectList.getResults()
+        final List<Result> allTypes = client.getAllTypes().getResults()
                 .stream()
                 .filter(t -> !List.of("unknown", "shadow").contains(t.getName()))
                 .toList();
 
-        final int randomTypeIndex = random.nextInt(typesObjectList.getCount());
-
-        final String randomTypeName = allTypes.get(randomTypeIndex).getName();
+        final String randomTypeName = allTypes
+                .get(random.nextInt(allTypes.size()))
+                .getName();
+        
         final Type type = client.getType(randomTypeName);
         final Type.DamageRelations relations = type.getDamageRelations();
-        List<String> beatenTypes = relations.getDoubleDamageTo()
+        final List<String> beatenTypes = relations.getDoubleDamageTo()
                 .stream()
                 .map(t -> t.getName())
                 .toList();
 
-        final int randomAnswerIndex = random.nextInt(beatenTypes.size());
-        final String correctTypeName = beatenTypes.get(randomAnswerIndex);
+        final String correctTypeName = beatenTypes.get(random.nextInt(beatenTypes.size()));
         List<String> distractors = new ArrayList<>(3);
 
         while (distractors.size() < 3) {
-            final int randomDistractorsIndex = random.nextInt(typesObjectList.getCount());
-            String typeName = allTypes.get(randomDistractorsIndex).getName();
+            final int index = random.nextInt(allTypes.size());
+            String typeName = allTypes.get(index).getName();
             if (!correctTypeName.equals(typeName) && !beatenTypes.contains(typeName)) {
                 distractors.add(typeName);
             }
