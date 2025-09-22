@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
@@ -19,7 +17,6 @@ import com.ctorres.pokequiz.dto.pokeapi.Result;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
 
-@Primary
 @Component
 public class WhatPokemonTypeIsGenerator implements TypeQuestionGenerator {
 
