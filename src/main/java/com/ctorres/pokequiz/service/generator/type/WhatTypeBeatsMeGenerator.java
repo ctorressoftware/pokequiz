@@ -43,18 +43,21 @@ public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
         
         final Type type = client.getType(randomTypeName);
         final Type.DamageRelations relations = type.getDamageRelations();
-        final List<String> beatenTypes = relations.getDoubleDamageFrom()
+        final List<String> weaknesses = relations.getDoubleDamageFrom()
                 .stream()
                 .map(t -> t.getName())
                 .toList();
 
-        final String correctTypeName = beatenTypes.get(random.nextInt(beatenTypes.size()));
+        final String correctTypeName = weaknesses.isEmpty() 
+                ? "neither"
+                : weaknesses.get(random.nextInt(weaknesses.size()));
+        
         List<String> distractors = new ArrayList<>(3);
 
         while (distractors.size() < 3) {
             final int index = random.nextInt(allTypes.size());
             String typeName = allTypes.get(index).getName();
-            if (!correctTypeName.equals(typeName) && !beatenTypes.contains(typeName)) {
+            if (!correctTypeName.equals(typeName) && !weaknesses.contains(typeName)) {
                 distractors.add(typeName);
             }
         }

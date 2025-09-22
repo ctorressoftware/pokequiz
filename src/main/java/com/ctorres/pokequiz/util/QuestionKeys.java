@@ -8,4 +8,5 @@ public class QuestionKeys {
     public static final String WHAT_TYPE_BEATS_ME = "question.what-type-beats-me";
     public static final String IS_POKEMON_BABY = "question.is-pokemon-baby";
     public static final String IS_POKEMON_LEGENDARY = "question.is-pokemon-legendary";
+    public static final String WHAT_IS_THE_COLOR_OF = "question.what-is-the-color-of";
 }

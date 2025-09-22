@@ -22,4 +22,9 @@ public class PokequizController {
         return quizService.createRandomNameQuestion();
     }
 
+    @GetMapping("/test")
+    public GeneratedItem testGenerator(int index) {
+        return quizService.testGenerator(index);
+    }
+
 }

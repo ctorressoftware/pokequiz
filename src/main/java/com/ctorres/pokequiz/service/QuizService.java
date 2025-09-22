@@ -23,4 +23,9 @@ public class QuizService {
         QuestionCoordinator coordinator = coordinators.get(randomIndex);
         return coordinator.coordinate();
     }
+
+    public GeneratedItem testGenerator(int index) {
+        QuestionCoordinator coordinator = coordinators.get(index);
+        return coordinator.coordinate();
+    }
 }

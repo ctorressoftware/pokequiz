@@ -47,7 +47,10 @@ public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
                 .map(t -> t.getName())
                 .toList();
 
-        final String correctTypeName = beatenTypes.get(random.nextInt(beatenTypes.size()));
+        final String correctTypeName = beatenTypes.isEmpty() 
+                ? "neither"
+                : beatenTypes.get(random.nextInt(beatenTypes.size()));
+
         List<String> distractors = new ArrayList<>(3);
 
         while (distractors.size() < 3) {
