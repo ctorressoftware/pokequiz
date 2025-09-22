@@ -5,16 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-
 import org.springframework.stereotype.Component;
-
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
-import com.ctorres.pokequiz.exception.PokemonNotFoundException;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.CommonUtils;
 import com.ctorres.pokequiz.util.QuestionKeys;
