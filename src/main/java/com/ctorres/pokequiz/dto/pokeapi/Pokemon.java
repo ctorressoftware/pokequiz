@@ -116,388 +116,452 @@ public class Pokemon {
     public void setTypes(List<TypeSlot> types) { this.types = types; }
     public List<HeldItem> getHeldItems() { return heldItems; }
     public void setHeldItems(List<HeldItem> heldItems) { this.heldItems = heldItems; }
-}
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class NamedAPIResource {
-    private String name;
-    private String url;
+    /* ===================== CLASES INTERNAS PÚBLICAS ===================== */
 
-    public NamedAPIResource() { }
-    public NamedAPIResource(String name, String url) { this.name = name; this.url = url; }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class NamedAPIResource {
+        private String name;
+        private String url;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getUrl() { return url; }
-    public void setUrl(String url) { this.url = url; }
-}
+        public NamedAPIResource() { }
+        public NamedAPIResource(String name, String url) { this.name = name; this.url = url; }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class AbilityRef extends NamedAPIResource {
-    public AbilityRef() { super(); }
-    public AbilityRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class MoveRef extends NamedAPIResource {
-    public MoveRef() { super(); }
-    public MoveRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class VersionRef extends NamedAPIResource {
-    public VersionRef() { super(); }
-    public VersionRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class VersionGroupRef extends NamedAPIResource {
-    public VersionGroupRef() { super(); }
-    public VersionGroupRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class MoveLearnMethodRef extends NamedAPIResource {
-    public MoveLearnMethodRef() { super(); }
-    public MoveLearnMethodRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class SpeciesRef extends NamedAPIResource {
-    public SpeciesRef() { super(); }
-    public SpeciesRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class FormRef extends NamedAPIResource {
-    public FormRef() { super(); }
-    public FormRef(String name, String url) { super(name, url); }
-}
-
-// ============== ABILITIES ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class AbilitySlot {
-    private AbilityRef ability;
-
-    @JsonProperty("is_hidden")
-    private boolean hidden;
-
-    private int slot;
-
-    public AbilitySlot() { }
-    public AbilitySlot(AbilityRef ability, boolean hidden, int slot) {
-        this.ability = ability; this.hidden = hidden; this.slot = slot;
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getUrl() { return url; }
+        public void setUrl(String url) { this.url = url; }
     }
 
-    public AbilityRef getAbility() { return ability; }
-    public void setAbility(AbilityRef ability) { this.ability = ability; }
-    public boolean isHidden() { return hidden; }
-    public void setHidden(boolean hidden) { this.hidden = hidden; }
-    public int getSlot() { return slot; }
-    public void setSlot(int slot) { this.slot = slot; }
-}
-
-// ============== CRIES ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class Cries {
-    private String latest;
-    private String legacy;
-
-    public Cries() { }
-    public Cries(String latest, String legacy) { this.latest = latest; this.legacy = legacy; }
-
-    public String getLatest() { return latest; }
-    public void setLatest(String latest) { this.latest = latest; }
-    public String getLegacy() { return legacy; }
-    public void setLegacy(String legacy) { this.legacy = legacy; }
-}
-
-// ============== GAME INDICES ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class GameIndex {
-    @JsonProperty("game_index")
-    private int gameIndex;
-    private VersionRef version;
-
-    public GameIndex() { }
-    public GameIndex(int gameIndex, VersionRef version) {
-        this.gameIndex = gameIndex; this.version = version;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class AbilityRef extends NamedAPIResource {
+        public AbilityRef() { super(); }
+        public AbilityRef(String name, String url) { super(name, url); }
     }
 
-    public int getGameIndex() { return gameIndex; }
-    public void setGameIndex(int gameIndex) { this.gameIndex = gameIndex; }
-    public VersionRef getVersion() { return version; }
-    public void setVersion(VersionRef version) { this.version = version; }
-}
-
-// ============== MOVES ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class MoveEntry {
-    private MoveRef move;
-
-    @JsonProperty("version_group_details")
-    private List<VersionGroupDetail> versionGroupDetails;
-
-    public MoveEntry() { }
-    public MoveEntry(MoveRef move, List<VersionGroupDetail> versionGroupDetails) {
-        this.move = move; this.versionGroupDetails = versionGroupDetails;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MoveRef extends NamedAPIResource {
+        public MoveRef() { super(); }
+        public MoveRef(String name, String url) { super(name, url); }
     }
 
-    public MoveRef getMove() { return move; }
-    public void setMove(MoveRef move) { this.move = move; }
-    public List<VersionGroupDetail> getVersionGroupDetails() { return versionGroupDetails; }
-    public void setVersionGroupDetails(List<VersionGroupDetail> versionGroupDetails) { this.versionGroupDetails = versionGroupDetails; }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class VersionGroupDetail {
-    @JsonProperty("level_learned_at")
-    private int levelLearnedAt;
-
-    @JsonProperty("move_learn_method")
-    private MoveLearnMethodRef moveLearnMethod;
-
-    private Integer order;
-
-    @JsonProperty("version_group")
-    private VersionGroupRef versionGroup;
-
-    public VersionGroupDetail() { }
-    public VersionGroupDetail(int levelLearnedAt, MoveLearnMethodRef moveLearnMethod, Integer order, VersionGroupRef versionGroup) {
-        this.levelLearnedAt = levelLearnedAt;
-        this.moveLearnMethod = moveLearnMethod;
-        this.order = order;
-        this.versionGroup = versionGroup;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class VersionRef extends NamedAPIResource {
+        public VersionRef() { super(); }
+        public VersionRef(String name, String url) { super(name, url); }
     }
 
-    public int getLevelLearnedAt() { return levelLearnedAt; }
-    public void setLevelLearnedAt(int levelLearnedAt) { this.levelLearnedAt = levelLearnedAt; }
-    public MoveLearnMethodRef getMoveLearnMethod() { return moveLearnMethod; }
-    public void setMoveLearnMethod(MoveLearnMethodRef moveLearnMethod) { this.moveLearnMethod = moveLearnMethod; }
-    public Integer getOrder() { return order; }
-    public void setOrder(Integer order) { this.order = order; }
-    public VersionGroupRef getVersionGroup() { return versionGroup; }
-    public void setVersionGroup(VersionGroupRef versionGroup) { this.versionGroup = versionGroup; }
-}
-
-// ============== STATS ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class StatRef extends NamedAPIResource {
-    public StatRef() { super(); }
-    public StatRef(String name, String url) { super(name, url); }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class StatEntry {
-    @JsonProperty("base_stat")
-    private int baseStat;
-
-    private int effort;
-    private StatRef stat;
-
-    public StatEntry() { }
-    public StatEntry(int baseStat, int effort, StatRef stat) {
-        this.baseStat = baseStat; this.effort = effort; this.stat = stat;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class VersionGroupRef extends NamedAPIResource {
+        public VersionGroupRef() { super(); }
+        public VersionGroupRef(String name, String url) { super(name, url); }
     }
 
-    public int getBaseStat() { return baseStat; }
-    public void setBaseStat(int baseStat) { this.baseStat = baseStat; }
-    public int getEffort() { return effort; }
-    public void setEffort(int effort) { this.effort = effort; }
-    public StatRef getStat() { return stat; }
-    public void setStat(StatRef stat) { this.stat = stat; }
-}
-
-// ============== HELD ITEMS ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class HeldItem {
-    private NamedAPIResource item;
-
-    @JsonProperty("version_details")
-    private List<HeldItemVersionDetail> versionDetails;
-
-    public HeldItem() { }
-    public HeldItem(NamedAPIResource item, List<HeldItemVersionDetail> versionDetails) {
-        this.item = item; this.versionDetails = versionDetails;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MoveLearnMethodRef extends NamedAPIResource {
+        public MoveLearnMethodRef() { super(); }
+        public MoveLearnMethodRef(String name, String url) { super(name, url); }
     }
 
-    public NamedAPIResource getItem() { return item; }
-    public void setItem(NamedAPIResource item) { this.item = item; }
-    public List<HeldItemVersionDetail> getVersionDetails() { return versionDetails; }
-    public void setVersionDetails(List<HeldItemVersionDetail> versionDetails) { this.versionDetails = versionDetails; }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class HeldItemVersionDetail {
-    private int rarity;
-    private VersionRef version;
-
-    public HeldItemVersionDetail() { }
-    public HeldItemVersionDetail(int rarity, VersionRef version) { this.rarity = rarity; this.version = version; }
-
-    public int getRarity() { return rarity; }
-    public void setRarity(int rarity) { this.rarity = rarity; }
-    public VersionRef getVersion() { return version; }
-    public void setVersion(VersionRef version) { this.version = version; }
-}
-
-// ============== PAST ABILITIES/TYPES (minimal) ==============
-@JsonIgnoreProperties(ignoreUnknown = true)
-class PastAbility {
-    private List<AbilitySlot> abilities;
-    private NamedAPIResource generation;
-
-    public PastAbility() { }
-    public PastAbility(List<AbilitySlot> abilities, NamedAPIResource generation) {
-        this.abilities = abilities; this.generation = generation;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class SpeciesRef extends NamedAPIResource {
+        public SpeciesRef() { super(); }
+        public SpeciesRef(String name, String url) { super(name, url); }
     }
 
-    public List<AbilitySlot> getAbilities() { return abilities; }
-    public void setAbilities(List<AbilitySlot> abilities) { this.abilities = abilities; }
-    public NamedAPIResource getGeneration() { return generation; }
-    public void setGeneration(NamedAPIResource generation) { this.generation = generation; }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class PastType {
-    private NamedAPIResource generation;
-    private List<TypeSlot> types;
-
-    public PastType() { }
-    public PastType(NamedAPIResource generation, List<TypeSlot> types) {
-        this.generation = generation; this.types = types;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class FormRef extends NamedAPIResource {
+        public FormRef() { super(); }
+        public FormRef(String name, String url) { super(name, url); }
     }
 
-    public NamedAPIResource getGeneration() { return generation; }
-    public void setGeneration(NamedAPIResource generation) { this.generation = generation; }
-    public List<TypeSlot> getTypes() { return types; }
-    public void setTypes(List<TypeSlot> types) { this.types = types; }
-}
+    // ============== ABILITIES ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class AbilitySlot {
+        private AbilityRef ability;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class OtherSprites {
+        @JsonProperty("is_hidden")
+        private boolean hidden;
 
-    @JsonProperty("dream_world")
-    private DreamWorldSprites dreamWorld;
+        private int slot;
 
-    private HomeSprites home;
+        public AbilitySlot() { }
+        public AbilitySlot(AbilityRef ability, boolean hidden, int slot) {
+            this.ability = ability; this.hidden = hidden; this.slot = slot;
+        }
 
-    @JsonProperty("official-artwork")
-    private OfficialArtworkSprites officialArtwork;
-
-    private ShowdownSprites showdown;
-
-    public OtherSprites() { }
-    public OtherSprites(DreamWorldSprites dreamWorld, HomeSprites home,
-                        OfficialArtworkSprites officialArtwork, ShowdownSprites showdown) {
-        this.dreamWorld = dreamWorld; this.home = home; this.officialArtwork = officialArtwork; this.showdown = showdown;
+        public AbilityRef getAbility() { return ability; }
+        public void setAbility(AbilityRef ability) { this.ability = ability; }
+        public boolean isHidden() { return hidden; }
+        public void setHidden(boolean hidden) { this.hidden = hidden; }
+        public int getSlot() { return slot; }
+        public void setSlot(int slot) { this.slot = slot; }
     }
 
-    public DreamWorldSprites getDreamWorld() { return dreamWorld; }
-    public void setDreamWorld(DreamWorldSprites dreamWorld) { this.dreamWorld = dreamWorld; }
-    public HomeSprites getHome() { return home; }
-    public void setHome(HomeSprites home) { this.home = home; }
-    public OfficialArtworkSprites getOfficialArtwork() { return officialArtwork; }
-    public void setOfficialArtwork(OfficialArtworkSprites officialArtwork) { this.officialArtwork = officialArtwork; }
-    public ShowdownSprites getShowdown() { return showdown; }
-    public void setShowdown(ShowdownSprites showdown) { this.showdown = showdown; }
-}
+    // ============== CRIES ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Cries {
+        private String latest;
+        private String legacy;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class DreamWorldSprites {
-    @JsonProperty("front_default")
-    private String frontDefault;
-    @JsonProperty("front_female")
-    private String frontFemale;
+        public Cries() { }
+        public Cries(String latest, String legacy) { this.latest = latest; this.legacy = legacy; }
 
-    public DreamWorldSprites() { }
-    public DreamWorldSprites(String frontDefault, String frontFemale) { this.frontDefault = frontDefault; this.frontFemale = frontFemale; }
-    public String getFrontDefault() { return frontDefault; }
-    public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
-    public String getFrontFemale() { return frontFemale; }
-    public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class HomeSprites {
-    @JsonProperty("front_default")
-    private String frontDefault;
-    @JsonProperty("front_female")
-    private String frontFemale;
-    @JsonProperty("front_shiny")
-    private String frontShiny;
-    @JsonProperty("front_shiny_female")
-    private String frontShinyFemale;
-
-    public HomeSprites() { }
-    public HomeSprites(String frontDefault, String frontFemale, String frontShiny, String frontShinyFemale) {
-        this.frontDefault = frontDefault; this.frontFemale = frontFemale; this.frontShiny = frontShiny; this.frontShinyFemale = frontShinyFemale;
-    }
-    public String getFrontDefault() { return frontDefault; }
-    public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
-    public String getFrontFemale() { return frontFemale; }
-    public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
-    public String getFrontShiny() { return frontShiny; }
-    public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
-    public String getFrontShinyFemale() { return frontShinyFemale; }
-    public void setFrontShinyFemale(String frontShinyFemale) { this.frontShinyFemale = frontShinyFemale; }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class OfficialArtworkSprites {
-    @JsonProperty("front_default")
-    private String frontDefault;
-    @JsonProperty("front_shiny")
-    private String frontShiny;
-
-    public OfficialArtworkSprites() { }
-    public OfficialArtworkSprites(String frontDefault, String frontShiny) { this.frontDefault = frontDefault; this.frontShiny = frontShiny; }
-    public String getFrontDefault() { return frontDefault; }
-    public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
-    public String getFrontShiny() { return frontShiny; }
-    public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-class ShowdownSprites {
-    @JsonProperty("back_default")
-    private String backDefault;
-    @JsonProperty("back_female")
-    private String backFemale;
-    @JsonProperty("back_shiny")
-    private String backShiny;
-    @JsonProperty("back_shiny_female")
-    private String backShinyFemale;
-    @JsonProperty("front_default")
-    private String frontDefault;
-    @JsonProperty("front_female")
-    private String frontFemale;
-    @JsonProperty("front_shiny")
-    private String frontShiny;
-    @JsonProperty("front_shiny_female")
-    private String frontShinyFemale;
-
-    public ShowdownSprites() { }
-    public ShowdownSprites(String backDefault, String backFemale, String backShiny, String backShinyFemale,
-                           String frontDefault, String frontFemale, String frontShiny, String frontShinyFemale) {
-        this.backDefault = backDefault; this.backFemale = backFemale; this.backShiny = backShiny; this.backShinyFemale = backShinyFemale;
-        this.frontDefault = frontDefault; this.frontFemale = frontFemale; this.frontShiny = frontShiny; this.frontShinyFemale = frontShinyFemale;
+        public String getLatest() { return latest; }
+        public void setLatest(String latest) { this.latest = latest; }
+        public String getLegacy() { return legacy; }
+        public void setLegacy(String legacy) { this.legacy = legacy; }
     }
 
-    public String getBackDefault() { return backDefault; }
-    public void setBackDefault(String backDefault) { this.backDefault = backDefault; }
-    public String getBackFemale() { return backFemale; }
-    public void setBackFemale(String backFemale) { this.backFemale = backFemale; }
-    public String getBackShiny() { return backShiny; }
-    public void setBackShiny(String backShiny) { this.backShiny = backShiny; }
-    public String getBackShinyFemale() { return backShinyFemale; }
-    public void setBackShinyFemale(String backShinyFemale) { this.backShinyFemale = backShinyFemale; }
-    public String getFrontDefault() { return frontDefault; }
-    public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
-    public String getFrontFemale() { return frontFemale; }
-    public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
-    public String getFrontShiny() { return frontShiny; }
-    public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
-    public String getFrontShinyFemale() { return frontShinyFemale; }
-    public void setFrontShinyFemale(String frontShinyFemale) { this.frontShinyFemale = frontShinyFemale; }
+    // ============== GAME INDICES ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class GameIndex {
+        @JsonProperty("game_index")
+        private int gameIndex;
+        private VersionRef version;
+
+        public GameIndex() { }
+        public GameIndex(int gameIndex, VersionRef version) {
+            this.gameIndex = gameIndex; this.version = version;
+        }
+
+        public int getGameIndex() { return gameIndex; }
+        public void setGameIndex(int gameIndex) { this.gameIndex = gameIndex; }
+        public VersionRef getVersion() { return version; }
+        public void setVersion(VersionRef version) { this.version = version; }
+    }
+
+    // ============== MOVES ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MoveEntry {
+        private MoveRef move;
+
+        @JsonProperty("version_group_details")
+        private List<VersionGroupDetail> versionGroupDetails;
+
+        public MoveEntry() { }
+        public MoveEntry(MoveRef move, List<VersionGroupDetail> versionGroupDetails) {
+            this.move = move; this.versionGroupDetails = versionGroupDetails;
+        }
+
+        public MoveRef getMove() { return move; }
+        public void setMove(MoveRef move) { this.move = move; }
+        public List<VersionGroupDetail> getVersionGroupDetails() { return versionGroupDetails; }
+        public void setVersionGroupDetails(List<VersionGroupDetail> versionGroupDetails) { this.versionGroupDetails = versionGroupDetails; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class VersionGroupDetail {
+        @JsonProperty("level_learned_at")
+        private int levelLearnedAt;
+
+        @JsonProperty("move_learn_method")
+        private MoveLearnMethodRef moveLearnMethod;
+
+        private Integer order;
+
+        @JsonProperty("version_group")
+        private VersionGroupRef versionGroup;
+
+        public VersionGroupDetail() { }
+        public VersionGroupDetail(int levelLearnedAt, MoveLearnMethodRef moveLearnMethod, Integer order, VersionGroupRef versionGroup) {
+            this.levelLearnedAt = levelLearnedAt;
+            this.moveLearnMethod = moveLearnMethod;
+            this.order = order;
+            this.versionGroup = versionGroup;
+        }
+
+        public int getLevelLearnedAt() { return levelLearnedAt; }
+        public void setLevelLearnedAt(int levelLearnedAt) { this.levelLearnedAt = levelLearnedAt; }
+        public MoveLearnMethodRef getMoveLearnMethod() { return moveLearnMethod; }
+        public void setMoveLearnMethod(MoveLearnMethodRef moveLearnMethod) { this.moveLearnMethod = moveLearnMethod; }
+        public Integer getOrder() { return order; }
+        public void setOrder(Integer order) { this.order = order; }
+        public VersionGroupRef getVersionGroup() { return versionGroup; }
+        public void setVersionGroup(VersionGroupRef versionGroup) { this.versionGroup = versionGroup; }
+    }
+
+    // ============== STATS ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class StatRef extends NamedAPIResource {
+        public StatRef() { super(); }
+        public StatRef(String name, String url) { super(name, url); }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class StatEntry {
+        @JsonProperty("base_stat")
+        private int baseStat;
+
+        private int effort;
+        private StatRef stat;
+
+        public StatEntry() { }
+        public StatEntry(int baseStat, int effort, StatRef stat) {
+            this.baseStat = baseStat; this.effort = effort; this.stat = stat;
+        }
+
+        public int getBaseStat() { return baseStat; }
+        public void setBaseStat(int baseStat) { this.baseStat = baseStat; }
+        public int getEffort() { return effort; }
+        public void setEffort(int effort) { this.effort = effort; }
+        public StatRef getStat() { return stat; }
+        public void setStat(StatRef stat) { this.stat = stat; }
+    }
+
+    // ============== HELD ITEMS ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class HeldItem {
+        private NamedAPIResource item;
+
+        @JsonProperty("version_details")
+        private List<HeldItemVersionDetail> versionDetails;
+
+        public HeldItem() { }
+        public HeldItem(NamedAPIResource item, List<HeldItemVersionDetail> versionDetails) {
+            this.item = item; this.versionDetails = versionDetails;
+        }
+
+        public NamedAPIResource getItem() { return item; }
+        public void setItem(NamedAPIResource item) { this.item = item; }
+        public List<HeldItemVersionDetail> getVersionDetails() { return versionDetails; }
+        public void setVersionDetails(List<HeldItemVersionDetail> versionDetails) { this.versionDetails = versionDetails; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class HeldItemVersionDetail {
+        private int rarity;
+        private VersionRef version;
+
+        public HeldItemVersionDetail() { }
+        public HeldItemVersionDetail(int rarity, VersionRef version) { this.rarity = rarity; this.version = version; }
+
+        public int getRarity() { return rarity; }
+        public void setRarity(int rarity) { this.rarity = rarity; }
+        public VersionRef getVersion() { return version; }
+        public void setVersion(VersionRef version) { this.version = version; }
+    }
+
+    // ============== PAST ABILITIES/TYPES ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class PastAbility {
+        private List<AbilitySlot> abilities;
+        private NamedAPIResource generation;
+
+        public PastAbility() { }
+        public PastAbility(List<AbilitySlot> abilities, NamedAPIResource generation) {
+            this.abilities = abilities; this.generation = generation;
+        }
+
+        public List<AbilitySlot> getAbilities() { return abilities; }
+        public void setAbilities(List<AbilitySlot> abilities) { this.abilities = abilities; }
+        public NamedAPIResource getGeneration() { return generation; }
+        public void setGeneration(NamedAPIResource generation) { this.generation = generation; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class PastType {
+        private NamedAPIResource generation;
+        private List<TypeSlot> types;
+
+        public PastType() { }
+        public PastType(NamedAPIResource generation, List<TypeSlot> types) {
+            this.generation = generation; this.types = types;
+        }
+
+        public NamedAPIResource getGeneration() { return generation; }
+        public void setGeneration(NamedAPIResource generation) { this.generation = generation; }
+        public List<TypeSlot> getTypes() { return types; }
+        public void setTypes(List<TypeSlot> types) { this.types = types; }
+    }
+
+    // ============== TYPES (slot + type ref) ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class TypeSlot {
+        private int slot;
+        private NamedAPIResource type;
+
+        public TypeSlot() { }
+        public TypeSlot(int slot, NamedAPIResource type) { this.slot = slot; this.type = type; }
+
+        public int getSlot() { return slot; }
+        public void setSlot(int slot) { this.slot = slot; }
+        public NamedAPIResource getType() { return type; }
+        public void setType(NamedAPIResource type) { this.type = type; }
+    }
+
+    // ============== SPRITES (incluye "other") ==============
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Sprites {
+
+        // Campos comunes (pueden o no venir en el JSON dependiendo de la fuente)
+        @JsonProperty("back_default")
+        private String backDefault;
+        @JsonProperty("back_female")
+        private String backFemale;
+        @JsonProperty("back_shiny")
+        private String backShiny;
+        @JsonProperty("back_shiny_female")
+        private String backShinyFemale;
+        @JsonProperty("front_default")
+        private String frontDefault;
+        @JsonProperty("front_female")
+        private String frontFemale;
+        @JsonProperty("front_shiny")
+        private String frontShiny;
+        @JsonProperty("front_shiny_female")
+        private String frontShinyFemale;
+
+        // Nodo "other" con subgrupos (dream_world, home, official-artwork, showdown)
+        private OtherSprites other;
+
+        public Sprites() { }
+
+        public String getBackDefault() { return backDefault; }
+        public void setBackDefault(String backDefault) { this.backDefault = backDefault; }
+        public String getBackFemale() { return backFemale; }
+        public void setBackFemale(String backFemale) { this.backFemale = backFemale; }
+        public String getBackShiny() { return backShiny; }
+        public void setBackShiny(String backShiny) { this.backShiny = backShiny; }
+        public String getBackShinyFemale() { return backShinyFemale; }
+        public void setBackShinyFemale(String backShinyFemale) { this.backShinyFemale = backShinyFemale; }
+        public String getFrontDefault() { return frontDefault; }
+        public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
+        public String getFrontFemale() { return frontFemale; }
+        public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
+        public String getFrontShiny() { return frontShiny; }
+        public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
+        public String getFrontShinyFemale() { return frontShinyFemale; }
+        public void setFrontShinyFemale(String frontShinyFemale) { this.frontShinyFemale = frontShinyFemale; }
+        public OtherSprites getOther() { return other; }
+        public void setOther(OtherSprites other) { this.other = other; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class OtherSprites {
+
+        @JsonProperty("dream_world")
+        private DreamWorldSprites dreamWorld;
+
+        private HomeSprites home;
+
+        @JsonProperty("official-artwork")
+        private OfficialArtworkSprites officialArtwork;
+
+        private ShowdownSprites showdown;
+
+        public OtherSprites() { }
+        public OtherSprites(DreamWorldSprites dreamWorld, HomeSprites home,
+                            OfficialArtworkSprites officialArtwork, ShowdownSprites showdown) {
+            this.dreamWorld = dreamWorld; this.home = home; this.officialArtwork = officialArtwork; this.showdown = showdown;
+        }
+
+        public DreamWorldSprites getDreamWorld() { return dreamWorld; }
+        public void setDreamWorld(DreamWorldSprites dreamWorld) { this.dreamWorld = dreamWorld; }
+        public HomeSprites getHome() { return home; }
+        public void setHome(HomeSprites home) { this.home = home; }
+        public OfficialArtworkSprites getOfficialArtwork() { return officialArtwork; }
+        public void setOfficialArtwork(OfficialArtworkSprites officialArtwork) { this.officialArtwork = officialArtwork; }
+        public ShowdownSprites getShowdown() { return showdown; }
+        public void setShowdown(ShowdownSprites showdown) { this.showdown = showdown; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class DreamWorldSprites {
+        @JsonProperty("front_default")
+        private String frontDefault;
+        @JsonProperty("front_female")
+        private String frontFemale;
+
+        public DreamWorldSprites() { }
+        public DreamWorldSprites(String frontDefault, String frontFemale) { this.frontDefault = frontDefault; this.frontFemale = frontFemale; }
+        public String getFrontDefault() { return frontDefault; }
+        public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
+        public String getFrontFemale() { return frontFemale; }
+        public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class HomeSprites {
+        @JsonProperty("front_default")
+        private String frontDefault;
+        @JsonProperty("front_female")
+        private String frontFemale;
+        @JsonProperty("front_shiny")
+        private String frontShiny;
+        @JsonProperty("front_shiny_female")
+        private String frontShinyFemale;
+
+        public HomeSprites() { }
+        public HomeSprites(String frontDefault, String frontFemale, String frontShiny, String frontShinyFemale) {
+            this.frontDefault = frontDefault; this.frontFemale = frontFemale; this.frontShiny = frontShiny; this.frontShinyFemale = frontShinyFemale;
+        }
+        public String getFrontDefault() { return frontDefault; }
+        public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
+        public String getFrontFemale() { return frontFemale; }
+        public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
+        public String getFrontShiny() { return frontShiny; }
+        public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
+        public String getFrontShinyFemale() { return frontShinyFemale; }
+        public void setFrontShinyFemale(String frontShinyFemale) { this.frontShinyFemale = frontShinyFemale; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class OfficialArtworkSprites {
+        @JsonProperty("front_default")
+        private String frontDefault;
+        @JsonProperty("front_shiny")
+        private String frontShiny;
+
+        public OfficialArtworkSprites() { }
+        public OfficialArtworkSprites(String frontDefault, String frontShiny) { this.frontDefault = frontDefault; this.frontShiny = frontShiny; }
+        public String getFrontDefault() { return frontDefault; }
+        public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
+        public String getFrontShiny() { return frontShiny; }
+        public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ShowdownSprites {
+        @JsonProperty("back_default")
+        private String backDefault;
+        @JsonProperty("back_female")
+        private String backFemale;
+        @JsonProperty("back_shiny")
+        private String backShiny;
+        @JsonProperty("back_shiny_female")
+        private String backShinyFemale;
+        @JsonProperty("front_default")
+        private String frontDefault;
+        @JsonProperty("front_female")
+        private String frontFemale;
+        @JsonProperty("front_shiny")
+        private String frontShiny;
+        @JsonProperty("front_shiny_female")
+        private String frontShinyFemale;
+
+        public ShowdownSprites() { }
+        public ShowdownSprites(String backDefault, String backFemale, String backShiny, String backShinyFemale,
+                               String frontDefault, String frontFemale, String frontShiny, String frontShinyFemale) {
+            this.backDefault = backDefault; this.backFemale = backFemale; this.backShiny = backShiny; this.backShinyFemale = backShinyFemale;
+            this.frontDefault = frontDefault; this.frontFemale = frontFemale; this.frontShiny = frontShiny; this.frontShinyFemale = frontShinyFemale;
+        }
+
+        public String getBackDefault() { return backDefault; }
+        public void setBackDefault(String backDefault) { this.backDefault = backDefault; }
+        public String getBackFemale() { return backFemale; }
+        public void setBackFemale(String backFemale) { this.backFemale = backFemale; }
+        public String getBackShiny() { return backShiny; }
+        public void setBackShiny(String backShiny) { this.backShiny = backShiny; }
+        public String getBackShinyFemale() { return backShinyFemale; }
+        public void setBackShinyFemale(String backShinyFemale) { this.backShinyFemale = backShinyFemale; }
+        public String getFrontDefault() { return frontDefault; }
+        public void setFrontDefault(String frontDefault) { this.frontDefault = frontDefault; }
+        public String getFrontFemale() { return frontFemale; }
+        public void setFrontFemale(String frontFemale) { this.frontFemale = frontFemale; }
+        public String getFrontShiny() { return frontShiny; }
+        public void setFrontShiny(String frontShiny) { this.frontShiny = frontShiny; }
+        public String getFrontShinyFemale() { return frontShinyFemale; }
+        public void setFrontShinyFemale(String frontShinyFemale) { this.frontShinyFemale = frontShinyFemale; }
+    }
 }

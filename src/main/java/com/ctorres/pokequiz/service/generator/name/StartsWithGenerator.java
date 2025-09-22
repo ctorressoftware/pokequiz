@@ -14,7 +14,6 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
-import com.ctorres.pokequiz.dto.pokeapi.Sprites;
 import com.ctorres.pokequiz.exception.PokemonNotFoundException;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.CommonUtils;
@@ -47,7 +46,7 @@ public class StartsWithGenerator implements NameQuestionGenerator {
                     .getName();
 
             final Pokemon pokemon = client.getPokemon(randomPokemonName);
-            final Sprites images = pokemon.getSprites();
+            final Pokemon.Sprites images = pokemon.getSprites();
             final String correctAnswer = String.valueOf(pokemon.getName().charAt(0));
 
             List<String> alphabet = CommonUtils.getAlphabet();

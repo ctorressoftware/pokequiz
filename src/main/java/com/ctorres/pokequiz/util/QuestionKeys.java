@@ -6,4 +6,6 @@ public class QuestionKeys {
     public static final String WHAT_POKEMON_TYPE_IS = "question.what-pokemon-type-is";
     public static final String WHAT_TYPE_BEATS = "question.what-type-beats";
     public static final String WHAT_TYPE_BEATS_ME = "question.what-type-beats-me";
+    public static final String IS_POKEMON_BABY = "question.is-pokemon-baby";
+    public static final String IS_POKEMON_LEGENDARY = "question.is-pokemon-legendary";
 }

@@ -12,7 +12,6 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
-import com.ctorres.pokequiz.dto.pokeapi.Sprites;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
 
@@ -42,7 +41,7 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
         final List<Result> distractors = new ArrayList<>(shuffled.subList(0, 4));
 
         Pokemon correctPokemon = client.getPokemon(distractors.get(0).getName());
-        Sprites images = correctPokemon.getSprites();
+        Pokemon.Sprites images = correctPokemon.getSprites();
 
         final String questionText = texts.getRandomText(QuestionKeys.WHAT_POKEMON_IS, Locale.ENGLISH);
         final GeneratedQuestion question = new GeneratedQuestion(

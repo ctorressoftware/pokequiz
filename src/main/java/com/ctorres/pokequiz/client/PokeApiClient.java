@@ -7,9 +7,11 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.ctorres.pokequiz.config.ApiConfig;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
+import com.ctorres.pokequiz.dto.pokeapi.PokemonSpecie;
 import com.ctorres.pokequiz.dto.pokeapi.Type;
 import com.ctorres.pokequiz.exception.PokemonClientException;
 import com.ctorres.pokequiz.exception.PokemonNotFoundException;
+import com.ctorres.pokequiz.exception.PokemonSpecieNotFound;
 import com.ctorres.pokequiz.exception.TypesNotFoundException;
 import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 
@@ -50,7 +52,7 @@ public class PokeApiClient {
             return pokemon.get();
 
         } catch (RestClientException e) {
-            throw new RuntimeException("Prueba");
+            throw new PokemonClientException();
         }
 
     }
@@ -119,13 +121,38 @@ public class PokeApiClient {
                     .append(typeName)
                     .toString();
 
-            Optional<Type> type = Optional.ofNullable(restTemplate.getForObject(url, Type.class));
+            Optional<Type> type = Optional
+                    .ofNullable(restTemplate.getForObject(url, Type.class));
 
             if (type.isEmpty()) {
                 throw new TypesNotFoundException(typeName);
             }
 
             return type.get();
+
+        } catch (RestClientException e) {
+            throw new PokemonClientException();
+        }
+    }
+
+    public PokemonSpecie getPokemonSpecieData(String pokemonName) {
+
+        try {
+            String url = new StringBuilder()
+                    .append(apiConfig.getBaseUrl())
+                    .append(apiConfig.getEndpointGetPokemonSpecie())
+                    .append("/")
+                    .append(pokemonName)
+                    .toString();
+
+            Optional<PokemonSpecie> pokemonSpecieData = Optional
+                    .ofNullable(restTemplate.getForObject(url, PokemonSpecie.class));
+
+            if (pokemonSpecieData.isEmpty()) {
+                throw new PokemonSpecieNotFound(pokemonName);
+            }
+
+            return pokemonSpecieData.get();
 
         } catch (RestClientException e) {
             throw new PokemonClientException();

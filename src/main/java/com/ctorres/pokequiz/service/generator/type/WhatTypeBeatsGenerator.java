@@ -42,7 +42,7 @@ public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
         
         final Type type = client.getType(randomTypeName);
         final Type.DamageRelations relations = type.getDamageRelations();
-        final List<String> beatenTypes = relations.getDoubleDamageFrom()
+        final List<String> beatenTypes = relations.getDoubleDamageTo()
                 .stream()
                 .map(t -> t.getName())
                 .toList();

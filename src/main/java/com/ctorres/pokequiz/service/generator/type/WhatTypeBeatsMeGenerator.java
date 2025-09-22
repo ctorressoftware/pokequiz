@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import org.springframework.stereotype.Component;
+
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
@@ -15,6 +18,7 @@ import com.ctorres.pokequiz.dto.pokeapi.Type;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
 
+@Component
 public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
     final private PokeApiClient client;
     final private QuestionTextService texts;
@@ -39,7 +43,7 @@ public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
         
         final Type type = client.getType(randomTypeName);
         final Type.DamageRelations relations = type.getDamageRelations();
-        final List<String> beatenTypes = relations.getDoubleDamageTo()
+        final List<String> beatenTypes = relations.getDoubleDamageFrom()
                 .stream()
                 .map(t -> t.getName())
                 .toList();

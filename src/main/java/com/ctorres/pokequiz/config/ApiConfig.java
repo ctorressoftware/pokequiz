@@ -14,6 +14,7 @@ public class ApiConfig {
     private int pokedexMaxNumber;
     private String endpointGetPokemon;
     private String endpointGetType;
+    private String endpointGetPokemonSpecie;
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
@@ -37,6 +38,14 @@ public class ApiConfig {
 
     public String getEndpointGetType() {
         return endpointGetType;
+    }
+
+    public void setEndpointGetPokemonSpecie(String endpointGetPokemonSpecie) {
+        this.endpointGetPokemonSpecie = endpointGetPokemonSpecie;
+    }
+
+    public String getEndpointGetPokemonSpecie() {
+        return endpointGetPokemonSpecie;
     }
 
     public void setPokedexMinNumber(int pokedexMinNumber) {
