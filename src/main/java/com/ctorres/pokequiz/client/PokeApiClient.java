@@ -38,14 +38,13 @@ public class PokeApiClient {
 
             final String formattedName = name.toLowerCase().trim();
 
-            String url = new StringBuilder()
-                    .append(apiConfig.getBaseUrl())
-                    .append(apiConfig.getEndpointGetPokemon())
-                    .append("/")
-                    .append(formattedName)
-                    .toString();
+            String url = apiConfig.getBaseUrl() 
+                    + apiConfig.getEndpointGetPokemon() 
+                    + "/" 
+                    + formattedName;
 
-            Optional<Pokemon> pokemon = Optional.ofNullable(restTemplate.getForObject(url, Pokemon.class));
+            Optional<Pokemon> pokemon = Optional
+                    .ofNullable(restTemplate.getForObject(url, Pokemon.class));
 
             if (pokemon.isEmpty()) {
                 throw new PokemonNotFoundException(name);
@@ -63,11 +62,9 @@ public class PokeApiClient {
     public GenericList getAllPokemon() {
 
         try {
-            String url = new StringBuilder()
-                    .append(apiConfig.getBaseUrl())
-                    .append(apiConfig.getEndpointGetPokemon())
-                    .append("?limit=1500")
-                    .toString();
+            String url = apiConfig.getBaseUrl() 
+                    + apiConfig.getEndpointGetPokemon() 
+                    + "?limit=1500";
 
             Optional<GenericList> pokemonList = Optional
                     .ofNullable(restTemplate.getForObject(url, GenericList.class));
@@ -91,11 +88,9 @@ public class PokeApiClient {
     public GenericList getAllTypes() {
 
         try {
-            String url = new StringBuilder()
-                    .append(apiConfig.getBaseUrl())
-                    .append(apiConfig.getEndpointGetType())
-                    .append("?limit=30")
-                    .toString();
+            String url = apiConfig.getBaseUrl() 
+                    + apiConfig.getEndpointGetType() 
+                    + "?limit=30";
 
             Optional<GenericList> typeList = Optional
                     .ofNullable(restTemplate.getForObject(url, GenericList.class));
@@ -118,12 +113,10 @@ public class PokeApiClient {
     public Type getType(String typeName) {
 
         try {
-            String url = new StringBuilder()
-                    .append(apiConfig.getBaseUrl())
-                    .append(apiConfig.getEndpointGetType())
-                    .append("/")
-                    .append(typeName)
-                    .toString();
+            String url = apiConfig.getBaseUrl() 
+                    + apiConfig.getEndpointGetType() 
+                    + "/" 
+                    + typeName;
 
             Optional<Type> type = Optional
                     .ofNullable(restTemplate.getForObject(url, Type.class));
@@ -142,12 +135,10 @@ public class PokeApiClient {
     public PokemonSpecie getPokemonSpecieData(String pokemonName) {
 
         try {
-            String url = new StringBuilder()
-                    .append(apiConfig.getBaseUrl())
-                    .append(apiConfig.getEndpointGetPokemonSpecie())
-                    .append("/")
-                    .append(pokemonName)
-                    .toString();
+            String url = apiConfig.getBaseUrl() 
+                    + apiConfig.getEndpointGetSpecie() 
+                    + "/"
+                    + pokemonName;
 
             Optional<PokemonSpecie> pokemonSpecieData = Optional
                     .ofNullable(restTemplate.getForObject(url, PokemonSpecie.class));
@@ -157,6 +148,30 @@ public class PokeApiClient {
             }
 
             return pokemonSpecieData.get();
+
+        } catch (RestClientException e) {
+            throw new PokemonClientException();
+        }
+    }
+
+    @Cacheable("pokemon-colors-list")
+    public GenericList getAllPokemonColors() {
+
+        try {
+            String url = apiConfig.getBaseUrl() + apiConfig.getEndpointGetColors();
+
+            Optional<GenericList> pokemonList = Optional
+                    .ofNullable(restTemplate.getForObject(url, GenericList.class));
+
+            if (pokemonList.isEmpty()) {
+                throw new PokemonClientException(url);
+            }
+
+            if (pokemonList.get().getResults().size() == 0) {
+                throw new PokemonNotFoundException();
+            }
+
+            return pokemonList.get();
 
         } catch (RestClientException e) {
             throw new PokemonClientException();
