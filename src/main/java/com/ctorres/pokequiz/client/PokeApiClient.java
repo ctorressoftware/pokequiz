@@ -1,11 +1,16 @@
 package com.ctorres.pokequiz.client;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.ctorres.pokequiz.config.ApiConfig;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 import com.ctorres.pokequiz.dto.pokeapi.Type;
+import com.ctorres.pokequiz.exception.PokemonClientException;
+import com.ctorres.pokequiz.exception.PokemonNotFoundException;
+import com.ctorres.pokequiz.exception.TypesNotFoundException;
 import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 
 @Component
@@ -36,9 +41,13 @@ public class PokeApiClient {
                     .append(formattedName)
                     .toString();
 
-            Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
+            Optional<Pokemon> pokemon = Optional.ofNullable(restTemplate.getForObject(url, Pokemon.class));
 
-            return pokemon;
+            if (pokemon.isEmpty()) {
+                throw new PokemonNotFoundException(name);
+            }
+
+            return pokemon.get();
 
         } catch (RestClientException e) {
             throw new RuntimeException("Prueba");
@@ -46,63 +55,80 @@ public class PokeApiClient {
 
     }
 
-    public Pokemon getPokemon(int pokemonNumber) {
-
-        final int POKEDEX_MIN = apiConfig.getPokedexMinNumber();
-        final int POKEDEX_MAX = apiConfig.getPokedexMaxNumber();
-
-        if (pokemonNumber < POKEDEX_MIN || pokemonNumber > POKEDEX_MAX) {
-            String errorMessage = String.format("Must send a valid pokedex number (%d-%d).", POKEDEX_MIN, POKEDEX_MAX);
-            throw new RuntimeException(errorMessage);
-        }
-
-        String url = new StringBuilder()
-                .append(apiConfig.getBaseUrl())
-                .append(apiConfig.getEndpointGetPokemon())
-                .append("/")
-                .append(pokemonNumber)
-                .toString();
-
-        Pokemon pokemon = restTemplate.getForObject(url, Pokemon.class);
-
-        return pokemon;
-    }
-
     public GenericList getAllPokemon() {
 
-        String url = new StringBuilder()
-                .append(apiConfig.getBaseUrl())
-                .append(apiConfig.getEndpointGetPokemon())
-                .toString();
+        try {
+            String url = new StringBuilder()
+                    .append(apiConfig.getBaseUrl())
+                    .append(apiConfig.getEndpointGetPokemon())
+                    .append("?limit=1500")
+                    .toString();
 
-        GenericList pokemonList = restTemplate.getForObject(url, GenericList.class);
+            Optional<GenericList> pokemonList = Optional
+                    .ofNullable(restTemplate.getForObject(url, GenericList.class));
 
-        return pokemonList;
+            if (pokemonList.isEmpty()) {
+                throw new PokemonClientException(url);
+            }
+
+            if (pokemonList.get().getResults().size() == 0) {
+                throw new PokemonNotFoundException();
+            }
+
+            return pokemonList.get();
+
+        } catch (RestClientException e) {
+            throw new PokemonClientException();
+        }
     }
 
     public GenericList getAllTypes() {
 
-        String url = new StringBuilder()
-                .append(apiConfig.getBaseUrl())
-                .append(apiConfig.getEndpointGetType())
-                .toString();
+        try {
+            String url = new StringBuilder()
+                    .append(apiConfig.getBaseUrl())
+                    .append(apiConfig.getEndpointGetType())
+                    .append("?limit=30")
+                    .toString();
 
-        GenericList typeList = restTemplate.getForObject(url, GenericList.class);
+            Optional<GenericList> typeList = Optional
+                    .ofNullable(restTemplate.getForObject(url, GenericList.class));
 
-        return typeList;
+            if (typeList.isEmpty()) {
+                throw new PokemonClientException(url);
+            }
+
+            if (typeList.get().getResults().size() == 0) {
+                throw new TypesNotFoundException();
+            }
+
+            return typeList.get();
+
+        } catch (RestClientException e) {
+            throw new PokemonClientException();
+        }
     }
 
     public Type getType(String typeName) {
 
-        String url = new StringBuilder()
-                .append(apiConfig.getBaseUrl())
-                .append(apiConfig.getEndpointGetType())
-                .append("/")
-                .append(typeName)
-                .toString();
+        try {
+            String url = new StringBuilder()
+                    .append(apiConfig.getBaseUrl())
+                    .append(apiConfig.getEndpointGetType())
+                    .append("/")
+                    .append(typeName)
+                    .toString();
 
-        Type type = restTemplate.getForObject(url, Type.class);
+            Optional<Type> type = Optional.ofNullable(restTemplate.getForObject(url, Type.class));
 
-        return type;
+            if (type.isEmpty()) {
+                throw new TypesNotFoundException(typeName);
+            }
+
+            return type.get();
+
+        } catch (RestClientException e) {
+            throw new PokemonClientException();
+        }
     }
 }

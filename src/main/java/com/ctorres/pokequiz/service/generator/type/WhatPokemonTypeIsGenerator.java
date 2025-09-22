@@ -32,10 +32,17 @@ public class WhatPokemonTypeIsGenerator implements TypeQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        final GenericList pokemonObjectList = client.getAllPokemon();
-        final int randomNumber = random.nextInt(1, pokemonObjectList.getCount());
+        final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        final Pokemon pokemon = client.getPokemon(randomNumber);
+        if (pokemonList == null || pokemonList.size() == 0) {
+            throw new IllegalStateException("Required at least one valid pokemon.");
+        }
+
+        final String randomPokemonName = pokemonList
+                .get(random.nextInt(pokemonList.size()))
+                .getName();
+
+        final Pokemon pokemon = client.getPokemon(randomPokemonName);
         final List<String> pokemonTypes = pokemon.getTypes()
                 .stream()
                 .map(type -> type.getType().getName())

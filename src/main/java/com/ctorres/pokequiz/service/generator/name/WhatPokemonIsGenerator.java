@@ -5,14 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-
 import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
-import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
 import com.ctorres.pokequiz.dto.pokeapi.Sprites;
 import com.ctorres.pokequiz.service.QuestionTextService;
@@ -33,8 +31,7 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
 
     public GeneratedItem generate() {
 
-        final GenericList pokemonObjectList = client.getAllPokemon();
-        final List<Result> pokemonList = pokemonObjectList.getResults();
+        final List<Result> pokemonList = client.getAllPokemon().getResults();
 
         if (pokemonList.size() < 4) {
             throw new IllegalStateException("At least four (4) pokemon are required.");
