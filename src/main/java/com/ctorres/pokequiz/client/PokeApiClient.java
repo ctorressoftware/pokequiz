@@ -14,6 +14,7 @@ import com.ctorres.pokequiz.exception.PokemonClientException;
 import com.ctorres.pokequiz.exception.PokemonNotFoundException;
 import com.ctorres.pokequiz.exception.PokemonSpecieNotFound;
 import com.ctorres.pokequiz.exception.TypesNotFoundException;
+import com.ctorres.pokequiz.dto.pokeapi.Evolution;
 import com.ctorres.pokequiz.dto.pokeapi.GenericList;
 
 @Component
@@ -172,6 +173,28 @@ public class PokeApiClient {
             }
 
             return pokemonList.get();
+
+        } catch (RestClientException e) {
+            throw new PokemonClientException();
+        }
+    }
+
+    public Evolution getEvolutionChain(String evolutionId) {
+
+        try {
+            String url = apiConfig.getBaseUrl() 
+                    + apiConfig.getEndpointGetEvolutionChain()
+                    + "/"
+                    + evolutionId;
+
+            Optional<Evolution> evolutionChain = Optional
+                    .ofNullable(restTemplate.getForObject(url, Evolution.class));
+
+            if (evolutionChain.isEmpty()) {
+                throw new PokemonClientException(url);
+            }
+
+            return evolutionChain.get();
 
         } catch (RestClientException e) {
             throw new PokemonClientException();

@@ -18,13 +18,13 @@ import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
-public class WhatIsTheColorOf implements ColorQuestionGenerator {
+public class WhatIsTheColorOfGenerator implements ColorQuestionGenerator {
 
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
 
-    public WhatIsTheColorOf(PokeApiClient client, QuestionTextService texts, Random random) {
+    public WhatIsTheColorOfGenerator(PokeApiClient client, QuestionTextService texts, Random random) {
         this.client = client;
         this.texts = texts;
         this.random = random;

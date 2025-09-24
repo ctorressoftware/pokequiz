@@ -9,4 +9,6 @@ public class QuestionKeys {
     public static final String IS_POKEMON_BABY = "question.is-pokemon-baby";
     public static final String IS_POKEMON_LEGENDARY = "question.is-pokemon-legendary";
     public static final String WHAT_IS_THE_COLOR_OF = "question.what-is-the-color-of";
+    public static final String DOES_POKEMON_EVOLVE = "question.does-pokemon-evolve";
+    public static final String POKEMON_EVOLVES_TO = "question.pokemon-evolves-to";
 }

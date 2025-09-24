@@ -16,6 +16,7 @@ public class ApiConfig {
     private String endpointGetType;
     private String endpointGetSpecie;
     private String endpointGetColors;
+    private String endpointGetEvolutionChain;
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
@@ -55,6 +56,14 @@ public class ApiConfig {
 
     public String getEndpointGetColors() {
         return endpointGetColors;
+    }
+
+    public void setEndpointGetEvolutionChain(String endpointGetEvolutionChain) {
+        this.endpointGetEvolutionChain = endpointGetEvolutionChain;
+    }
+
+    public String getEndpointGetEvolutionChain() {
+        return endpointGetEvolutionChain;
     }
 
     public void setPokedexMinNumber(int pokedexMinNumber) {
