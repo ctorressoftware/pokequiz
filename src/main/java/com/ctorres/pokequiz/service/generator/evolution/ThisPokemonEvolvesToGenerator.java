@@ -39,53 +39,78 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
-        final String randomPokemonName = pokemonList
-                .get(random.nextInt(pokemonList.size()))
-                .getName();
+        final String randomPokemonName = "eevee"; /*
+                                                   * pokemonList
+                                                   * .get(random.nextInt(pokemonList.size()))
+                                                   * .getName();
+                                                   */
 
         final PokemonSpecie randomSpecie = client.getPokemonSpecieData(randomPokemonName);
         final String[] evolutionChainUrlParts = randomSpecie.getEvolutionChain().getUrl().split("/");
         final String evolutionId = evolutionChainUrlParts[evolutionChainUrlParts.length - 1];
         final Evolution evolution = client.getEvolutionChain(evolutionId);
+
         final Evolution.ChainLink root = evolution.getChain();
-        
+        final boolean isSpeciePreevolution = root.getSpecies().getName().equals(randomSpecie.getName());
         List<Evolution.ChainLink> evolutions = root.getEvolvesTo();
-        boolean isPreevolution = !randomSpecie.getName().equals(root.getSpecies().getName());
+        String correctOption = "";
 
-        while (isPreevolution) {
+        if (!isSpeciePreevolution) {
+
+            for (int i = 0; i < evolutions.size(); i++) {
+
+                final List<Evolution.ChainLink> secondStageEvolutions = evolutions.get(i).getEvolvesTo();
+                final String specieName = evolutions.get(i).getSpecies().getName();
+
+                if (specieName.equals(randomSpecie.getName())) {
+                    
+                    List<Evolution.ChainLink> species = evolutions.get(i).getEvolvesTo();
+
+                    correctOption = species.isEmpty()
+                    ? "Not evolve."
+                    : species.stream()
+                            .findAny()
+                            .get()
+                            .getSpecies()
+                            .getName();
+                }
+
+                if (!correctOption.isEmpty()) {
+                    break;
+                }
+
+                for (int j = 0; j < secondStageEvolutions.size(); j++) {
+                    final List<Evolution.ChainLink> thirdStageEvolutions = secondStageEvolutions.get(j).getEvolvesTo();
+                    final String specieName2 = thirdStageEvolutions.isEmpty() 
+                            ? "Not evolve."
+                            : thirdStageEvolutions.get(i).getSpecies().getName();
+
+                    if (!specieName2.isEmpty()) {
+                        correctOption = specieName2;
+                        break;
+                    }
+                }
             
-            final Optional<Evolution.ChainLink> newRoot = evolutions.stream()
-                    .filter(t -> t.getSpecies().getName().equals(randomSpecie.getName()))
-                    .findFirst();
-
-            if (newRoot.isEmpty()) {
-                throw new RuntimeException(); //TODO custom exception
+                if (!correctOption.isEmpty()) {
+                    break;
+                }
             }
-
-            final String specieName = newRoot.get().getSpecies().getName();
-            final boolean isStillPreevolution = !randomSpecie.getName().equals(specieName);
-
-            if (isStillPreevolution) {
-                evolutions = newRoot.get().getEvolvesTo();
-            } else {
-                isPreevolution = false;
-            }
+        } else {
+            correctOption = evolutions.isEmpty()
+                    ? "Not evolve."
+                    : evolutions.stream()
+                            .findAny()
+                            .get()
+                            .getSpecies()
+                            .getName();
         }
 
-        final String correctOption = evolutions.isEmpty() 
-                ? "Not evolve." 
-                : evolutions.stream()
-                    .findAny()
-                    .get()
-                    .getSpecies()
-                    .getName();
-
-        final List<String> evolutiosnNames = evolutions.stream() // Cuando no hay evoluciones, ver que se puede hacer -> evolutionChain - 275.
-                .map(t -> t.getSpecies().getName())
+        final List<String> evolutiosnNames = evolutions.stream() // Cuando no hay evoluciones, ver que hacer ->
+                .map(t -> t.getSpecies().getName()) // evolutionChain - 275.
                 .toList();
 
         final List<String> distractorsList = pokemonList.stream()
-                .filter(t -> evolutiosnNames.contains(t.getName()))
+                .filter(t -> !evolutiosnNames.contains(t.getName()))
                 .map(t -> t.getName())
                 .toList();
 
@@ -94,7 +119,7 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
         while (distractors.size() < 3) {
             final int index = random.nextInt(distractorsList.size());
             final String wrongOption = distractorsList.get(index);
-            
+
             if (!distractors.contains(wrongOption)) {
                 distractors.add(wrongOption);
             }
@@ -113,6 +138,5 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
 
         return new GeneratedItem(question, answers);
     }
-
 
 }
