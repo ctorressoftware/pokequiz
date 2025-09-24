@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Random;
 import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.client.PokeApiClient;
@@ -39,11 +38,9 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
-        final String randomPokemonName = "eevee"; /*
-                                                   * pokemonList
-                                                   * .get(random.nextInt(pokemonList.size()))
-                                                   * .getName();
-                                                   */
+        final String randomPokemonName = pokemonList
+                .get(random.nextInt(pokemonList.size()))
+                .getName();
 
         final PokemonSpecie randomSpecie = client.getPokemonSpecieData(randomPokemonName);
         final String[] evolutionChainUrlParts = randomSpecie.getEvolutionChain().getUrl().split("/");
@@ -67,12 +64,10 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
                     List<Evolution.ChainLink> species = evolutions.get(i).getEvolvesTo();
 
                     correctOption = species.isEmpty()
-                    ? "Not evolve."
-                    : species.stream()
-                            .findAny()
-                            .get()
-                            .getSpecies()
-                            .getName();
+                            ? "Not evolve."
+                            : species.get(random.nextInt(species.size()))
+                                    .getSpecies()
+                                    .getName();
                 }
 
                 if (!correctOption.isEmpty()) {
@@ -83,7 +78,9 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
                     final List<Evolution.ChainLink> thirdStageEvolutions = secondStageEvolutions.get(j).getEvolvesTo();
                     final String specieName2 = thirdStageEvolutions.isEmpty() 
                             ? "Not evolve."
-                            : thirdStageEvolutions.get(i).getSpecies().getName();
+                            : thirdStageEvolutions.get(random.nextInt(thirdStageEvolutions.size()))
+                                    .getSpecies()
+                                    .getName();
 
                     if (!specieName2.isEmpty()) {
                         correctOption = specieName2;
@@ -98,9 +95,7 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
         } else {
             correctOption = evolutions.isEmpty()
                     ? "Not evolve."
-                    : evolutions.stream()
-                            .findAny()
-                            .get()
+                    : evolutions.get(random.nextInt(evolutions.size()))
                             .getSpecies()
                             .getName();
         }
@@ -138,5 +133,4 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
 
         return new GeneratedItem(question, answers);
     }
-
 }
