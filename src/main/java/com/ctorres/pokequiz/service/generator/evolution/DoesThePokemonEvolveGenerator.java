@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
-import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;

@@ -11,4 +11,5 @@ public class QuestionKeys {
     public static final String WHAT_IS_THE_COLOR_OF = "question.what-is-the-color-of";
     public static final String DOES_POKEMON_EVOLVE = "question.does-pokemon-evolve";
     public static final String POKEMON_EVOLVES_TO = "question.pokemon-evolves-to";
+    public static final String POKEMON_EVOLVES_FROM = "question.pokemon-evolves-from";
 }
