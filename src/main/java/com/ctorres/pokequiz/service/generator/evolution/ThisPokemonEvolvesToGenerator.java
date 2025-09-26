@@ -12,6 +12,7 @@ import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedQuestion;
 import com.ctorres.pokequiz.dto.pokeapi.Evolution;
+import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
 import com.ctorres.pokequiz.dto.pokeapi.PokemonSpecie;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
 import com.ctorres.pokequiz.service.QuestionTextService;
@@ -42,7 +43,8 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
                 .get(random.nextInt(pokemonList.size()))
                 .getName();
 
-        final PokemonSpecie randomSpecie = client.getPokemonSpecieData(randomPokemonName);
+        final Pokemon randomPokemon = client.getPokemon(randomPokemonName);
+        final PokemonSpecie randomSpecie = client.getPokemonSpecieData(randomPokemon.getSpecies().getName());
         final String[] evolutionChainUrlParts = randomSpecie.getEvolutionChain().getUrl().split("/");
         final String evolutionId = evolutionChainUrlParts[evolutionChainUrlParts.length - 1];
         final Evolution evolution = client.getEvolutionChain(evolutionId);
