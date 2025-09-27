@@ -20,13 +20,13 @@ import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
-public class ThisPokemonEvolvesFrom implements EvolutionQuestionGenerator {
+public class ThisPokemonEvolvesFromGenerator implements EvolutionQuestionGenerator {
 
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
 
-    public ThisPokemonEvolvesFrom(PokeApiClient client, QuestionTextService texts, Random random) {
+    public ThisPokemonEvolvesFromGenerator(PokeApiClient client, QuestionTextService texts, Random random) {
         this.client = client;
         this.texts = texts;
         this.random = random;

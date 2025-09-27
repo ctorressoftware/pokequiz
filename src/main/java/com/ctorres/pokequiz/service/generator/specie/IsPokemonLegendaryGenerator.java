@@ -18,13 +18,13 @@ import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
-public class IsPokemonBaby implements SpecieQuestionGenerator {
+public class IsPokemonLegendaryGenerator implements SpecieQuestionGenerator {
 
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
 
-    public IsPokemonBaby(PokeApiClient client, QuestionTextService texts, Random random) {
+    public IsPokemonLegendaryGenerator(PokeApiClient client, QuestionTextService texts, Random random) {
         this.client = client;
         this.texts = texts;
         this.random = random;
@@ -45,16 +45,16 @@ public class IsPokemonBaby implements SpecieQuestionGenerator {
         final Pokemon randomPokemon = client.getPokemon(randomPokemonName);
 
         final PokemonSpecie specieData = client.getPokemonSpecieData(randomPokemon.getSpecies().getName());
-        final String correctOption = String.valueOf(specieData.isBaby());
-        final String wrongOption = String.valueOf(!specieData.isBaby());
+        final String correctOption = String.valueOf(specieData.isLegendary());
+        final String wrongOption = String.valueOf(!specieData.isLegendary());
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.IS_POKEMON_BABY, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.IS_POKEMON_LEGENDARY, Locale.ENGLISH);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 
         final List<GeneratedAnswer> answers = new ArrayList<>(2);
-        answers.add(new GeneratedAnswer("is-pokemon-baby:option1", correctOption, true));
-        answers.add(new GeneratedAnswer("is-pokemon-baby:option2", wrongOption, false));
+        answers.add(new GeneratedAnswer("is-pokemon-legendary:option1", correctOption, true));
+        answers.add(new GeneratedAnswer("is-pokemon-legendary:option2", wrongOption, false));
         Collections.shuffle(answers, random);
 
         return new GeneratedItem(question, answers);
