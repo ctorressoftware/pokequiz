@@ -102,8 +102,8 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
                             .getName();
         }
 
-        final List<String> evolutiosnNames = evolutions.stream() // Cuando no hay evoluciones, ver que hacer ->
-                .map(t -> t.getSpecies().getName()) // evolutionChain - 275.
+        final List<String> evolutiosnNames = evolutions.stream()
+                .map(t -> t.getSpecies().getName())
                 .toList();
 
         final List<String> distractorsList = pokemonList.stream()

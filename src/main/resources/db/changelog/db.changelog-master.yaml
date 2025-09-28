@@ -327,3 +327,10 @@ databaseChangeLog:
         referencedTableName: difficult_level
         validate: true
 
+- include:
+    file: 2025-09-28-T14-14-rename-password.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2025-09-28-T15-04-change-password-hash-type-size.yaml
+    relativeToChangelogFile: true

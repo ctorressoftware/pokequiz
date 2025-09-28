@@ -17,8 +17,8 @@ public class User {
     @Column(nullable = false, unique = true, length = 30)
     private String username;
 
-    @Column(nullable = false, length = 100)
-    private String password;
+    @Column(nullable = false, length = 255)
+    private String passwordHash;
 
     @Column(nullable = false)
     private boolean active;
@@ -31,14 +31,14 @@ public class User {
     public User(Long id, String username, String password, boolean active) {
         this.id = id;
         this.username = username;
-        this.password = password;
+        this.passwordHash = password;
         this.active = active;
     }
 
     // Constructor sin id (útil para crear nuevas entidades)
     public User(String username, String password, boolean active) {
         this.username = username;
-        this.password = password;
+        this.passwordHash = password;
         this.active = active;
     }
 
@@ -59,12 +59,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public boolean isActive() {
