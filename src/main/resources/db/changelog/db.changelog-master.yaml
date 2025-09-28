@@ -334,3 +334,7 @@ databaseChangeLog:
 - include:
     file: 2025-09-28-T15-04-change-password-hash-type-size.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2025-09-28-T16-14-create-role-and-user-role-table.yaml
+    relativeToChangelogFile: true

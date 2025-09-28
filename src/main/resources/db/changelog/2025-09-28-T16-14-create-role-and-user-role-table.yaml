@@ -1,0 +1,97 @@
+databaseChangeLog:
+- changeSet:
+    id: 2025-09-28-T16-14-create-role-table
+    author: cetorres
+    changes:
+    - createTable:
+        tableName: role
+        columns:
+        - column:
+            name: id
+            type: BIGSERIAL
+            constraints:
+              primaryKey: true
+              primaryKeyName: role_pkey
+              nullable: false
+        - column:
+            name: name
+            type: VARCHAR(50)
+            constraints:
+              nullable: false
+        - column:
+            name: description
+            type: VARCHAR(200)
+        - column:
+            name: active
+            type: BOOLEAN
+            defaultValueBoolean: true
+            constraints:
+              nullable: false
+        - column:
+            name: created_at
+            type: TIMESTAMPTZ
+            defaultValueComputed: CURRENT_TIMESTAMP
+            constraints:
+              nullable: false
+    - addUniqueConstraint:
+        tableName: role
+        columnNames: name
+        constraintName: role_name_key
+    rollback:
+    - dropTable:
+        tableName: role
+        cascadeConstraints: true
+
+- changeSet:
+    id: 2025-09-28-T16-14-create-user-role-table
+    author: cetorres
+    changes:
+    - createTable:
+        tableName: user_role
+        columns:
+        - column:
+            name: user_id
+            type: BIGINT
+            constraints:
+              nullable: false
+        - column:
+            name: role_id
+            type: BIGINT
+            constraints:
+              nullable: false
+    - addPrimaryKey:
+        tableName: user_role
+        columnNames: user_id, role_id
+        constraintName: user_role_pkey
+    - addForeignKeyConstraint:
+        baseTableName: user_role
+        baseColumnNames: user_id
+        referencedTableName: users
+        referencedColumnNames: id
+        onDelete: CASCADE
+        constraintName: fk_user_role_user
+        validate: true
+    - addForeignKeyConstraint:
+        baseTableName: user_role
+        baseColumnNames: role_id
+        referencedTableName: role
+        referencedColumnNames: id
+        onDelete: RESTRICT
+        constraintName: fk_user_role_role
+        validate: true
+    - createIndex:
+        tableName: user_role
+        indexName: idx_user_role_user
+        columns:
+        - column:
+            name: user_id
+    - createIndex:
+        tableName: user_role
+        indexName: idx_user_role_role
+        columns:
+        - column:
+            name: role_id
+    rollback:
+    - dropTable:
+        tableName: user_role
+        cascadeConstraints: true
