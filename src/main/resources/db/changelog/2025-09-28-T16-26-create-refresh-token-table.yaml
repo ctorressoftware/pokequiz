@@ -1,0 +1,76 @@
+databaseChangeLog:
+- changeSet:
+    id: 2025-09-28-T16-26-create-refresh-token-table
+    author: cetorres
+    changes:
+    - createTable:
+        tableName: refresh_token
+        columns:
+        - column:
+            name: id
+            type: BIGSERIAL
+            constraints:
+              primaryKey: true
+              primaryKeyName: refresh_token_pkey
+              nullable: false
+        - column:
+            name: user_id
+            type: BIGINT
+            constraints:
+              nullable: false
+        - column:
+            name: token_hash
+            type: VARCHAR(64)
+            constraints:
+              nullable: false
+        - column:
+            name: issued_at
+            type: TIMESTAMPTZ
+            defaultValueComputed: CURRENT_TIMESTAMP
+            constraints:
+              nullable: false
+        - column:
+            name: expires_at
+            type: TIMESTAMPTZ
+            constraints:
+              nullable: false
+        - column:
+            name: revoked_at
+            type: TIMESTAMPTZ
+        - column:
+            name: replaced_by_hash
+            type: VARCHAR(64)
+        - column:
+            name: ip_address
+            type: VARCHAR(45)
+        - column:
+            name: user_agent
+            type: VARCHAR(255)
+    - addForeignKeyConstraint:
+        baseTableName: refresh_token
+        baseColumnNames: user_id
+        referencedTableName: users
+        referencedColumnNames: id
+        onDelete: CASCADE
+        constraintName: fk_refresh_token_user
+        validate: true
+    - addUniqueConstraint:
+        tableName: refresh_token
+        columnNames: token_hash
+        constraintName: refresh_token_token_hash_key
+    - createIndex:
+        tableName: refresh_token
+        indexName: idx_refresh_token_user
+        columns:
+        - column:
+            name: user_id
+    - createIndex:
+        tableName: refresh_token
+        indexName: idx_refresh_token_expires_at
+        columns:
+        - column:
+            name: expires_at
+    rollback:
+    - dropTable:
+        tableName: refresh_token
+        cascadeConstraints: true
