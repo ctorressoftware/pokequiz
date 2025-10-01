@@ -1,11 +1,17 @@
 package com.ctorres.pokequiz.entity;
 
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "users")
@@ -23,11 +29,16 @@ public class User {
     @Column(nullable = false)
     private boolean active;
 
-    // Constructor vacío (requerido por JPA)
-    public User() {
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    Set<Role> roles = new HashSet<>();
 
-    // Constructor con todos los campos
+    public User() {}
+
     public User(Long id, String username, String password, boolean active) {
         this.id = id;
         this.username = username;
@@ -35,14 +46,12 @@ public class User {
         this.active = active;
     }
 
-    // Constructor sin id (útil para crear nuevas entidades)
     public User(String username, String password, boolean active) {
         this.username = username;
         this.passwordHash = password;
         this.active = active;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -75,7 +84,6 @@ public class User {
         this.active = active;
     }
 
-    // toString()
     @Override
     public String toString() {
         return "User{" +
@@ -85,7 +93,6 @@ public class User {
                 '}';
     }
 
-    // equals() y hashCode() (solo usan id para evitar problemas en JPA)
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -100,5 +107,4 @@ public class User {
     public int hashCode() {
         return java.util.Objects.hash(id);
     }
-
 }
