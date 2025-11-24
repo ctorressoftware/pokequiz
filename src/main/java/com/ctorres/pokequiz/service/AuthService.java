@@ -1,5 +1,6 @@
 package com.ctorres.pokequiz.service;
 
+import com.ctorres.pokequiz.config.JwtProperties;
 import com.ctorres.pokequiz.entity.RefreshToken;
 import com.ctorres.pokequiz.entity.User;
 import com.ctorres.pokequiz.repository.RefreshTokenRepository;
@@ -26,13 +27,22 @@ public class AuthService {
   private final PasswordEncoder encoder;
   private final JwtService jwt;
   private final Clock clock;
-  private final long refreshDays;
+  private JwtProperties jwtProperties;
 
-  public AuthService(UserRepository users, RoleRepository roles, RefreshTokenRepository refreshTokens,
-                     PasswordEncoder encoder, JwtService jwt, Clock clock,
-                     @org.springframework.beans.factory.annotation.Value("${jwt.refresh-days}") long refreshDays) {
-    this.users = users; this.roles = roles; this.refreshTokens = refreshTokens;
-    this.encoder = encoder; this.jwt = jwt; this.clock = clock; this.refreshDays = refreshDays;
+  public AuthService(UserRepository users,
+                     RoleRepository roles,
+                     RefreshTokenRepository refreshTokens,
+                     PasswordEncoder encoder,
+                     JwtService jwt,
+                     Clock clock,
+                     JwtProperties jwtProperties) {
+      this.users = users;
+      this.roles = roles;
+      this.refreshTokens = refreshTokens;
+      this.encoder = encoder;
+      this.jwt = jwt;
+      this.clock = clock;
+      this.jwtProperties = jwtProperties;
   }
 
   private static String sha256Hex(String s){
@@ -42,15 +52,16 @@ public class AuthService {
     } catch (Exception e){ throw new IllegalStateException(e); }
   }
 
-  private String newRefreshTokenValue(){ return UUID.randomUUID().toString()+"."+UUID.randomUUID(); }
+  private String newRefreshTokenValue(){
+      return UUID.randomUUID().toString()+"."+UUID.randomUUID();
+  }
 
   private String issueAccess(User u){
     var claims = new HashMap<String, Object>();
     claims.put("uid", u.getId());
-    // mejor como lista de strings (más común en JWT)
     claims.put("roles", u.getRoles().stream()
         .map(r -> "ROLE_" + r.getName())
-        .toList()); // devuelve List<String>
+        .toList());
   
     return jwt.generateAccessToken(u.getUsername(), claims);
   }
@@ -62,21 +73,33 @@ public class AuthService {
     rt.setUser(u);
     rt.setTokenHash(sha256Hex(value));
     rt.setIssuedAt(now);
-    rt.setExpiresAt(now.plusDays(refreshDays));
+    rt.setExpiresAt(now.plusDays(jwtProperties.getRefreshDays()));
     rt.setIp(ip);
     rt.setUserAgent(userAgent);
     refreshTokens.save(rt);
     return new String[]{ value, rt.getTokenHash() };
   }
 
+  private boolean isStrongPassword(String password) {
+      final int MAX_LENGTH = jwtProperties.getUserPasswordMaxLength();
+      if (password.length() < MAX_LENGTH) return false;
+      // if (password.codePoints().anyMatch(Character::isEmoji)) return false;
+      if (password.codePoints().noneMatch(Character::isUpperCase)) return false;
+      if (password.codePoints().noneMatch(Character::isLowerCase)) return false;
+      if (password.codePoints().noneMatch(Character::isDigit)) return false;
+      return password.codePoints().anyMatch(c -> String.valueOf((char) c)
+              .matches("[^a-zA-Z0-9\\s]"));
+  }
+
   @Transactional
   public String[] register(String username, String password, String ip, String userAgent){
     if (users.existsByUsername(username)) throw new IllegalArgumentException("username already exists");
+    if (!isStrongPassword(password)) throw new IllegalArgumentException("password is weak");
     var user = new User(username, encoder.encode(password), true);
     var roleUser = roles.findByName("USER")
         .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
     user.getRoles().add(roleUser);
-    users.save(user);
+    // users.save(user);
     var access = issueAccess(user);
     var pair = issueRefresh(user, ip, userAgent);
     return new String[]{access, pair[0]};
