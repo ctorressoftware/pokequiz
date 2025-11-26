@@ -17,7 +17,9 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.HexFormat;
+import java.util.PrimitiveIterator;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 @Service
 public class AuthService {
@@ -82,13 +84,14 @@ public class AuthService {
 
   private boolean isStrongPassword(String password) {
       final int MAX_LENGTH = jwtProperties.getUserPasswordMaxLength();
+      final String SPECIAL_CHARACTERS_REGEX = "[^a-zA-Z0-9\\s]";
       if (password.length() < MAX_LENGTH) return false;
-      // if (password.codePoints().anyMatch(Character::isEmoji)) return false;
+      if (password.codePoints().anyMatch(Character::isEmojiPresentation)) return false;
       if (password.codePoints().noneMatch(Character::isUpperCase)) return false;
       if (password.codePoints().noneMatch(Character::isLowerCase)) return false;
       if (password.codePoints().noneMatch(Character::isDigit)) return false;
       return password.codePoints().anyMatch(c -> String.valueOf((char) c)
-              .matches("[^a-zA-Z0-9\\s]"));
+              .matches(SPECIAL_CHARACTERS_REGEX));
   }
 
   @Transactional
@@ -100,9 +103,11 @@ public class AuthService {
         .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
     user.getRoles().add(roleUser);
     // users.save(user);
-    var access = issueAccess(user);
-    var pair = issueRefresh(user, ip, userAgent);
-    return new String[]{access, pair[0]};
+    // var access = issueAccess(user);
+    // var pair = issueRefresh(user, ip, userAgent);
+    // return new String[]{access, pair[0]};
+
+    return new String[]{"", ""};
   }
 
   @Transactional
