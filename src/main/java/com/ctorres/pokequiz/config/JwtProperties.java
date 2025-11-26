@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class JwtProperties {
 
     private String secret;
-    private int userPasswordMaxLength;
+    private int userPasswordMinLength;
     private int accessMins;
     private String issuer;
     private int refreshDays;
@@ -21,12 +21,12 @@ public class JwtProperties {
         this.secret = secret;
     }
 
-    public void setUserPasswordMaxLength(int userPasswordMaxLength) {
-        this.userPasswordMaxLength = userPasswordMaxLength;
+    public void setUserPasswordMinLength(int userPasswordMinLength) {
+        this.userPasswordMinLength = userPasswordMinLength;
     }
 
-    public int getUserPasswordMaxLength() {
-        return userPasswordMaxLength;
+    public int getUserPasswordMinLength() {
+        return userPasswordMinLength;
     }
 
     public int getAccessMins() {

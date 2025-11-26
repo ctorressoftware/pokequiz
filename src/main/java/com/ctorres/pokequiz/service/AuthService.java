@@ -83,18 +83,24 @@ public class AuthService {
   }
 
   private boolean isStrongPassword(String password) {
-      final int MAX_LENGTH = jwtProperties.getUserPasswordMaxLength();
+      final int MIN_LENGTH = jwtProperties.getUserPasswordMinLength();
       final String SPECIAL_CHARACTERS_REGEX = "[^a-zA-Z0-9\\s]";
-      if (password.length() < MAX_LENGTH) return false;
-      if (password.codePoints().anyMatch(Character::isEmojiPresentation)) return false;
+
+      if (password.length() < MIN_LENGTH) return false;
+      if (!hasNoEmojis(password)) return false;
       if (password.codePoints().noneMatch(Character::isUpperCase)) return false;
       if (password.codePoints().noneMatch(Character::isLowerCase)) return false;
       if (password.codePoints().noneMatch(Character::isDigit)) return false;
-      return password.codePoints().anyMatch(c -> String.valueOf((char) c)
-              .matches(SPECIAL_CHARACTERS_REGEX));
+      return password.codePoints().anyMatch(c ->
+              Character.toString(c).matches(SPECIAL_CHARACTERS_REGEX));
   }
 
-  @Transactional
+  private boolean hasNoEmojis(String text) {
+      return text.codePoints().noneMatch(cp ->
+              Character.isEmoji(cp) && !Character.isDigit(cp) && !Character.isLetter(cp));
+  }
+
+    @Transactional
   public String[] register(String username, String password, String ip, String userAgent){
     if (users.existsByUsername(username)) throw new IllegalArgumentException("username already exists");
     if (!isStrongPassword(password)) throw new IllegalArgumentException("password is weak");
