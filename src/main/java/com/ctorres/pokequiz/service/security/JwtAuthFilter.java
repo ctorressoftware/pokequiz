@@ -12,29 +12,30 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-  private final JwtService jwt;
-  private final CustomUserDetailsService uds;
+    private final JwtService jwt;
+    private final CustomUserDetailsService uds;
 
-  public JwtAuthFilter(JwtService jwt, CustomUserDetailsService uds) {
-    this.jwt = jwt; this.uds = uds;
-  }
-
-  @Override
-  protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
-      throws java.io.IOException, jakarta.servlet.ServletException {
-
-    var header = req.getHeader(HttpHeaders.AUTHORIZATION);
-    if (header != null && header.startsWith("Bearer ")) {
-      var token = header.substring(7);
-      try {
-        var username = jwt.getSubject(token);
-        var userDetails = uds.loadUserByUsername(username);
-        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-        SecurityContextHolder.getContext().setAuthentication(auth);
-      } catch (Exception ignored) { /* token inválido → request sin auth */ }
+    public JwtAuthFilter(JwtService jwt, CustomUserDetailsService uds) {
+        this.jwt = jwt;
+        this.uds = uds;
     }
-    chain.doFilter(req, res);
-  }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+            throws java.io.IOException, jakarta.servlet.ServletException {
+
+        var header = req.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null && header.startsWith("Bearer ")) {
+            var token = header.substring(7);
+            try {
+                var username = jwt.getSubject(token);
+                var userDetails = uds.loadUserByUsername(username);
+                var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (Exception ignored) { /* token inválido → request sin auth */ }
+        }
+        chain.doFilter(req, res);
+    }
 }
 
