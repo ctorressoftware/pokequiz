@@ -7,6 +7,10 @@ import com.ctorres.pokequiz.repository.RefreshTokenRepository;
 import com.ctorres.pokequiz.repository.RoleRepository;
 import com.ctorres.pokequiz.repository.UserRepository;
 import com.ctorres.pokequiz.service.security.JwtService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +33,7 @@ public class AuthService {
     private final JwtService jwt;
     private final Clock clock;
     private final JwtProperties jwtProperties;
+    private final AuthenticationManager authenticationManager;
 
     public AuthService(UserRepository users,
                        RoleRepository roles,
@@ -36,7 +41,8 @@ public class AuthService {
                        PasswordEncoder encoder,
                        JwtService jwt,
                        Clock clock,
-                       JwtProperties jwtProperties) {
+                       JwtProperties jwtProperties,
+                       AuthenticationManager authenticationManager) {
         this.users = users;
         this.roles = roles;
         this.refreshTokens = refreshTokens;
@@ -44,6 +50,7 @@ public class AuthService {
         this.jwt = jwt;
         this.clock = clock;
         this.jwtProperties = jwtProperties;
+        this.authenticationManager = authenticationManager;
     }
 
     private static String sha256Hex(String s) {
@@ -118,8 +125,11 @@ public class AuthService {
     public String[] login(String username, String rawPassword, String ip, String userAgent) {
         var user = users.findByUsernameAndActiveTrue(username)
                 .orElseThrow(() -> new IllegalArgumentException("bad credentials"));
-        if (!encoder.matches(rawPassword, user.getPasswordHash()))
-            throw new IllegalArgumentException("bad credentials");
+
+        var token = new UsernamePasswordAuthenticationToken(username, rawPassword);
+        Authentication auth = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         var access = issueAccess(user);
         var pair = issueRefresh(user, ip, userAgent);
         return new String[]{access, pair[0]};
