@@ -4,7 +4,6 @@ import com.ctorres.pokequiz.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName()))
                 .toList();
 
-        return new User(
+        return new AuthUser(
+                user.getId(),
                 user.getUsername(),
                 user.getPasswordHash(),
                 user.isActive(),

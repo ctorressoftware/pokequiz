@@ -6,10 +6,11 @@ import com.ctorres.pokequiz.entity.User;
 import com.ctorres.pokequiz.repository.RefreshTokenRepository;
 import com.ctorres.pokequiz.repository.RoleRepository;
 import com.ctorres.pokequiz.repository.UserRepository;
+import com.ctorres.pokequiz.service.security.AuthUser;
 import com.ctorres.pokequiz.service.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,8 @@ import java.security.MessageDigest;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.HexFormat;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -66,13 +66,11 @@ public class AuthService {
         return UUID.randomUUID() + "." + UUID.randomUUID();
     }
 
-    private String issueAccess(User u) {
+    private String issueAccess(Long id, String username, Collection<String> roles) {
         var claims = new HashMap<String, Object>();
-        claims.put("uid", u.getId());
-        claims.put("roles", u.getRoles().stream()
-                .map(r -> "ROLE_" + r.getName())
-                .toList());
-        return jwt.generateAccessToken(u.getUsername(), claims);
+        claims.put("uid", id);
+        claims.put("roles", roles);
+        return jwt.generateAccessToken(username, claims);
     }
 
     private String[] issueRefresh(User u, String ip, String userAgent) {
@@ -109,29 +107,31 @@ public class AuthService {
 
     @Transactional
     public String[] register(String username, String password, String ip, String userAgent) {
-        if (users.existsByUsername(username)) throw new IllegalArgumentException("username already exists");
+        if (users.existsByUsername(username)) throw new IllegalArgumentException("username already exists"); // TODO update username column with liquibase turning unique
         if (!isStrongPassword(password)) throw new IllegalArgumentException("password is weak");
         var user = new User(username, encoder.encode(password), true);
         var roleUser = roles.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
         user.getRoles().add(roleUser);
         users.save(user);
-        var access = issueAccess(user);
+        var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
+                .map(role -> "ROLE_" + role.getName())
+                .collect(Collectors.toList()));
         var pair = issueRefresh(user, ip, userAgent);
         return new String[]{access, pair[0]};
     }
 
     @Transactional
     public String[] login(String username, String rawPassword, String ip, String userAgent) {
-        var user = users.findByUsernameAndActiveTrue(username)
-                .orElseThrow(() -> new IllegalArgumentException("bad credentials"));
-
         var token = new UsernamePasswordAuthenticationToken(username, rawPassword);
-        Authentication auth = authenticationManager.authenticate(token);
+        var auth = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
-
-        var access = issueAccess(user);
-        var pair = issueRefresh(user, ip, userAgent);
+        var user = (AuthUser) auth.getPrincipal();
+        var access = issueAccess(user.getId(), user.getUsername(), user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
+        var domainUser = users.getReferenceById(user.getId());
+        var pair = issueRefresh(domainUser, ip, userAgent);
         return new String[]{access, pair[0]};
     }
 
@@ -144,7 +144,9 @@ public class AuthService {
 
         stored.setRevokedAt(now);
         var user = stored.getUser();
-        var access = issueAccess(user);
+        var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
+                .map(role -> "ROLE_" + role.getName())
+                .collect(Collectors.toList()));
         var pair = issueRefresh(user, ip, userAgent);
         stored.setReplacedByHash(pair[1]);
         return new String[]{access, pair[0]};
