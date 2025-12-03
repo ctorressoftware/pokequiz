@@ -22,8 +22,8 @@ public class AuthController {
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
         var ip = xff != null ? xff : http.getRemoteAddr();
-        var pair = auth.register(req.getUsername(), req.getPassword(), ip, ua);
-        return ResponseEntity.ok(new TokenResponse(pair[0], pair[1]));
+        var response = auth.register(req.getUsername(), req.getPassword(), ip, ua);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
@@ -32,8 +32,8 @@ public class AuthController {
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
         var ip = xff != null ? xff : http.getRemoteAddr();
-        var pair = auth.login(req.getUsername(), req.getPassword(), ip, ua);
-        return ResponseEntity.ok(new TokenResponse(pair[0], pair[1]));
+        var response = auth.login(req.getUsername(), req.getPassword(), ip, ua);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
@@ -42,8 +42,8 @@ public class AuthController {
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
         var ip = xff != null ? xff : http.getRemoteAddr();
-        var pair = auth.refresh(req.getRefreshToken(), ip, ua);
-        return ResponseEntity.ok(new TokenResponse(pair[0], pair[1]));
+        var response = auth.refresh(req.getRefreshToken(), ip, ua);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")

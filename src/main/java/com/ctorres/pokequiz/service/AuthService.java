@@ -1,13 +1,19 @@
 package com.ctorres.pokequiz.service;
 
 import com.ctorres.pokequiz.config.JwtProperties;
+import com.ctorres.pokequiz.dto.auth.TokenResponse;
 import com.ctorres.pokequiz.entity.RefreshToken;
 import com.ctorres.pokequiz.entity.User;
+import com.ctorres.pokequiz.exception.DuplicatedUsernameException;
+import com.ctorres.pokequiz.exception.InactiveUserException;
+import com.ctorres.pokequiz.exception.InvalidRefreshTokenException;
+import com.ctorres.pokequiz.exception.WeakPasswordException;
 import com.ctorres.pokequiz.repository.RefreshTokenRepository;
 import com.ctorres.pokequiz.repository.RoleRepository;
 import com.ctorres.pokequiz.repository.UserRepository;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import com.ctorres.pokequiz.service.security.JwtService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,14 +32,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
-    private final UserRepository users;
+    private final AuthenticationManager authenticationManager;
+    private final Clock clock;
+    private final JwtService jwt;
+    private final JwtProperties jwtProperties;
+    private final PasswordEncoder encoder;
     private final RoleRepository roles;
     private final RefreshTokenRepository refreshTokens;
-    private final PasswordEncoder encoder;
-    private final JwtService jwt;
-    private final Clock clock;
-    private final JwtProperties jwtProperties;
-    private final AuthenticationManager authenticationManager;
+    private final UserRepository users;
 
     public AuthService(UserRepository users,
                        RoleRepository roles,
@@ -106,23 +112,31 @@ public class AuthService {
     }
 
     @Transactional
-    public String[] register(String username, String password, String ip, String userAgent) {
-        if (users.existsByUsername(username)) throw new IllegalArgumentException("username already exists"); // TODO update username column with liquibase turning unique
-        if (!isStrongPassword(password)) throw new IllegalArgumentException("password is weak");
+    public TokenResponse register(String username, String password, String ip, String userAgent) {
+        if (!isStrongPassword(password)) throw new WeakPasswordException();
         var user = new User(username, encoder.encode(password), true);
         var roleUser = roles.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
         user.getRoles().add(roleUser);
-        users.save(user);
+
+        try {
+            users.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicatedUsernameException();
+        }
+
         var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
                 .map(role -> "ROLE_" + role.getName())
                 .collect(Collectors.toList()));
         var pair = issueRefresh(user, ip, userAgent);
-        return new String[]{access, pair[0]};
+        return TokenResponse.builder()
+                .accessToken(access)
+                .refreshToken(pair[0])
+                .build();
     }
 
     @Transactional
-    public String[] login(String username, String rawPassword, String ip, String userAgent) {
+    public TokenResponse login(String username, String rawPassword, String ip, String userAgent) {
         var token = new UsernamePasswordAuthenticationToken(username, rawPassword);
         var auth = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -132,24 +146,30 @@ public class AuthService {
                 .collect(Collectors.toList()));
         var domainUser = users.getReferenceById(user.getId());
         var pair = issueRefresh(domainUser, ip, userAgent);
-        return new String[]{access, pair[0]};
+        return TokenResponse.builder()
+                .accessToken(access)
+                .refreshToken(pair[0])
+                .build();
     }
 
     @Transactional
-    public String[] refresh(String refreshTokenValue, String ip, String userAgent) {
+    public TokenResponse refresh(String refreshTokenValue, String ip, String userAgent) {
         var hash = sha256Hex(refreshTokenValue);
         var now = OffsetDateTime.now(clock);
         var stored = refreshTokens.findByTokenHashAndRevokedAtIsNullAndExpiresAtAfter(hash, now)
-                .orElseThrow(() -> new IllegalArgumentException("invalid refresh token"));
-
+                .orElseThrow(InvalidRefreshTokenException::new);
         stored.setRevokedAt(now);
         var user = stored.getUser();
+        if (!user.isActive()) throw new InactiveUserException();
         var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
                 .map(role -> "ROLE_" + role.getName())
                 .collect(Collectors.toList()));
         var pair = issueRefresh(user, ip, userAgent);
         stored.setReplacedByHash(pair[1]);
-        return new String[]{access, pair[0]};
+        return TokenResponse.builder()
+                .accessToken(access)
+                .refreshToken(pair[0])
+                .build();
     }
 
     @Transactional
