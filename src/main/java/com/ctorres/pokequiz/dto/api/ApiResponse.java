@@ -4,47 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ApiResponse<T> {
     @JsonProperty("response")
-    private Response response;
+    private final Response response;
 
     @JsonProperty("data")
-    private T data;
+    private final T data;
 
-    private ApiResponse() {}
+    private ApiResponse(Response response, T data) {
+        this.response = response;
+        this.data = data;
+    }
 
     public static <T> ApiResponse<T> success(T data) {
-        ApiResponse<T> apiResponse = new ApiResponse<>();
-        Response response = Response.builder()
-                        .code(200)
-                        .message("OK")
-                        .build();
-        
-        apiResponse.setResponse(response);
-        apiResponse.setData(data);
-        return apiResponse;
+        return new ApiResponse<T>(Response.builder()
+                .code(200)
+                .message("OK")
+                .build(), data);
     }
 
     public static <T> ApiResponse<T> error(int code, String message) {
-        ApiResponse<T> apiResponse = new ApiResponse<>();
-        Response response = Response.builder()
-                        .code(code)
-                        .message(message)
-                        .build();
-        
-        apiResponse.setResponse(response);
-        apiResponse.setData(null);
-        return apiResponse;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
+        return new ApiResponse<T>(Response.builder()
+                .code(code)
+                .message(message)
+                .build(), null);
     }
 
     public Response getResponse() {
         return response;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 
     public T getData() {

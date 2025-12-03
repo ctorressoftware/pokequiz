@@ -122,7 +122,7 @@ public class AuthService {
         try {
             users.save(user);
         } catch (DataIntegrityViolationException exception) {
-            throw new DuplicatedUsernameException();
+            throw new DuplicatedUsernameException(username);
         }
 
         var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
