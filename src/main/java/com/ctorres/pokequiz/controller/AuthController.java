@@ -8,11 +8,10 @@ import com.ctorres.pokequiz.exception.InvalidRefreshTokenException;
 import com.ctorres.pokequiz.exception.WeakPasswordException;
 import com.ctorres.pokequiz.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
 
 @RestController
 @RequestMapping("/auth")
@@ -57,8 +56,8 @@ public class AuthController {
             response = auth.login(req.getUsername(), req.getPassword(), ip, ua);
         } catch (BadCredentialsException e) {
             return ResponseEntity
-                    .badRequest()
-                    .body(ApiResponse.error(400, e.getMessage()));
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Bad credentials"));
         }
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -75,13 +74,13 @@ public class AuthController {
         try {
             response = auth.refresh(req.getRefreshToken(), ip, ua);
         } catch (InvalidRefreshTokenException e) {
-            return ResponseEntity.status(204).body(
-                    ApiResponse.error(204, e.getMessage())
-            );
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
         } catch (InactiveUserException e) {
-            return ResponseEntity.badRequest().body(
-                    ApiResponse.error(400, "Bad credentials")
-            );
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Bad credentials"));
         }
         return ResponseEntity.ok(ApiResponse.success(response));
     }
