@@ -3,6 +3,6 @@ package com.ctorres.pokequiz.exception;
 public class InvalidRefreshTokenException extends RuntimeException {
 
     public InvalidRefreshTokenException() {
-        super("Invalid refresh token. You must login again.");
+        super("Invalid refresh token. Must login again");
     }
 }

@@ -2,15 +2,9 @@ package com.ctorres.pokequiz.controller;
 
 import com.ctorres.pokequiz.dto.api.ApiResponse;
 import com.ctorres.pokequiz.dto.auth.*;
-import com.ctorres.pokequiz.exception.DuplicatedUsernameException;
-import com.ctorres.pokequiz.exception.InactiveUserException;
-import com.ctorres.pokequiz.exception.InvalidRefreshTokenException;
-import com.ctorres.pokequiz.exception.WeakPasswordException;
 import com.ctorres.pokequiz.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,17 +23,8 @@ public class AuthController {
             @RequestHeader(value = "User-Agent", required = false) String ua,
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
-        TokenResponse response = null;
         var ip = xff != null ? xff : http.getRemoteAddr();
-
-        try {
-            response = auth.register(req.getUsername(), req.getPassword(), ip, ua);
-
-        } catch (DuplicatedUsernameException | WeakPasswordException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ApiResponse.error(400, e.getMessage()));
-        }
+        var response = auth.register(req.getUsername(), req.getPassword(), ip, ua);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -49,16 +34,8 @@ public class AuthController {
             @RequestHeader(value = "User-Agent", required = false) String ua,
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
-        TokenResponse response = null;
         var ip = xff != null ? xff : http.getRemoteAddr();
-
-        try {
-            response = auth.login(req.getUsername(), req.getPassword(), ip, ua);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Bad credentials"));
-        }
+        var response = auth.login(req.getUsername(), req.getPassword(), ip, ua);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
@@ -68,20 +45,8 @@ public class AuthController {
             @RequestHeader(value = "User-Agent", required = false) String ua,
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
-        TokenResponse response = null;
         var ip = xff != null ? xff : http.getRemoteAddr();
-
-        try {
-            response = auth.refresh(req.getRefreshToken(), ip, ua);
-        } catch (InvalidRefreshTokenException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
-        } catch (InactiveUserException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Bad credentials"));
-        }
+        var response = auth.refresh(req.getRefreshToken(), ip, ua);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
