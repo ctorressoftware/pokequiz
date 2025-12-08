@@ -1,0 +1,127 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-08-T10-12-seed-table-state-1
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE description = 'CREATED';
+      changes:
+        - insert:
+            tableName: state
+            columns:
+              - column:
+                  name: description
+                  value: "CREATED"
+              - column:
+                  name: active
+                  valueBoolean: "true"
+  - changeSet:
+      id: 2025-12-08-T10-12-seed-table-state-2
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE description = 'COMPLETED';
+      changes:
+        - insert:
+            tableName: state
+            columns:
+              - column:
+                  name: description
+                  value: "COMPLETED"
+              - column:
+                  name: active
+                  valueBoolean: "true"
+  - changeSet:
+      id: 2025-12-08-T10-12-seed-table-role-1
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM role WHERE name = 'USER';
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: "USER"
+              - column:
+                  name: description
+                  value: "Normal user"
+              - column:
+                  name: active
+                  valueBoolean: "true"
+  - changeSet:
+      id: 2025-12-08-T10-12-seed-table-role-2
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM role WHERE name = 'ADMIN';
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: "ADMIN"
+              - column:
+                  name: description
+                  value: "Administrative user"
+              - column:
+                  name: active
+                  valueBoolean: "true"
+  - changeSet:
+      id: 2025-12-08-T10-12-seed-table-difficult-level-1
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM difficult_level WHERE description = 'NORMAL';
+      changes:
+        - insert:
+            tableName: difficult_level
+            columns:
+              - column:
+                  name: description
+                  value: "NORMAL"
+              - column:
+                  name: active
+                  valueBoolean: "true"
+  - changeSet:
+      id: 2025-12-08-T10-12-seed-table-difficult-level-2
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM difficult_level WHERE description = 'HARD';
+      changes:
+        - insert:
+            tableName: difficult_level
+            columns:
+              - column:
+                  name: description
+                  value: "HARD"
+              - column:
+                  name: active
+                  valueBoolean: "true"
