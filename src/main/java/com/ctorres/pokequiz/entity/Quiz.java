@@ -1,5 +1,6 @@
 package com.ctorres.pokequiz.entity;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -16,10 +17,10 @@ public class Quiz {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate initialDate;
+    private Instant initialDate;
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private Instant endDate;
 
     @ManyToOne(targetEntity = State.class)
     private State state;
@@ -30,10 +31,9 @@ public class Quiz {
     @ManyToOne(targetEntity = User.class)
     private User user;
 
-    public Quiz() {
-    }
+    public Quiz() {}
 
-    public Quiz(Long id, LocalDate initialDate, LocalDate endDate, State state, DifficultLevel difficultLevel,
+    public Quiz(Long id, Instant initialDate, Instant endDate, State state, DifficultLevel difficultLevel,
             User user) {
         this.id = id;
         this.initialDate = initialDate;
@@ -43,7 +43,7 @@ public class Quiz {
         this.user = user;
     }
 
-    public Quiz(LocalDate initialDate, LocalDate endDate, State state, DifficultLevel difficultLevel, User user) {
+    public Quiz(Instant initialDate, Instant endDate, State state, DifficultLevel difficultLevel, User user) {
         this.initialDate = initialDate;
         this.endDate = endDate;
         this.state = state;
@@ -59,19 +59,19 @@ public class Quiz {
         this.id = id;
     }
 
-    public LocalDate getInitialDate() {
+    public Instant getInitialDate() {
         return initialDate;
     }
 
-    public void setInitialDate(LocalDate initialDate) {
+    public void setInitialDate(Instant initialDate) {
         this.initialDate = initialDate;
     }
 
-    public LocalDate getEndDate() {
+    public Instant getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Instant endDate) {
         this.endDate = endDate;
     }
 
@@ -126,4 +126,52 @@ public class Quiz {
         return java.util.Objects.hash(id);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private Instant initialDate;
+        private Instant endDate;
+        private State state;
+        private DifficultLevel difficultLevel;
+        private User user;
+
+        private Builder() {}
+
+        public Builder initialDate(Instant initialDate) {
+            this.initialDate = initialDate;
+            return this;
+        }
+
+        public Builder endDate(Instant endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        public Builder state(State state) {
+            this.state = state;
+            return this;
+        }
+
+        public Builder difficultLevel(DifficultLevel difficultLevel) {
+            this.difficultLevel = difficultLevel;
+            return this;
+        }
+
+        public Builder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public Quiz build() {
+            return new Quiz(
+                    initialDate,
+                    endDate,
+                    state,
+                    difficultLevel,
+                    user
+            );
+        }
+    }
 }
