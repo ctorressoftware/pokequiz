@@ -48,4 +48,6 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Bad credentials"));
     }
+
+    // TODO @ExceptionHandler(DifficultLevelNotFoundException.class)
 }
