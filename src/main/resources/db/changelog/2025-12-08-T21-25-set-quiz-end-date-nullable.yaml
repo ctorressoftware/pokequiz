@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-08-T21-25-set-quiz-end-date-nullable
+      author: carlos eduardo torres graciano
+      changes:
+        - dropNotNullConstraint:
+            tableName: quiz
+            columnName: end_date
+            columnDataType: TIMESTAMPTZ

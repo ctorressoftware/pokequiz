@@ -1,8 +1,6 @@
 package com.ctorres.pokequiz.entity;
 
 import java.time.Instant;
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +17,6 @@ public class Quiz {
     @Column(nullable = false)
     private Instant initialDate;
 
-    @Column(nullable = false)
     private Instant endDate;
 
     @ManyToOne(targetEntity = State.class)

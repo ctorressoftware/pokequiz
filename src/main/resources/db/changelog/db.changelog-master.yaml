@@ -350,3 +350,7 @@ databaseChangeLog:
 - include:
     file: 2025-12-08-T06-30-modify-quiz-table.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2025-12-08-T21-25-set-quiz-end-date-nullable.yaml
+    relativeToChangelogFile: true
