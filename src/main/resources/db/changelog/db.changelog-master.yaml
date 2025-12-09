@@ -346,3 +346,7 @@ databaseChangeLog:
 - include:
     file: 2025-12-08-T10-12-seed-tables.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2025-12-08-T06-30-modify-quiz-table.yaml
+    relativeToChangelogFile: true

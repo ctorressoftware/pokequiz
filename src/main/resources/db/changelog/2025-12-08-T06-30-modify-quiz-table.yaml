@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-08-T6-30-modify-quiz-table
+      author: carlos eduardo torres graciano
+      changes:
+        - modifyDataType:
+            tableName: quiz
+            columnName: initial_date
+            newDataType: TIMESTAMPTZ
+        - modifyDataType:
+            tableName: quiz
+            columnName: end_date
+            newDataType: TIMESTAMPTZ
