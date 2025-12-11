@@ -1,6 +1,7 @@
 package com.ctorres.pokequiz.service;
 
 import java.time.Instant;
+
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.entity.Quiz;
@@ -18,7 +19,7 @@ public class QuizService {
     private final DifficultLevelRepository difficultLevelRepository;
     private final QuizRepository quizRepository;
     private final StateRepository stateRepository;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public QuizService(
             DifficultLevelRepository difficultLevelRepository,
@@ -32,9 +33,9 @@ public class QuizService {
     }
 
     public CreateQuizResponse createQuiz(CreateQuizRequest request, AuthUser authenticatedUser) {
-        var difficultLevelId = request.getDifficultLevelId();
         var user = userRepository.getReferenceById(authenticatedUser.getId());
         var state = stateRepository.getReferenceById(StateOption.CREATED.getId());
+        var difficultLevelId = request.getDifficultLevelId();
 
         var difficultLevel = difficultLevelRepository.findById(difficultLevelId)
                 .orElseThrow(() -> new DifficultLevelNotFoundException(difficultLevelId));
