@@ -1,11 +1,6 @@
 package com.ctorres.pokequiz.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Answer {
@@ -20,28 +15,21 @@ public class Answer {
     private String canonicalKey;
 
     @Column(nullable = false)
+    private boolean correct;
+
+    @Column(nullable = false)
     private boolean active;
 
-    @OneToOne(targetEntity = Question.class)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    // Constructor vacío (requerido por JPA)
-    public Answer() {
-    }
+    public Answer() {}
 
-    // Constructor con todos los campos
-    public Answer(Long id, String description, String canonicalKey, boolean active, Question question) {
-        this.id = id;
+    public Answer(String description, String canonicalKey, boolean correct, boolean active, Question question) {
         this.description = description;
         this.canonicalKey = canonicalKey;
-        this.active = active;
-        this.question = question;
-    }
-
-    // Constructor sin id (útil para crear nuevas entidades)
-    public Answer(String description, String canonicalKey, boolean active, Question question) {
-        this.description = description;
-        this.canonicalKey = canonicalKey;
+        this.correct = correct;
         this.active = active;
         this.question = question;
     }
@@ -49,10 +37,6 @@ public class Answer {
     // Getters y Setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getDescription() {
@@ -69,6 +53,14 @@ public class Answer {
 
     public void setCanonicalKey(String canonicalKey) {
         this.canonicalKey = canonicalKey;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
+    public boolean isCorrect() {
+        return correct;
     }
 
     public boolean isActive() {
@@ -93,6 +85,7 @@ public class Answer {
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", canonicalKey='" + canonicalKey + '\'' +
+                ", correct='" + correct + '\'' +
                 ", active=" + active +
                 ", question=" + (question != null ? question.getId() : null) +
                 '}';

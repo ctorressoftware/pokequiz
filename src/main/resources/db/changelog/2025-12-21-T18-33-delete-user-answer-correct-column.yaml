@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-21-T18-33-delete-user-answer-correct-column
+      author: carlos eduardo torres graciano
+      changes:
+        - dropColumn:
+            tableName: user_answer
+            columnName: correct

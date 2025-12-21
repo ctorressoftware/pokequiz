@@ -1,33 +1,50 @@
 package com.ctorres.pokequiz.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
+import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
+import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
+import com.ctorres.pokequiz.entity.Answer;
+import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.enums.StateOption;
+import com.ctorres.pokequiz.exception.BadRequestException;
 import com.ctorres.pokequiz.exception.DifficultLevelNotFoundException;
-import com.ctorres.pokequiz.repository.DifficultLevelRepository;
-import com.ctorres.pokequiz.repository.QuizRepository;
-import com.ctorres.pokequiz.repository.StateRepository;
-import com.ctorres.pokequiz.repository.UserRepository;
+import com.ctorres.pokequiz.exception.GenerationModuleException;
+import com.ctorres.pokequiz.repository.*;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuizService {
-    private final DifficultLevelRepository difficultLevelRepository;
+    private final QuestionService questionService;
     private final QuizRepository quizRepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
+    private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
     private final UserRepository userRepository;
 
     public QuizService(
-            DifficultLevelRepository difficultLevelRepository,
+            QuestionService questionService,
             QuizRepository quizRepository,
+            QuestionRepository questionRepository,
+            AnswerRepository answerRepository,
+            DifficultLevelRepository difficultLevelRepository,
             StateRepository stateRepository,
             UserRepository userRepository) {
+        this.questionService = questionService;
         this.difficultLevelRepository = difficultLevelRepository;
         this.quizRepository = quizRepository;
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
         this.stateRepository = stateRepository;
         this.userRepository = userRepository;
     }
@@ -50,5 +67,56 @@ public class QuizService {
 
         var inserted = quizRepository.save(quiz);
         return new CreateQuizResponse(inserted.getId());
+    }
+
+    @Transactional
+    public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request) {
+
+        final Optional<Long> quizId = Optional.ofNullable(request.getQuizId());
+        final int questionsQuantity = request.getQuestionsQuantity();
+
+        if (quizId.isEmpty()) {
+            throw new BadRequestException("Invalid quizId field.");
+        }
+
+        if (questionsQuantity <= 0) {
+            throw new BadRequestException("Invalid questionsQuantity field.");
+        }
+
+        var questions = questionService.generateQuestions(request.getQuestionsQuantity());
+
+        if (questions.isEmpty()) {
+            throw new GenerationModuleException("An error ocurred generating questions and answers.");
+        }
+
+        for (var generatedQuestion : questions) {
+
+            var insertedQuestion = questionRepository.save(new Question(
+                    generatedQuestion.getGeneratedQuestion().getDescription(),
+                    true,
+                    quizRepository.getReferenceById(quizId.get())
+            ));
+
+            List<Answer> answerList = new ArrayList<>();
+
+            for (var generatedAnswer : generatedQuestion.getGeneratedAnswers()) {
+
+                answerList.add(new Answer(
+                        generatedAnswer.getDescription(),
+                        generatedAnswer.getCanonicalKey(),
+                        generatedAnswer.isCorrect(),
+                        true,
+                        insertedQuestion
+                ));
+            }
+
+            answerRepository.saveAll(answerList);
+        }
+
+        return new GenerateQuizContentResponse(
+                request.getQuizId(),
+                request.getQuestionsQuantity(),
+                questions
+        );
     }
 }

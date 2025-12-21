@@ -1,12 +1,16 @@
 package com.ctorres.pokequiz.exception;
 
 import com.ctorres.pokequiz.dto.api.ApiResponse;
+import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
+import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.auth.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -49,5 +53,35 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Bad credentials"));
     }
 
-    // TODO @ExceptionHandler(DifficultLevelNotFoundException.class)
+    @ExceptionHandler(QuestionQuantityException.class)
+    ResponseEntity<ApiResponse<List<GeneratedItem>>> handleQuestionQuantityException(
+            QuestionQuantityException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(DifficultLevelNotFoundException.class)
+    ResponseEntity<ApiResponse<CreateQuizResponse>> handleDifficultLevelNotFoundException(
+            DifficultLevelNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    ResponseEntity<ApiResponse<Object>> handleBadRequestException(
+            BadRequestException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(GenerationModuleException.class)
+    ResponseEntity<ApiResponse<Object>> handleGenerationModuleException(
+            GenerationModuleException e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
+    }
 }

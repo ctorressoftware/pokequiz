@@ -20,9 +20,6 @@ public class UserAnswer {
     private String canonicalKey;
 
     @Column(nullable = false)
-    private boolean correct;
-
-    @Column(nullable = false)
     private boolean active;
 
     @OneToOne(targetEntity = Question.class)
@@ -31,20 +28,18 @@ public class UserAnswer {
     public UserAnswer() {
     }
 
-    public UserAnswer(Long id, String description, String canonicalKey, boolean correct, boolean active,
+    public UserAnswer(Long id, String description, String canonicalKey, boolean active,
             Question question) {
         this.id = id;
         this.description = description;
         this.canonicalKey = canonicalKey;
-        this.correct = correct;
         this.active = active;
         this.question = question;
     }
 
-    public UserAnswer(String description, String canonicalKey, boolean correct, boolean active, Question question) {
+    public UserAnswer(String description, String canonicalKey, boolean active, Question question) {
         this.description = description;
         this.canonicalKey = canonicalKey;
-        this.correct = correct;
         this.active = active;
         this.question = question;
     }
@@ -73,14 +68,6 @@ public class UserAnswer {
         this.canonicalKey = canonicalKey;
     }
 
-    public boolean isCorrect() {
-        return correct;
-    }
-
-    public void setCorrect(boolean correct) {
-        this.correct = correct;
-    }
-
     public boolean isActive() {
         return active;
     }
@@ -103,7 +90,6 @@ public class UserAnswer {
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", canonicalKey='" + canonicalKey + '\'' +
-                ", correct=" + correct +
                 ", active=" + active +
                 ", question=" + (question != null ? question.getId() : null) +
                 '}';

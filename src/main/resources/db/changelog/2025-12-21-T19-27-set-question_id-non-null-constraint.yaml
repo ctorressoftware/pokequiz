@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-21-T19-27-set-question_id-non-null-constraint
+      author: carlos eduardo torres graciano
+      changes:
+        - addNotNullConstraint:
+            tableName: answer
+            columnName: question_id
+            columnDataType: bigint

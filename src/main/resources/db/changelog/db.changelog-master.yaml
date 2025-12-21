@@ -354,3 +354,19 @@ databaseChangeLog:
 - include:
     file: 2025-12-08-T21-25-set-quiz-end-date-nullable.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2025-12-21-T18-33-delete-user-answer-correct-column.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2025-12-21-T18-35-add-answer-correct-column.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2025-12-21-T19-25-delete-bad-constraint-answer-question_id.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2025-12-21-T19-27-set-question_id-non-null-constraint.yaml
+    relativeToChangelogFile: true

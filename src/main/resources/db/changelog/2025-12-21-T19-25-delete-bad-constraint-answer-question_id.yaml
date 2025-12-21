@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-21-T19-25-delete-bad-constraint-answer-question_id
+      author: carlos eduardo torres graciano
+      changes:
+        - dropUniqueConstraint:
+            tableName: answer
+            constraintName: answer_question_id_key
