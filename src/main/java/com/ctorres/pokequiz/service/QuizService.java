@@ -70,7 +70,7 @@ public class QuizService {
     }
 
     @Transactional
-    public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request) {
+    public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
 
         final Optional<Long> quizId = Optional.ofNullable(request.getQuizId());
         final int questionsQuantity = request.getQuestionsQuantity();
