@@ -10,6 +10,7 @@ import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
+import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.entity.Answer;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
@@ -17,6 +18,7 @@ import com.ctorres.pokequiz.enums.StateOption;
 import com.ctorres.pokequiz.exception.BadRequestException;
 import com.ctorres.pokequiz.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.exception.GenerationModuleException;
+import com.ctorres.pokequiz.exception.QuizNotFoundException;
 import com.ctorres.pokequiz.repository.*;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
@@ -69,9 +71,32 @@ public class QuizService {
         return new CreateQuizResponse(inserted.getId());
     }
 
+    public QuizDtoResponse getQuizById(Long quizId, AuthUser authenticatedUser) {
+
+        if (quizId == null || quizId == 0) {
+            throw new BadRequestException("Invalid quizId field.");
+        }
+
+        var optionalQuiz = quizRepository.findById(quizId);
+
+        if (optionalQuiz.isEmpty()) {
+            throw new QuizNotFoundException(quizId);
+        }
+
+        var quiz = optionalQuiz.get();
+
+        return QuizDtoResponse.builder()
+                .quizId(quiz.getId())
+                .initialDate(quiz.getInitialDate())
+                .endDate(quiz.getEndDate())
+                .state(quiz.getState().getDescription())
+                .difficultLevel(quiz.getDifficultLevel().getDescription())
+                .build();
+    }
+
     @Transactional
     public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
-
+        // TODO validate quizId vs user
         final Optional<Long> quizId = Optional.ofNullable(request.getQuizId());
         final int questionsQuantity = request.getQuestionsQuantity();
 
