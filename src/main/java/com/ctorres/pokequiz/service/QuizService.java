@@ -77,7 +77,7 @@ public class QuizService {
             throw new BadRequestException("Invalid quizId field.");
         }
 
-        var optionalQuiz = quizRepository.findById(quizId);
+        var optionalQuiz = quizRepository.findQuizWithQuestionsAndAnswers(quizId);
 
         if (optionalQuiz.isEmpty()) {
             throw new QuizNotFoundException(quizId);

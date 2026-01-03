@@ -1,12 +1,9 @@
 package com.ctorres.pokequiz.entity;
 
 import java.time.Instant;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import java.util.Set;
+
+import jakarta.persistence.*;
 
 @Entity
 public class Quiz {
@@ -27,6 +24,9 @@ public class Quiz {
 
     @ManyToOne(targetEntity = User.class)
     private User user;
+
+    @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY)
+    private Set<Question> questions;
 
     public Quiz() {}
 
@@ -90,6 +90,10 @@ public class Quiz {
 
     public User getUser() {
         return user;
+    }
+
+    public Set<Question> getQuestions() {
+        return questions;
     }
 
     public void setUser(User user) {
