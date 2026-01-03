@@ -103,6 +103,6 @@ public class Answer {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(id);
+        return getClass().hashCode();
     }
 }
