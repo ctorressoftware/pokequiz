@@ -3,9 +3,6 @@ package com.ctorres.pokequiz.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
@@ -15,10 +12,8 @@ import com.ctorres.pokequiz.entity.Answer;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.enums.StateOption;
-import com.ctorres.pokequiz.exception.BadRequestException;
-import com.ctorres.pokequiz.exception.DifficultLevelNotFoundException;
-import com.ctorres.pokequiz.exception.GenerationModuleException;
-import com.ctorres.pokequiz.exception.QuizNotFoundException;
+import com.ctorres.pokequiz.exception.*;
+import com.ctorres.pokequiz.mapper.QuestionMapper;
 import com.ctorres.pokequiz.repository.*;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
@@ -51,15 +46,16 @@ public class QuizService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public CreateQuizResponse createQuiz(CreateQuizRequest request, AuthUser authenticatedUser) {
-        var user = userRepository.getReferenceById(authenticatedUser.getId());
-        var state = stateRepository.getReferenceById(StateOption.CREATED.getId());
-        var difficultLevelId = request.getDifficultLevelId();
+        final var user = userRepository.getReferenceById(authenticatedUser.getId());
+        final var state = stateRepository.getReferenceById(StateOption.CREATED.getId());
+        final var difficultLevelId = request.getDifficultLevelId();
 
-        var difficultLevel = difficultLevelRepository.findById(difficultLevelId)
+        final var difficultLevel = difficultLevelRepository.findById(difficultLevelId)
                 .orElseThrow(() -> new DifficultLevelNotFoundException(difficultLevelId));
 
-        var quiz = Quiz.builder()
+        final var quiz = Quiz.builder()
                 .initialDate(Instant.now())
                 .endDate(null)
                 .state(state)
@@ -67,23 +63,29 @@ public class QuizService {
                 .user(user)
                 .build();
 
-        var inserted = quizRepository.save(quiz);
+        final var inserted = quizRepository.save(quiz);
         return new CreateQuizResponse(inserted.getId());
     }
 
     public QuizDtoResponse getQuizById(Long quizId, AuthUser authenticatedUser) {
 
-        if (quizId == null || quizId == 0) {
+        if (quizId == null || quizId <= 0) {
             throw new BadRequestException("Invalid quizId field.");
         }
 
-        var optionalQuiz = quizRepository.findQuizWithQuestionsAndAnswers(quizId);
+        final var optionalQuiz = quizRepository.findQuizWithQuestionsAndAnswers(quizId);
 
         if (optionalQuiz.isEmpty()) {
             throw new QuizNotFoundException(quizId);
         }
 
-        var quiz = optionalQuiz.get();
+        final var quiz = optionalQuiz.get();
+
+        final boolean isSameUser = quiz.getUser().getId().equals(authenticatedUser.getId());
+
+        if (!isSameUser) {
+            throw new QuizNotFoundException(quizId);
+        }
 
         return QuizDtoResponse.builder()
                 .quizId(quiz.getId())
@@ -91,24 +93,42 @@ public class QuizService {
                 .endDate(quiz.getEndDate())
                 .state(quiz.getState().getDescription())
                 .difficultLevel(quiz.getDifficultLevel().getDescription())
+                .questions(QuestionMapper.toDto(quiz.getQuestions()))
                 .build();
     }
 
     @Transactional
     public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
-        // TODO validate quizId vs user
-        final Optional<Long> quizId = Optional.ofNullable(request.getQuizId());
-        final int questionsQuantity = request.getQuestionsQuantity();
 
-        if (quizId.isEmpty()) {
-            throw new BadRequestException("Invalid quizId field.");
-        }
+        final int questionsQuantity = request.getQuestionsQuantity();
 
         if (questionsQuantity <= 0) {
             throw new BadRequestException("Invalid questionsQuantity field.");
         }
 
-        var questions = questionService.generateQuestions(request.getQuestionsQuantity());
+        final var optionalQuiz = quizRepository.findQuizWithQuestionsAndAnswers(request.getQuizId());
+
+        if (optionalQuiz.isEmpty()) {
+            throw new BadRequestException("Invalid quizId field.");
+        }
+
+        final var quiz = optionalQuiz.get();
+
+        final boolean isSameUser = quiz.getUser().getId().equals(user.getId());
+
+        if (!isSameUser) {
+            throw new QuizNotFoundException(quiz.getId());
+        }
+
+        if (!quiz.getUser().isActive()) {
+            throw new InactiveUserException();
+        }
+
+        if (!quiz.getQuestions().isEmpty()) {
+            throw new QuizFullContentException(quiz.getId());
+        }
+
+        final var questions = questionService.generateQuestions(request.getQuestionsQuantity());
 
         if (questions.isEmpty()) {
             throw new GenerationModuleException("An error ocurred generating questions and answers.");
@@ -119,7 +139,7 @@ public class QuizService {
             var insertedQuestion = questionRepository.save(new Question(
                     generatedQuestion.getGeneratedQuestion().getDescription(),
                     true,
-                    quizRepository.getReferenceById(quizId.get())
+                    quiz
             ));
 
             List<Answer> answerList = new ArrayList<>();
@@ -134,7 +154,6 @@ public class QuizService {
                         insertedQuestion
                 ));
             }
-
             answerRepository.saveAll(answerList);
         }
 

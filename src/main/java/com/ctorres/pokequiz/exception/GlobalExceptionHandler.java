@@ -3,6 +3,7 @@ package com.ctorres.pokequiz.exception;
 import com.ctorres.pokequiz.dto.api.ApiResponse;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
+import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
 import com.ctorres.pokequiz.dto.auth.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,5 +84,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(QuizNotFoundException.class)
+    ResponseEntity<ApiResponse<Object>> handleQuizNotFoundException(QuizNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(QuizFullContentException.class)
+    ResponseEntity<ApiResponse<GenerateQuizContentResponse>> handleQuizFullContentException(
+            QuizFullContentException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
 }
