@@ -1,7 +1,6 @@
 package com.ctorres.pokequiz.entity;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,70 +15,65 @@ public class Question {
     @Column(nullable = false)
     private boolean active;
 
-    @ManyToOne(targetEntity = Quiz.class)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-    private Set<Answer> answers;
+    @OneToMany(mappedBy = "question",
+            fetch = FetchType.LAZY,
+            cascade=CascadeType.ALL,
+            orphanRemoval=true)
+    private final Set<Answer> answers = new HashSet<>();
 
-    public Question() {}
+    protected Question() {}
 
-    public Question(Long id, String description, boolean active, Quiz quiz) {
-        this.id = id;
+    public Question(String description, boolean active, Quiz quiz, Set<Answer> answers) {
         this.description = description;
         this.active = active;
         this.quiz = quiz;
-    }
-
-    public Question(String description, boolean active, Quiz quiz) {
-        this.description = description;
-        this.active = active;
-        this.quiz = quiz;
+        this.setAnswers(answers);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public Set<Answer> getAnswers() {
+        return Collections.unmodifiableSet(answers);
     }
 
-    public Set<Answer> getAnswers() {
-        return answers;
+    private void setAnswers(Set<Answer> newAnswers) {
+        this.answers.clear();
+
+        if (newAnswers == null || newAnswers.isEmpty()) {
+            return;
+        }
+
+        for (Answer a : newAnswers) {
+            a.setQuestion(this);
+            this.answers.add(a);
+        }
     }
 
     public Quiz getQuiz() {
         return quiz;
     }
 
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
     @Override
     public String toString() {
-        return "Question{" +
-                "id=" + id +
+        return "Question{id=" + id +
                 ", description='" + description + '\'' +
                 ", active=" + active +
                 ", quiz=" + (quiz != null ? quiz.getId() : null) +
+                ", answers=" + (answers.isEmpty() ? List.of() : answers.toString()) +
                 '}';
     }
 

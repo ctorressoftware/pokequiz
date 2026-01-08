@@ -34,6 +34,13 @@ public class Answer {
         this.question = question;
     }
 
+    public Answer(String description, String canonicalKey, boolean correct, boolean active) {
+        this.description = description;
+        this.canonicalKey = canonicalKey;
+        this.correct = correct;
+        this.active = active;
+    }
+
     // Getters y Setters
     public Long getId() {
         return id;

@@ -1,8 +1,9 @@
 package com.ctorres.pokequiz.service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
@@ -24,7 +25,6 @@ public class QuizService {
     private final QuestionService questionService;
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
     private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
     private final UserRepository userRepository;
@@ -33,7 +33,6 @@ public class QuizService {
             QuestionService questionService,
             QuizRepository quizRepository,
             QuestionRepository questionRepository,
-            AnswerRepository answerRepository,
             DifficultLevelRepository difficultLevelRepository,
             StateRepository stateRepository,
             UserRepository userRepository) {
@@ -41,7 +40,6 @@ public class QuizService {
         this.difficultLevelRepository = difficultLevelRepository;
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
-        this.answerRepository = answerRepository;
         this.stateRepository = stateRepository;
         this.userRepository = userRepository;
     }
@@ -67,25 +65,20 @@ public class QuizService {
         return new CreateQuizResponse(inserted.getId());
     }
 
-    public QuizDtoResponse getQuizById(Long quizId, AuthUser authenticatedUser) {
+    public QuizDtoResponse getQuizById(Long quizId, AuthUser user) {
 
         if (quizId == null || quizId <= 0) {
             throw new BadRequestException("Invalid quizId field.");
         }
 
-        final var optionalQuiz = quizRepository.findQuizWithQuestionsAndAnswers(quizId);
+        final var optionalQuiz = quizRepository
+                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId());
 
         if (optionalQuiz.isEmpty()) {
             throw new QuizNotFoundException(quizId);
         }
 
         final var quiz = optionalQuiz.get();
-
-        final boolean isSameUser = quiz.getUser().getId().equals(authenticatedUser.getId());
-
-        if (!isSameUser) {
-            throw new QuizNotFoundException(quizId);
-        }
 
         return QuizDtoResponse.builder()
                 .quizId(quiz.getId())
@@ -99,68 +92,61 @@ public class QuizService {
 
     @Transactional
     public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
-
+        final Long quizId = request.getQuizId();
         final int questionsQuantity = request.getQuestionsQuantity();
+
+        if (quizId == null || quizId <= 0) {
+            throw new BadRequestException("Invalid quizId field.");
+        }
 
         if (questionsQuantity <= 0) {
             throw new BadRequestException("Invalid questionsQuantity field.");
         }
 
-        final var optionalQuiz = quizRepository.findQuizWithQuestionsAndAnswers(request.getQuizId());
+        final var optionalQuiz = quizRepository
+                .findQuizByIdAndUserId(request.getQuizId(), user.getId());
 
         if (optionalQuiz.isEmpty()) {
-            throw new BadRequestException("Invalid quizId field.");
+            throw new QuizNotFoundException(quizId);
+        }
+
+        final boolean quizHasQuestions = questionRepository
+                .existsByQuiz_IdAndQuiz_User_Id(quizId, user.getId());
+
+        if (quizHasQuestions) {
+            throw new QuizFullContentException(quizId);
         }
 
         final var quiz = optionalQuiz.get();
 
-        final boolean isSameUser = quiz.getUser().getId().equals(user.getId());
+        final var generated = questionService.generateQuestions(request.getQuestionsQuantity());
 
-        if (!isSameUser) {
-            throw new QuizNotFoundException(quiz.getId());
-        }
-
-        if (!quiz.getUser().isActive()) {
-            throw new InactiveUserException();
-        }
-
-        if (!quiz.getQuestions().isEmpty()) {
-            throw new QuizFullContentException(quiz.getId());
-        }
-
-        final var questions = questionService.generateQuestions(request.getQuestionsQuantity());
-
-        if (questions.isEmpty()) {
+        if (generated.isEmpty()) {
             throw new GenerationModuleException("An error ocurred generating questions and answers.");
         }
 
-        for (var generatedQuestion : questions) {
+        var questions = generated.stream().map(gq -> {
+            var answers = gq.getGeneratedAnswers().stream()
+                    .map(answer -> new Answer(
+                            answer.getDescription(),
+                            answer.getCanonicalKey(),
+                            answer.isCorrect(),
+                            true))
+                    .collect(Collectors.toSet());
 
-            var insertedQuestion = questionRepository.save(new Question(
-                    generatedQuestion.getGeneratedQuestion().getDescription(),
+            return new Question(
+                    gq.getGeneratedQuestion().getDescription(),
                     true,
-                    quiz
-            ));
+                    quiz,
+                    answers);
+        }).toList();
 
-            List<Answer> answerList = new ArrayList<>();
-
-            for (var generatedAnswer : generatedQuestion.getGeneratedAnswers()) {
-
-                answerList.add(new Answer(
-                        generatedAnswer.getDescription(),
-                        generatedAnswer.getCanonicalKey(),
-                        generatedAnswer.isCorrect(),
-                        true,
-                        insertedQuestion
-                ));
-            }
-            answerRepository.saveAll(answerList);
-        }
+        questionRepository.saveAll(questions);
 
         return new GenerateQuizContentResponse(
                 request.getQuizId(),
                 request.getQuestionsQuantity(),
-                questions
+                generated
         );
     }
 }

@@ -16,7 +16,9 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
             from Quiz q
             left join fetch q.questions qu
             left join fetch qu.answers a
-            where q.id = :id
+            where q.id = :id and q.user.id = :userId
             """)
-    Optional<Quiz> findQuizWithQuestionsAndAnswers(@Param("id") Long quizId);
+    Optional<Quiz> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);
+
+    Optional<Quiz> findQuizByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);
 }

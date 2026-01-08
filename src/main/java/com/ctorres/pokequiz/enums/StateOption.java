@@ -1,5 +1,6 @@
 package com.ctorres.pokequiz.enums;
 
+// TODO define deeply the quiz states and update state data with Liquibase
 public enum StateOption {
     CREATED(1L),
     COMPLETED(2L);
