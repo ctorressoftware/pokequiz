@@ -64,6 +64,7 @@ public class QuizService {
         return new CreateQuizResponse(inserted.getId());
     }
 
+    // TODO add: create front_image_url and back_image_url columns in table Question
     public QuizDtoResponse getQuizById(Long quizId, AuthUser user) {
 
         if (quizId == null || quizId <= 0) {
@@ -82,6 +83,7 @@ public class QuizService {
         return buildQuizDtoResponse(quiz, quiz.getQuestions());
     }
 
+    // TODO fix: erase race condition if user executes multiple times the service (multi-inserts)
     @Transactional
     public QuizDtoResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
         final Long quizId = request.getQuizId();
