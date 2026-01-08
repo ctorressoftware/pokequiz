@@ -34,7 +34,7 @@ public class QuizController {
 
     @PostMapping("/generateAndSaveContent")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<GenerateQuizContentResponse>> generateAndSaveContent(
+    public ResponseEntity<ApiResponse<QuizDtoResponse>> generateAndSaveContent(
             @RequestBody GenerateQuizContentRequest request,
             @AuthenticationPrincipal AuthUser user) {
         var response = quizService.generateAndSaveContent(request, user);

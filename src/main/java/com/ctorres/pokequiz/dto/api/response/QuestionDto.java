@@ -1,12 +1,12 @@
 package com.ctorres.pokequiz.dto.api.response;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class QuestionDto {
     private final String description;
-    private final Set<AnswerDto> answers;
+    private final Collection<AnswerDto> answers;
 
-    public QuestionDto(String description, Set<AnswerDto> answers) {
+    public QuestionDto(String description, Collection<AnswerDto> answers) {
         this.description = description;
         this.answers = answers;
     }
@@ -15,7 +15,7 @@ public class QuestionDto {
         return description;
     }
 
-    public Set<AnswerDto> getAnswers() {
+    public Collection<AnswerDto> getAnswers() {
         return answers;
     }
 }

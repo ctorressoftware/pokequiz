@@ -1,13 +1,12 @@
 package com.ctorres.pokequiz.service;
 
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
-import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.entity.Answer;
 import com.ctorres.pokequiz.entity.Question;
@@ -80,18 +79,11 @@ public class QuizService {
 
         final var quiz = optionalQuiz.get();
 
-        return QuizDtoResponse.builder()
-                .quizId(quiz.getId())
-                .initialDate(quiz.getInitialDate())
-                .endDate(quiz.getEndDate())
-                .state(quiz.getState().getDescription())
-                .difficultLevel(quiz.getDifficultLevel().getDescription())
-                .questions(QuestionMapper.toDto(quiz.getQuestions()))
-                .build();
+        return buildQuizDtoResponse(quiz, quiz.getQuestions());
     }
 
     @Transactional
-    public GenerateQuizContentResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
+    public QuizDtoResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
         final Long quizId = request.getQuizId();
         final int questionsQuantity = request.getQuestionsQuantity();
 
@@ -141,12 +133,19 @@ public class QuizService {
                     answers);
         }).toList();
 
-        questionRepository.saveAll(questions);
+        var insertedQuestions = questionRepository.saveAll(questions);
 
-        return new GenerateQuizContentResponse(
-                request.getQuizId(),
-                request.getQuestionsQuantity(),
-                generated
-        );
+        return buildQuizDtoResponse(quiz, insertedQuestions);
+    }
+
+    private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, Collection<Question> questions) {
+        return QuizDtoResponse.builder()
+                .quizId(quiz.getId())
+                .initialDate(quiz.getInitialDate())
+                .endDate(quiz.getEndDate())
+                .state(quiz.getState().getDescription())
+                .difficultLevel(quiz.getDifficultLevel().getDescription())
+                .questions(QuestionMapper.toDto(questions))
+                .build();
     }
 }

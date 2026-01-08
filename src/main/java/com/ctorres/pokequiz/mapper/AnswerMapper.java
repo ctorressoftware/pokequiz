@@ -1,21 +1,17 @@
 package com.ctorres.pokequiz.mapper;
 
 import com.ctorres.pokequiz.dto.api.response.AnswerDto;
+import com.ctorres.pokequiz.dto.api.response.QuestionDto;
 import com.ctorres.pokequiz.entity.Answer;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 public class AnswerMapper {
 
-    public static Set<AnswerDto> toDto(Set<Answer> answers) {
+    public static Collection<AnswerDto> toDto(Collection<Answer> answers) {
 
-        var answerDtoSet = new HashSet<AnswerDto>();
-
-        answers.forEach(answer -> answerDtoSet.add(
-                new AnswerDto(answer.getDescription())
-        ));
-
-        return answerDtoSet;
+        return answers.stream()
+                .map(a -> new AnswerDto(a.getDescription()))
+                .toList();
     }
 }

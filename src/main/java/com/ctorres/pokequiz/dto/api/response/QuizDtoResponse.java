@@ -2,6 +2,7 @@ package com.ctorres.pokequiz.dto.api.response;
 
 import com.ctorres.pokequiz.exception.BadRequestException;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ public final class QuizDtoResponse {
     private final Instant endDate;
     private final String state;
     private final String difficultLevel;
-    private final Set<QuestionDto> questions;
+    private final Collection<QuestionDto> questions;
 
     private QuizDtoResponse(
             Long quizId,
@@ -19,7 +20,7 @@ public final class QuizDtoResponse {
             Instant endDate,
             String state,
             String difficultLevel,
-            Set<QuestionDto> questions) {
+            Collection<QuestionDto> questions) {
         this.quizId = quizId;
         this.initialDate = initialDate;
         this.endDate = endDate;
@@ -49,7 +50,7 @@ public final class QuizDtoResponse {
     public String getDifficultLevel() {
         return difficultLevel;
     }
-    public Set<QuestionDto> getQuestions() {
+    public Collection<QuestionDto> getQuestions() {
         return questions;
     }
 
@@ -63,7 +64,7 @@ public final class QuizDtoResponse {
         private Instant endDate;
         private String state;
         private String difficultLevel;
-        private Set<QuestionDto> questions;
+        private Collection<QuestionDto> questions;
 
         public Builder quizId(Long quizId) {
             this.quizId = quizId;
@@ -90,7 +91,7 @@ public final class QuizDtoResponse {
             return this;
         }
 
-        public Builder questions(Set<QuestionDto> questions) {
+        public Builder questions(Collection<QuestionDto> questions) {
             this.questions = questions;
             return this;
         }
