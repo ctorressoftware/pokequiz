@@ -64,7 +64,6 @@ public class QuizService {
         return new CreateQuizResponse(inserted.getId());
     }
 
-    // TODO add: create front_image_url and back_image_url columns in table Question
     public QuizDtoResponse getQuizById(Long quizId, AuthUser user) {
 
         if (quizId == null || quizId <= 0) {
