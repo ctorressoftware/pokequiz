@@ -15,6 +15,12 @@ public class Question {
     @Column(nullable = false)
     private boolean active;
 
+    @Column(nullable = true, name = "front_image_url")
+    private String frontImageUrl;
+
+    @Column(nullable = true, name = "back_image_url")
+    private String backImageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
@@ -27,9 +33,11 @@ public class Question {
 
     protected Question() {}
 
-    public Question(String description, boolean active, Quiz quiz, Set<Answer> answers) {
+    public Question(String description, boolean active, String frontImageUrl, String backImageUrl, Quiz quiz, Set<Answer> answers) {
         this.description = description;
         this.active = active;
+        this.frontImageUrl = frontImageUrl;
+        this.backImageUrl = backImageUrl;
         this.quiz = quiz;
         this.setAnswers(answers);
     }
@@ -44,6 +52,14 @@ public class Question {
 
     public boolean isActive() {
         return active;
+    }
+
+    public String getFrontImageUrl() {
+        return frontImageUrl;
+    }
+
+    public String getBackImageUrl() {
+        return backImageUrl;
     }
 
     public Set<Answer> getAnswers() {
@@ -65,16 +81,6 @@ public class Question {
 
     public Quiz getQuiz() {
         return quiz;
-    }
-
-    @Override
-    public String toString() {
-        return "Question{id=" + id +
-                ", description='" + description + '\'' +
-                ", active=" + active +
-                ", quiz=" + (quiz != null ? quiz.getId() : null) +
-                ", answers=" + (answers.isEmpty() ? List.of() : answers.toString()) +
-                '}';
     }
 
     @Override

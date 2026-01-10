@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09-T22-20-add-image-columns-to-quiz-rollback
+      author: Carlos Eduardo Torres Graciano
+      changes:
+        - dropColumn:
+            tableName: quiz
+            columns:
+              - column:
+                  name: front_image_url
+              - column:
+                  name: back_image_url

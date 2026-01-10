@@ -11,6 +11,8 @@ public class QuestionMapper {
         return questions.stream()
                 .map(q -> new QuestionDto(
                         q.getDescription(),
+                        q.getFrontImageUrl(),
+                        q.getBackImageUrl(),
                         AnswerMapper.toDto(q.getAnswers())
                 )).toList();
     }

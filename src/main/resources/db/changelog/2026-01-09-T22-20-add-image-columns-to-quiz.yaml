@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09-T22-20-add-image-columns-to-quiz
+      author: Carlos Eduardo Torres Graciano
+      changes:
+        - addColumn:
+            tableName: quiz
+            columns:
+              - column:
+                  name: front_image_url
+                  type: VARCHAR(300)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: back_image_url
+                  type: VARCHAR(300)
+                  constraints:
+                    nullable: true

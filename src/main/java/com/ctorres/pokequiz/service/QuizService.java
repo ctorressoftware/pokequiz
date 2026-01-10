@@ -131,6 +131,8 @@ public class QuizService {
             return new Question(
                     gq.getGeneratedQuestion().getDescription(),
                     true,
+                    gq.getGeneratedQuestion().getPokemonFrontImage(),
+                    gq.getGeneratedQuestion().getPokemonBackImage(),
                     quiz,
                     answers);
         }).toList();
