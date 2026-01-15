@@ -1,10 +1,10 @@
 package com.ctorres.pokequiz.enums;
 
-/* TODO add: define deeply the quiz states and update state data
-    with Liquibase, quit auto-incremental ids and add new column code */
 public enum StateOption {
     CREATED(1L),
-    COMPLETED(2L);
+    GENERATING(2L),
+    GENERATED(3L),
+    COMPLETED(4L);
 
     private final Long id;
 
