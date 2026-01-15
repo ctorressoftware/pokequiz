@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-14-T21-59-state-code-non-null-constraint
+      author: Carlos Eduardo Torres Graciano
+      changes:
+        - addNotNullConstraint:
+            tableName: state
+            columnDataType: VARCHAR(100)
+            columnName: code

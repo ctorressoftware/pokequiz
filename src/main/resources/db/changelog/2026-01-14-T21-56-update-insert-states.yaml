@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-14-T21-56-update-insert-states-1
+      author: Carlos Eduardo Torres Graciano
+      changes:
+        - update:
+            tableName: state
+            columns:
+              - column:
+                  name: code
+                  value: CREATED
+            where: "id = 1"
+
+        - update:
+            tableName: state
+            columns:
+              - column:
+                  name: description
+                  value: GENERATING
+              - column:
+                  name: code
+                  value: GENERATING
+            where: "id = 2"
+
+  - changeSet:
+      id: 2026-01-14-T21-56-update-insert-states-2
+      author: Carlos Eduardo Torres Graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - rowCount:
+                tableName: state
+                whereClause: "id = 3"
+                expectedRows: 1
+      changes:
+        - insert:
+            tableName: state
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: "3"
+              - column:
+                  name: description
+                  value: GENERATED
+              - column:
+                  name: code
+                  value: GENERATED
+              - column:
+                  name: active
+                  valueBoolean: "true"
+
+  - changeSet:
+      id: 2026-01-14-T21-56-update-insert-states-3
+      author: Carlos Eduardo Torres Graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - rowCount:
+                tableName: state
+                whereClause: "id = 4"
+                expectedRows: 1
+      changes:
+        - insert:
+            tableName: state
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: "4"
+              - column:
+                  name: description
+                  value: COMPLETED
+              - column:
+                  name: code
+                  value: COMPLETED
+              - column:
+                  name: active
+                  valueBoolean: "true"

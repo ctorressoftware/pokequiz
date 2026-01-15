@@ -15,21 +15,13 @@ public class State {
     @Column(nullable = false, length = 100)
     private String description;
 
+    @Column(nullable = false, length = 100)
+    private String code;
+
     @Column(nullable = false)
     private boolean active;
 
     public State() {
-    }
-
-    public State(Long id, String description, boolean active) {
-        this.id = id;
-        this.description = description;
-        this.active = active;
-    }
-
-    public State(String description, boolean active) {
-        this.description = description;
-        this.active = active;
     }
 
     public Long getId() {
@@ -48,21 +40,20 @@ public class State {
         this.description = description;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return "State{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", active=" + active +
-                '}';
     }
 
     @Override
@@ -79,5 +70,4 @@ public class State {
     public int hashCode() {
         return java.util.Objects.hash(id);
     }
-
 }

@@ -382,3 +382,19 @@ databaseChangeLog:
 - include:
     file: 2026-01-09-T22-33-add-image-columns-to-question.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2026-01-09-T23-21-update-state-table.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2026-01-14-T20-48-add-code-column-to-state-table.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2026-01-14-T21-56-update-insert-states.yaml
+    relativeToChangelogFile: true
+
+- include:
+    file: 2026-01-14-T21-59-state-code-non-null-constraint.yaml
+    relativeToChangelogFile: true

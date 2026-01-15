@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-14-T20-48-add-code-column-to-state-table
+      author: Carlos
+      changes:
+        - addColumn:
+            tableName: state
+            columns:
+              - column:
+                  name: code
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+                    unique: true

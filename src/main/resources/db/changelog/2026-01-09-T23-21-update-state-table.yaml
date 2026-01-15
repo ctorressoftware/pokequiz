@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09-T23-21-update-state-table
+      author: Carlos Eduardo Torres Graciano
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: quiz
+            constraintName: fkn7jhbnisuqnjg1efgcipb714x
+
+        - addColumn:
+            tableName: state
+            columns:
+              - column:
+                  name: id_new
+                  type: BIGINT
+
+        - update:
+            tableName: state
+            columns:
+              - column:
+                  name: id_new
+                  valueComputed: id
+
+        - addNotNullConstraint:
+            tableName: state
+            columnName: id_new
+            columnDataType: BIGINT
+
+        - dropPrimaryKey:
+            tableName: state
+            constraintName: state_pkey
+
+        - dropColumn:
+            tableName: state
+            columnName: id
+
+        - renameColumn:
+            tableName: state
+            oldColumnName: id_new
+            newColumnName: id
+            columnDataType: BIGINT
+
+        - addPrimaryKey:
+            tableName: state
+            columnNames: id
+            constraintName: state_pkey
+
+        - addForeignKeyConstraint:
+            constraintName: fk_quiz_state_id
+            baseTableName: quiz
+            baseColumnNames: state_id
+            referencedTableName: state
+            referencedColumnNames: id
+            onDelete: RESTRICT
