@@ -4,6 +4,7 @@ import com.ctorres.pokequiz.dto.api.ApiResponse;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
+import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.dto.auth.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,5 +100,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ApiResponse.error(HttpStatus.CONFLICT.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(QuizInvalidStateGenerationException.class)
+    ResponseEntity<ApiResponse<QuizDtoResponse>> handleQuizInvalidStateGenerationException(
+            QuizInvalidStateGenerationException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiResponse.error(HttpStatus.CONFLICT.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(QuizInvalidStateTransitionException.class)
+    ResponseEntity<ApiResponse<QuizDtoResponse>> handleQuizInvalidStateTransitionException(
+            QuizInvalidStateTransitionException e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
     }
 }

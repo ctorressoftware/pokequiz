@@ -11,7 +11,7 @@ import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.entity.Answer;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
-import com.ctorres.pokequiz.enums.StateOption;
+import com.ctorres.pokequiz.enums.QuizState;
 import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.mapper.QuestionMapper;
 import com.ctorres.pokequiz.repository.*;
@@ -46,7 +46,7 @@ public class QuizService {
     @Transactional
     public CreateQuizResponse createQuiz(CreateQuizRequest request, AuthUser authenticatedUser) {
         final var user = userRepository.getReferenceById(authenticatedUser.getId());
-        final var state = stateRepository.getReferenceById(StateOption.CREATED.getId());
+        final var state = stateRepository.getReferenceById(QuizState.CREATED.getId());
         final var difficultLevelId = request.getDifficultLevelId();
 
         final var difficultLevel = difficultLevelRepository.findById(difficultLevelId)
@@ -82,8 +82,6 @@ public class QuizService {
         return buildQuizDtoResponse(quiz, quiz.getQuestions());
     }
 
-    // TODO fix: erase race condition if user executes multiple times the service (multi-inserts)
-    @Transactional
     public QuizDtoResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
         final Long quizId = request.getQuizId();
         final int questionsQuantity = request.getQuestionsQuantity();
@@ -103,18 +101,26 @@ public class QuizService {
             throw new QuizNotFoundException(quizId);
         }
 
+        final var quiz = optionalQuiz.get();
+
+        /* Maybe unnecessary
+         if (!quiz.getState().getCode().equals(QuizState.CREATED.getCode())) {
+            throw new QuizInvalidStateGenerationException(quiz.getId());
+        }
+
         final boolean quizHasQuestions = questionRepository
-                .existsByQuiz_IdAndQuiz_User_Id(quizId, user.getId());
+                .existsByQuiz_IdAndQuiz_User_Id(quiz.getId(), user.getId());
 
         if (quizHasQuestions) {
             throw new QuizFullContentException(quizId);
-        }
+        }*/
 
-        final var quiz = optionalQuiz.get();
+        claimGenerating(quiz);
 
         final var generated = questionService.generateQuestions(request.getQuestionsQuantity());
 
         if (generated.isEmpty()) {
+            markGeneratingError(quiz);
             throw new GenerationModuleException("An error ocurred generating questions and answers.");
         }
 
@@ -137,8 +143,36 @@ public class QuizService {
         }).toList();
 
         var insertedQuestions = questionRepository.saveAll(questions);
+        markGenerated(quiz);
 
         return buildQuizDtoResponse(quiz, insertedQuestions);
+    }
+
+    void claimGenerating(Quiz quiz) {
+        var created = stateRepository.getReferenceById(QuizState.CREATED.getId());
+        var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
+        var claimed = quizRepository.compareAndSetState(quiz.getId(), generating, created);
+        if (claimed == 0) {
+            throw new QuizInvalidStateGenerationException(quiz.getId());
+        }
+    }
+
+    void markGenerated(Quiz quiz) {
+        var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
+        var generated = stateRepository.getReferenceById(QuizState.GENERATED.getId());
+        var claimed = quizRepository.compareAndSetState(quiz.getId(), generated, generating);
+        if (claimed == 0) {
+            throw new QuizInvalidStateTransitionException(quiz.getId());
+        }
+    }
+
+    void markGeneratingError(Quiz quiz) {
+        var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
+        var generatingError = stateRepository.getReferenceById(QuizState.GENERATING_ERROR.getId());
+        var claimed = quizRepository.compareAndSetState(quiz.getId(), generatingError, generating);
+        if (claimed == 0) {
+            throw new QuizInvalidStateTransitionException(quiz.getId());
+        }
     }
 
     private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, Collection<Question> questions) {

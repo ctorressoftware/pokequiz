@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-16-T11-33-add-error-states-for-quiz
+      author: Carlos Eduardo Torres Graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE code = 'GENERATING_ERROR' OR id = 10;
+      changes:
+        - insert:
+            tableName: state
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 10
+              - column:
+                  name: description
+                  value: GENERATING_ERROR
+              - column:
+                  name: code
+                  value: GENERATING_ERROR
+              - column:
+                  name: active
+                  valueBoolean: true
