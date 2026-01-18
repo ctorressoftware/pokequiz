@@ -24,7 +24,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     Optional<Quiz> findQuizByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("""
             update Quiz q set
             q.state = :newState
