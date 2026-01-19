@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.ctorres.pokequiz.entity.Quiz;
-
 import java.util.Optional;
 
 @Repository
@@ -17,7 +16,9 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
             select distinct q
             from Quiz q
             left join fetch q.questions qu
-            left join fetch qu.answers a
+            join fetch q.state
+            join fetch q.difficultLevel
+            left join fetch qu.answers
             where q.id = :id and q.user.id = :userId
             """)
     Optional<Quiz> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);

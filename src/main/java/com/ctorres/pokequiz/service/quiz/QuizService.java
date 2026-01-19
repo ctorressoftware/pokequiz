@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service;
+package com.ctorres.pokequiz.service.quiz;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -12,7 +12,6 @@ import com.ctorres.pokequiz.enums.QuizState;
 import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.mapper.QuestionMapper;
 import com.ctorres.pokequiz.repository.*;
-import com.ctorres.pokequiz.service.quiz.QuizContentPersister;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

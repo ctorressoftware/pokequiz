@@ -16,11 +16,14 @@ public class Quiz {
 
     private Instant endDate;
 
+    // @ManyToOne(targetEntity = State.class)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="state_id", nullable=false)
+    @JoinColumn(name = "state_id", nullable = false)
     private State state;
 
-    @ManyToOne(targetEntity = DifficultLevel.class)
+    // @ManyToOne(targetEntity = DifficultLevel.class)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "difficult_level_id", nullable = false)
     private DifficultLevel difficultLevel;
 
     @ManyToOne(targetEntity = User.class)
