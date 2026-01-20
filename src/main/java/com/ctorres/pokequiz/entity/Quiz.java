@@ -34,16 +34,6 @@ public class Quiz {
 
     public Quiz() {}
 
-    public Quiz(Long id, Instant initialDate, Instant endDate, State state, DifficultLevel difficultLevel,
-            User user) {
-        this.id = id;
-        this.initialDate = initialDate;
-        this.endDate = endDate;
-        this.state = state;
-        this.difficultLevel = difficultLevel;
-        this.user = user;
-    }
-
     public Quiz(Instant initialDate, Instant endDate, State state, DifficultLevel difficultLevel, User user) {
         this.initialDate = initialDate;
         this.endDate = endDate;
@@ -105,18 +95,6 @@ public class Quiz {
     }
 
     @Override
-    public String toString() {
-        return "Quiz{" +
-                "id=" + id +
-                ", initialDate=" + initialDate +
-                ", endDate=" + endDate +
-                ", state=" + (state != null ? state.getId() : null) +
-                ", difficultLevel=" + (difficultLevel != null ? difficultLevel.getId() : null) +
-                ", user=" + (user != null ? user.getId() : null) +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -128,7 +106,7 @@ public class Quiz {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(id);
+        return getClass().hashCode();
     }
 
     public static Builder builder() {

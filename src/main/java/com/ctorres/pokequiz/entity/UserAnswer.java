@@ -85,17 +85,6 @@ public class UserAnswer {
     }
 
     @Override
-    public String toString() {
-        return "UserAnswer{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", canonicalKey='" + canonicalKey + '\'' +
-                ", active=" + active +
-                ", question=" + (question != null ? question.getId() : null) +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -107,6 +96,6 @@ public class UserAnswer {
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(id);
+        return getClass().hashCode();
     }
 }
