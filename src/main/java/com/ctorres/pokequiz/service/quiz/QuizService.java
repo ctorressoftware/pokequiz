@@ -2,15 +2,20 @@ package com.ctorres.pokequiz.service.quiz;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
+
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
+import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
+import com.ctorres.pokequiz.entity.UserAnswer;
 import com.ctorres.pokequiz.enums.QuizState;
 import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.mapper.QuestionMapper;
+import com.ctorres.pokequiz.mapper.UserAnswerMapper;
 import com.ctorres.pokequiz.repository.*;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
@@ -19,18 +24,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class QuizService {
     private final QuizContentPersister quizContentPersister;
+    private final QuizEvaluationService quizEvaluationService;
     private final QuizRepository quizRepository;
     private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
     private final UserRepository userRepository;
 
     public QuizService(
+            QuizEvaluationService quizEvaluationService,
             QuizContentPersister quizContentPersister,
             QuizRepository quizRepository,
             DifficultLevelRepository difficultLevelRepository,
             StateRepository stateRepository,
             UserRepository userRepository) {
         this.difficultLevelRepository = difficultLevelRepository;
+        this.quizEvaluationService = quizEvaluationService;
         this.quizContentPersister = quizContentPersister;
         this.quizRepository = quizRepository;
         this.stateRepository = stateRepository;
@@ -101,6 +109,31 @@ public class QuizService {
                 .createAndSaveQuizContent(quiz, questionsQuantity);
 
         return buildQuizDtoResponse(quiz, insertedQuestions);
+    }
+
+    public void completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
+        final var quizId = request.getQuizId();
+        final var userAnswerDtos = request.getUserAnswersDtos();
+
+        if (quizId == null || quizId <= 0) {
+            throw new BadRequestException("Invalid quizId field.");
+        }
+
+        if (userAnswerDtos == null || userAnswerDtos.isEmpty()) {
+            throw new BadRequestException("Invalid answers field.");
+        }
+
+        final var optionalQuiz = quizRepository.findQuizByIdAndUserId(quizId, user.getId());
+
+        if (optionalQuiz.isEmpty()) {
+            throw new QuizNotFoundException(quizId);
+        }
+
+        final var quiz = optionalQuiz.get();
+
+        var userAnswers = UserAnswerMapper.toDomain(userAnswerDtos);
+
+        quizEvaluationService.evaluateQuizAnswers(userAnswers.stream().toList());
     }
 
     private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, Collection<Question> questions) {
