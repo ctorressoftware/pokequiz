@@ -2,19 +2,15 @@ package com.ctorres.pokequiz.service.quiz;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
-import com.ctorres.pokequiz.dto.api.response.AnswerDto;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.api.response.EvaluateAnswersResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
-import com.ctorres.pokequiz.entity.Answer;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
-import com.ctorres.pokequiz.entity.UserAnswer;
 import com.ctorres.pokequiz.enums.QuizState;
 import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.mapper.QuestionMapper;
@@ -29,7 +25,6 @@ public class QuizService {
     private final QuizContentPersister quizContentPersister;
     private final QuizEvaluationService quizEvaluationService;
     private final QuizRepository quizRepository;
-    private final QuestionRepository questionRepository;
     private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
     private final UserRepository userRepository;
@@ -45,7 +40,6 @@ public class QuizService {
         this.quizEvaluationService = quizEvaluationService;
         this.quizContentPersister = quizContentPersister;
         this.quizRepository = quizRepository;
-        this.questionRepository = questionRepository;
         this.stateRepository = stateRepository;
         this.userRepository = userRepository;
     }
