@@ -10,7 +10,10 @@ public class AnswerMapper {
     public static Collection<AnswerDto> toDto(Collection<Answer> answers) {
 
         return answers.stream()
-                .map(a -> new AnswerDto(a.getDescription()))
+                .map(a -> new AnswerDto(
+                        a.getDescription(),
+                        a.getCanonicalKey()
+                ))
                 .toList();
     }
 }

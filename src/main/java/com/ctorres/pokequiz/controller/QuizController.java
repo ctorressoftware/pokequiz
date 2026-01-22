@@ -2,8 +2,10 @@ package com.ctorres.pokequiz.controller;
 
 import com.ctorres.pokequiz.dto.api.ApiResponse;
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
+import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
+import com.ctorres.pokequiz.dto.api.response.EvaluateAnswersResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.service.quiz.QuizService;
 import com.ctorres.pokequiz.service.security.AuthUser;
@@ -46,6 +48,15 @@ public class QuizController {
             @RequestParam Long quizId,
             @AuthenticationPrincipal AuthUser user) {
         var response = quizService.getQuizById(quizId, user);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/completeQuizAnswers")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ApiResponse<EvaluateAnswersResponse>> completeQuizAnswers(
+            @RequestBody EvaluateAnswersRequest request,
+            @AuthenticationPrincipal AuthUser user) {
+        var response = quizService.completeQuizAnswers(request, user);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

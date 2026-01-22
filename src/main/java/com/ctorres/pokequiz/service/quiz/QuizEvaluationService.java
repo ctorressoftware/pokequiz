@@ -1,12 +1,15 @@
 package com.ctorres.pokequiz.service.quiz;
 
-import com.ctorres.pokequiz.dto.api.response.QuizResultResponse;
+import com.ctorres.pokequiz.entity.Answer;
+import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.UserAnswer;
 import com.ctorres.pokequiz.repository.QuizRepository;
 import com.ctorres.pokequiz.repository.UserAnswerRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizEvaluationService {
@@ -21,17 +24,50 @@ public class QuizEvaluationService {
         this.userAnswerRepository = userAnswerRepository;
     }
 
-    public void evaluateQuizAnswers(List<UserAnswer> userAnswers) {}
+    protected Map<Long, Question> questionsById(Set<Question> questions) {
+        return questions.stream()
+                .collect(Collectors.toMap(
+                        Question::getId,
+                        q -> q
+                ));
+    }
 
-    public QuizResultResponse evaluateQuiz() {
-        return null; // TODO
+    private Map<Long, Set<Answer>> correctAnswersByQuestionId(Set<Question> questions) {
+        return questions.stream()
+                .collect(Collectors.toMap(
+                        Question::getId,
+                        q -> q.getAnswers().stream()
+                                .filter(Answer::isCorrect)
+                                .collect(Collectors.toUnmodifiableSet())
+                ));
+    }
+
+    public Map<UserAnswer, Boolean> evaluateUserAnswers(
+            Set<Question> questions,
+            List<UserAnswer> userAnswers) {
+        final var correctAnswers = correctAnswersByQuestionId(questions);
+
+        return userAnswers.stream()
+                .collect(Collectors.toMap(
+                        q -> q,
+                        q -> {
+
+                            var correctSet = correctAnswers.get(q.getId());
+
+                            return correctSet.stream()
+                                    .anyMatch(correct ->
+                                            correct.getCanonicalKey()
+                                                    .equals(q.getCanonicalKey())
+                                    );
+                        }
+                ));
     }
 
     private List<UserAnswer> saveUserAnswers(List<UserAnswer> answers) {
         return null; // TODO
     }
 
-    private Long calculateScore(List<UserAnswer> userAnswers) {
-        return null; // TODO
+    protected int calculateScore(Map<UserAnswer, Boolean> result) {
+        return 100; // TODO
     }
 }

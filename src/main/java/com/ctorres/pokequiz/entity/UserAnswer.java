@@ -28,15 +28,6 @@ public class UserAnswer {
     public UserAnswer() {
     }
 
-    public UserAnswer(Long id, String description, String canonicalKey, boolean active,
-            Question question) {
-        this.id = id;
-        this.description = description;
-        this.canonicalKey = canonicalKey;
-        this.active = active;
-        this.question = question;
-    }
-
     public UserAnswer(String description, String canonicalKey, boolean active, Question question) {
         this.description = description;
         this.canonicalKey = canonicalKey;

@@ -10,6 +10,7 @@ public class QuestionMapper {
 
         return questions.stream()
                 .map(q -> new QuestionDto(
+                        q.getId(),
                         q.getDescription(),
                         q.getFrontImageUrl(),
                         q.getBackImageUrl(),

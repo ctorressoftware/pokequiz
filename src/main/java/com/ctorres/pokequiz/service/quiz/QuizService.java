@@ -1,14 +1,17 @@
 package com.ctorres.pokequiz.service.quiz;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
+import com.ctorres.pokequiz.dto.api.response.AnswerDto;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
+import com.ctorres.pokequiz.dto.api.response.EvaluateAnswersResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
+import com.ctorres.pokequiz.entity.Answer;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.entity.UserAnswer;
@@ -26,6 +29,7 @@ public class QuizService {
     private final QuizContentPersister quizContentPersister;
     private final QuizEvaluationService quizEvaluationService;
     private final QuizRepository quizRepository;
+    private final QuestionRepository questionRepository;
     private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
     private final UserRepository userRepository;
@@ -41,6 +45,7 @@ public class QuizService {
         this.quizEvaluationService = quizEvaluationService;
         this.quizContentPersister = quizContentPersister;
         this.quizRepository = quizRepository;
+        this.questionRepository = questionRepository;
         this.stateRepository = stateRepository;
         this.userRepository = userRepository;
     }
@@ -97,21 +102,18 @@ public class QuizService {
             throw new BadRequestException("Invalid questionsQuantity field.");
         }
 
-        final var optionalQuiz = quizRepository
-                .findQuizByIdAndUserId(request.getQuizId(), user.getId());
+        final var quiz = quizRepository
+                .findQuizByIdAndUserId(request.getQuizId(), user.getId())
+                .orElseThrow(() -> new QuizNotFoundException(quizId));
 
-        if (optionalQuiz.isEmpty()) {
-            throw new QuizNotFoundException(quizId);
-        }
-
-        final var quiz = optionalQuiz.get();
         var insertedQuestions = quizContentPersister
                 .createAndSaveQuizContent(quiz, questionsQuantity);
 
         return buildQuizDtoResponse(quiz, insertedQuestions);
     }
 
-    public void completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
+    @Transactional
+    public EvaluateAnswersResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
         final var quizId = request.getQuizId();
         final var userAnswerDtos = request.getUserAnswersDtos();
 
@@ -123,17 +125,21 @@ public class QuizService {
             throw new BadRequestException("Invalid answers field.");
         }
 
-        final var optionalQuiz = quizRepository.findQuizByIdAndUserId(quizId, user.getId());
+        final var quiz = quizRepository
+                .findQuizByIdAndUserId(quizId, user.getId())
+                .orElseThrow(() -> new QuizNotFoundException(quizId));
 
-        if (optionalQuiz.isEmpty()) {
-            throw new QuizNotFoundException(quizId);
-        }
+        final var questionsById = quizEvaluationService.questionsById(quiz.getQuestions());
+        final var userAnswers = UserAnswerMapper.toDomain(userAnswerDtos, questionsById)
+                .stream()
+                .toList();
 
-        final var quiz = optionalQuiz.get();
+        final var quizResult = quizEvaluationService
+                .evaluateUserAnswers(quiz.getQuestions(), userAnswers);
 
-        var userAnswers = UserAnswerMapper.toDomain(userAnswerDtos);
+        final var score = quizEvaluationService.calculateScore(quizResult);
 
-        quizEvaluationService.evaluateQuizAnswers(userAnswers.stream().toList());
+        return new EvaluateAnswersResponse(quizResult, score);
     }
 
     private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, Collection<Question> questions) {

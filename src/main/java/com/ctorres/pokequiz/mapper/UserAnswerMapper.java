@@ -1,22 +1,21 @@
 package com.ctorres.pokequiz.mapper;
 
 import com.ctorres.pokequiz.dto.api.request.UserAnswerDto;
-import com.ctorres.pokequiz.dto.api.response.AnswerDto;
-import com.ctorres.pokequiz.entity.Answer;
+import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.UserAnswer;
-
 import java.util.Collection;
+import java.util.Map;
 
 public class UserAnswerMapper {
 
-    public static Collection<UserAnswer> toDomain(Collection<UserAnswerDto> userAnswerDtos) {
+    public static Collection<UserAnswer> toDomain(Collection<UserAnswerDto> userAnswerDtos, Map<Long, Question> questionsById) {
 
         return userAnswerDtos.stream()
                 .map(u -> new UserAnswer(
                         u.getDescription(),
-                        u.getCanonicalKey(),
+                        u.getValue(),
                         true,
-                        u.getQuestion())
+                        questionsById.get(u.getQuestionId()))
                 ).toList();
     }
 }
