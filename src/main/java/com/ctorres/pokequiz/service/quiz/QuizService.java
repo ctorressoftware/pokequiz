@@ -113,6 +113,7 @@ public class QuizService {
     }
 
     @Transactional
+    // TODO Modify to make Idempotence
     public EvaluateAnswersResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
         final var quizId = request.getQuizId();
         final var userAnswerDtos = request.getUserAnswersDtos();
