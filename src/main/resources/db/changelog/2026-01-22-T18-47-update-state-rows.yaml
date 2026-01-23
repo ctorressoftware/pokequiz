@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-22-T18-47-state-3-ready
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE id = 3 AND code = 'READY';
+      changes:
+        - update:
+            tableName: state
+            where: "id = 3"
+            columns:
+              - column: { name: description, value: READY }
+              - column: { name: code, value: READY }
+              - column: { name: active, valueBoolean: true }
+
+  - changeSet:
+      id: 2026-01-22-T18-47-state-4-in-progress
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE id = 4 AND code = 'IN_PROGRESS';
+      changes:
+        - update:
+            tableName: state
+            where: "id = 4"
+            columns:
+              - column: { name: description, value: IN_PROGRESS }
+              - column: { name: code, value: IN_PROGRESS }
+              - column: { name: active, valueBoolean: true }
+
+  - changeSet:
+      id: 2026-01-22-T18-47-state-5-completed
+      author: carlos eduardo torres graciano
+      preConditions:
+        - onFail: HALT
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE code = 'COMPLETED';
+        - sqlCheck:
+            expectedResult: "0"
+            sql: >
+              SELECT COUNT(*) FROM state WHERE id = 5;
+      changes:
+        - insert:
+            tableName: state
+            columns:
+              - column: { name: id, valueNumeric: 5 }
+              - column: { name: description, value: COMPLETED }
+              - column: { name: code, value: COMPLETED }
+              - column: { name: active, valueBoolean: true }

@@ -1,7 +1,5 @@
 package com.ctorres.pokequiz.dto.api.request;
 
-import com.ctorres.pokequiz.entity.Question;
-
 public final class UserAnswerDto {
     private final Long questionId;
     private final String description;

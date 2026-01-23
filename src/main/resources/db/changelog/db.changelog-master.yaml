@@ -402,3 +402,7 @@ databaseChangeLog:
 - include:
     file: 2026-01-16-T11-33-add-error-states-for-quiz.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2026-01-22-T18-47-update-state-rows.yaml
+    relativeToChangelogFile: true

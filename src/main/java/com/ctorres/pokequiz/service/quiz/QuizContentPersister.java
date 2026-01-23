@@ -60,7 +60,7 @@ public class QuizContentPersister {
         try {
             var questions = createQuizContent(quiz, questionsQuantity);
             var inserted = questionRepository.saveAll(questions);
-            quizStateService.markGenerated(quiz);
+            quizStateService.markReady(quiz);
             return inserted;
         } catch (RuntimeException e) {
             quizStateService.markGeneratingError(quiz);

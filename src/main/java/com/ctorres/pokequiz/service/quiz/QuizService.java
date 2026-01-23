@@ -24,23 +24,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuizService {
     private final QuizContentPersister quizContentPersister;
     private final QuizEvaluationService quizEvaluationService;
+    private final QuizStateService quizStateService;
     private final QuizRepository quizRepository;
     private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
+    private final UserAnswerRepository userAnswerRepository;
     private final UserRepository userRepository;
 
     public QuizService(
             QuizEvaluationService quizEvaluationService,
             QuizContentPersister quizContentPersister,
+            QuizStateService quizStateService,
             QuizRepository quizRepository,
             DifficultLevelRepository difficultLevelRepository,
             StateRepository stateRepository,
+            UserAnswerRepository userAnswerRepository,
             UserRepository userRepository) {
         this.difficultLevelRepository = difficultLevelRepository;
         this.quizEvaluationService = quizEvaluationService;
         this.quizContentPersister = quizContentPersister;
+        this.quizStateService = quizStateService;
         this.quizRepository = quizRepository;
         this.stateRepository = stateRepository;
+        this.userAnswerRepository = userAnswerRepository;
         this.userRepository = userRepository;
     }
 
@@ -120,19 +126,22 @@ public class QuizService {
         }
 
         final var quiz = quizRepository
-                .findQuizByIdAndUserId(quizId, user.getId())
+                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId())
                 .orElseThrow(() -> new QuizNotFoundException(quizId));
 
+        quizStateService.markInProgress(quiz);
         final var questionsById = quizEvaluationService.questionsById(quiz.getQuestions());
         final var userAnswers = UserAnswerMapper.toDomain(userAnswerDtos, questionsById)
                 .stream()
                 .toList();
 
-        final var quizResult = quizEvaluationService
-                .evaluateUserAnswers(quiz.getQuestions(), userAnswers);
+        final var insertedUserAnswers = userAnswerRepository.saveAll(userAnswers); // TODO comment to test
+
+        final var quizResult = quizEvaluationService // TODO pass questionsById, and not getQuestions again.
+                .evaluateUserAnswers(quiz.getQuestions(), insertedUserAnswers);
 
         final var score = quizEvaluationService.calculateScore(quizResult);
-
+        quizStateService.markCompleted(quiz);
         return new EvaluateAnswersResponse(quizResult, score);
     }
 

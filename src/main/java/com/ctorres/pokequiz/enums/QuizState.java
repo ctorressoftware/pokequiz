@@ -3,8 +3,9 @@ package com.ctorres.pokequiz.enums;
 public enum QuizState {
     CREATED(1L, "CREATED"),
     GENERATING(2L, "GENERATING"),
-    GENERATED(3L, "GENERATED"),
-    COMPLETED(4L, "COMPLETED"),
+    READY(3L, "READY"),
+    IN_PROGRESS(4L, "IN_PROGRESS"),
+    COMPLETED(5L, "COMPLETED"),
     GENERATING_ERROR(10L, "GENERATING_ERROR");
 
     private final Long id;
