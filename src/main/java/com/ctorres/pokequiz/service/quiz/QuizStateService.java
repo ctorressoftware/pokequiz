@@ -23,41 +23,41 @@ public class QuizStateService {
     public void claimGenerating(Quiz quiz) {
         var created = stateRepository.getReferenceById(QuizState.CREATED.getId());
         var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
-        quiz.setState(generating);
         var claimed = quizRepository.compareAndSetState(quiz.getId(), generating, created);
         if (claimed == 0) throw new QuizInvalidStateGenerationException(quiz.getId());
+        quiz.setState(generating);
     }
 
     public void markReady(Quiz quiz) {
         var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
         var ready = stateRepository.getReferenceById(QuizState.READY.getId());
-        quiz.setState(ready);
         var claimed = quizRepository.compareAndSetState(quiz.getId(), ready, generating);
         if (claimed == 0) throw new QuizInvalidStateTransitionException(quiz.getId());
+        quiz.setState(ready);
     }
 
     public void markInProgress(Quiz quiz) {
         var ready = stateRepository.getReferenceById(QuizState.READY.getId());
         var inProgress = stateRepository.getReferenceById(QuizState.IN_PROGRESS.getId());
-        quiz.setState(inProgress);
         var claimed = quizRepository.compareAndSetState(quiz.getId(), inProgress, ready);
         if (claimed == 0) throw new QuizInvalidStateTransitionException(quiz.getId());
+        quiz.setState(inProgress);
     }
 
     public void markCompleted(Quiz quiz) {
         var inProgress = stateRepository.getReferenceById(QuizState.IN_PROGRESS.getId());
         var completed = stateRepository.getReferenceById(QuizState.COMPLETED.getId());
-        quiz.setState(completed);
         var claimed = quizRepository.compareAndSetState(quiz.getId(), completed, inProgress);
         if (claimed == 0) throw new QuizInvalidStateTransitionException(quiz.getId());
+        quiz.setState(completed);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void markGeneratingError(Quiz quiz) {
         var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
         var generatingError = stateRepository.getReferenceById(QuizState.GENERATING_ERROR.getId());
-        quiz.setState(generatingError);
         var claimed = quizRepository.compareAndSetState(quiz.getId(), generatingError, generating);
         if (claimed == 0) throw new QuizInvalidStateTransitionException(quiz.getId());
+        quiz.setState(generatingError);
     }
 }

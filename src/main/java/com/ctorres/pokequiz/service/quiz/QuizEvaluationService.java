@@ -6,9 +6,7 @@ import com.ctorres.pokequiz.entity.UserAnswer;
 import com.ctorres.pokequiz.repository.QuizRepository;
 import com.ctorres.pokequiz.repository.UserAnswerRepository;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,17 +40,17 @@ public class QuizEvaluationService {
                 ));
     }
 
-    public Map<UserAnswer, Boolean> evaluateUserAnswers(
-            Set<Question> questions,
+    public Map<Long, Boolean> evaluateUserAnswers(
+            Map<Long, Question> questionsById,
             List<UserAnswer> userAnswers) {
-        final var correctAnswers = correctAnswersByQuestionId(questions);
+
+        final var correctAnswers = correctAnswersByQuestionId(new HashSet<>(questionsById.values()));
 
         return userAnswers.stream()
                 .collect(Collectors.toMap(
-                        q -> q,
+                        UserAnswer::getId,
                         q -> {
-
-                            var correctSet = correctAnswers.get(q.getId());
+                            var correctSet = correctAnswers.get(q.getQuestion().getId());
 
                             return correctSet.stream()
                                     .anyMatch(correct ->
@@ -67,7 +65,7 @@ public class QuizEvaluationService {
         return null; // TODO
     }
 
-    protected int calculateScore(Map<UserAnswer, Boolean> result) {
+    protected int calculateScore(Map<Long, Boolean> result) {
         return 100; // TODO
     }
 }

@@ -28,7 +28,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Optional<Quiz> findQuizByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);
 
     @QueryHints({@QueryHint(name = "javax.persistence.query.timeout", value = "3000")})
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("""
             update Quiz q set
             q.state = :newState

@@ -112,8 +112,8 @@ public class QuizService {
         return buildQuizDtoResponse(quiz, insertedQuestions);
     }
 
-    @Transactional
     // TODO Modify to make Idempotence
+    @Transactional
     public EvaluateAnswersResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
         final var quizId = request.getQuizId();
         final var userAnswerDtos = request.getUserAnswersDtos();
@@ -136,13 +136,13 @@ public class QuizService {
                 .stream()
                 .toList();
 
-        final var insertedUserAnswers = userAnswerRepository.saveAll(userAnswers); // TODO comment to test
+        final var insertedUserAnswers = userAnswerRepository.saveAll(userAnswers);
+        quizStateService.markCompleted(quiz);
 
-        final var quizResult = quizEvaluationService // TODO pass questionsById, and not getQuestions again.
-                .evaluateUserAnswers(quiz.getQuestions(), insertedUserAnswers);
+        final var quizResult = quizEvaluationService
+                .evaluateUserAnswers(questionsById, insertedUserAnswers);
 
         final var score = quizEvaluationService.calculateScore(quizResult);
-        quizStateService.markCompleted(quiz);
         return new EvaluateAnswersResponse(quizResult, score);
     }
 
