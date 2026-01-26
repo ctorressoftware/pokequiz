@@ -9,6 +9,7 @@ import com.ctorres.pokequiz.dto.api.response.EvaluateAnswersResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.service.quiz.QuizService;
 import com.ctorres.pokequiz.service.security.AuthUser;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -54,7 +55,7 @@ public class QuizController {
     @PostMapping("/completeQuizAnswers")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<EvaluateAnswersResponse>> completeQuizAnswers(
-            @RequestBody EvaluateAnswersRequest request,
+            @Valid @RequestBody EvaluateAnswersRequest request,
             @AuthenticationPrincipal AuthUser user) {
         var response = quizService.completeQuizAnswers(request, user);
         return ResponseEntity.ok(ApiResponse.success(response));
