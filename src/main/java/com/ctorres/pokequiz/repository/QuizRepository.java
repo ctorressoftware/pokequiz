@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
+    // TODO: Check if this query method has to change its name.
     @Query("""
             select distinct q
             from Quiz q
