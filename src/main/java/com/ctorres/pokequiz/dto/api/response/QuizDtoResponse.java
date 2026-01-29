@@ -3,8 +3,6 @@ package com.ctorres.pokequiz.dto.api.response;
 import com.ctorres.pokequiz.exception.BadRequestException;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 public final class QuizDtoResponse {
     private final Long quizId;
