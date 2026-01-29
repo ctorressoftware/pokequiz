@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public final class UserAnswerDto {
+public final class UserAnswerDtoRequest {
     @NotNull(message = "questionId cannot be null")
     @Positive(message = "questionId must be greater than 0")
     private final Long questionId;
@@ -21,7 +21,7 @@ public final class UserAnswerDto {
     private final String value;
 
     @JsonCreator
-    public UserAnswerDto(
+    public UserAnswerDtoRequest(
             @JsonProperty("questionId") Long questionId,
             @JsonProperty("description") String description,
             @JsonProperty("value") String value) {

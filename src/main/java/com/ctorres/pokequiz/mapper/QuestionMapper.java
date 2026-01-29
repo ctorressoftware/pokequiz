@@ -14,7 +14,8 @@ public class QuestionMapper {
                         q.getDescription(),
                         q.getFrontImageUrl(),
                         q.getBackImageUrl(),
-                        AnswerMapper.toDto(q.getAnswers())
+                        AnswerMapper.toDto(q.getAnswers()),
+                        UserAnswerMapper.toDomain(q.getUserAnswer())
                 )).toList();
     }
 }

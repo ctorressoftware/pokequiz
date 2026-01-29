@@ -50,7 +50,8 @@ public class QuizContentPersister {
                     gq.getGeneratedQuestion().getPokemonFrontImage(),
                     gq.getGeneratedQuestion().getPokemonBackImage(),
                     quiz,
-                    answers);
+                    answers,
+                    null);
         }).toList();
     }
 

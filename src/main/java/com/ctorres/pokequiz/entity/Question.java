@@ -31,15 +31,28 @@ public class Question {
             orphanRemoval=true)
     private final Set<Answer> answers = new HashSet<>();
 
+    @OneToOne(mappedBy = "question",
+            cascade=CascadeType.ALL,
+            orphanRemoval=true)
+    private UserAnswer userAnswer;
+
     protected Question() {}
 
-    public Question(String description, boolean active, String frontImageUrl, String backImageUrl, Quiz quiz, Set<Answer> answers) {
+    public Question(
+            String description,
+            boolean active,
+            String frontImageUrl,
+            String backImageUrl,
+            Quiz quiz,
+            Set<Answer> answers,
+            UserAnswer userAnswer) {
         this.description = description;
         this.active = active;
         this.frontImageUrl = frontImageUrl;
         this.backImageUrl = backImageUrl;
         this.quiz = quiz;
         this.setAnswers(answers);
+        this.userAnswer = userAnswer;
     }
 
     public Long getId() {
@@ -66,6 +79,10 @@ public class Question {
         return Collections.unmodifiableSet(answers);
     }
 
+    public UserAnswer getUserAnswer() {
+        return userAnswer;
+    }
+
     private void setAnswers(Set<Answer> newAnswers) {
         this.answers.clear();
 
@@ -86,8 +103,7 @@ public class Question {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Question)) return false;
-        Question question = (Question) o;
+        if (!(o instanceof Question question)) return false;
         return id != null && id.equals(question.id);
     }
 

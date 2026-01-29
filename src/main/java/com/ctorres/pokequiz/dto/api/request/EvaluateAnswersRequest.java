@@ -15,12 +15,12 @@ public final class EvaluateAnswersRequest {
     private final Long quizId;
 
     @NotEmpty(message = "Invalid answers field")
-    private final Collection<@Valid UserAnswerDto> userAnswersDto;
+    private final Collection<@Valid UserAnswerDtoRequest> userAnswersDto;
 
     @JsonCreator
     public EvaluateAnswersRequest(
             @JsonProperty("quizId") Long quizId,
-            @JsonProperty("answers") Collection<UserAnswerDto> userAnswersDto) {
+            @JsonProperty("answers") Collection<UserAnswerDtoRequest> userAnswersDto) {
         this.quizId = quizId;
         this.userAnswersDto = userAnswersDto;
     }
@@ -29,7 +29,7 @@ public final class EvaluateAnswersRequest {
         return quizId;
     }
 
-    public Collection<UserAnswerDto> getUserAnswersDtos() {
+    public Collection<UserAnswerDtoRequest> getUserAnswersDtos() {
         return userAnswersDto;
     }
 }
