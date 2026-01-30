@@ -20,7 +20,7 @@ public class UserAnswerMapper {
                 ).toList();
     }
 
-    public static UserAnswerDto toDomain(UserAnswer userAnswer) {
+    public static UserAnswerDto toDto(UserAnswer userAnswer) {
 
         if (userAnswer == null) return null;
 

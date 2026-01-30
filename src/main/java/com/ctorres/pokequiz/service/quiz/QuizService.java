@@ -114,7 +114,7 @@ public class QuizService {
 
     // TODO Modify to make Idempotence
     @Transactional
-    public EvaluateAnswersResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
+    public QuizDtoResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
         final var quizId = request.getQuizId();
         final var userAnswerDtos = request.getUserAnswersDtos();
 
@@ -143,7 +143,8 @@ public class QuizService {
                 .evaluateUserAnswers(questionsById, insertedUserAnswers);
 
         final var score = quizEvaluationService.calculateScore(quizResult);
-        return new EvaluateAnswersResponse(quizResult, score);
+        //return new EvaluateAnswersResponse(quizResult, score);
+        return buildQuizDtoResponse(quiz, quiz.getQuestions());
     }
 
     private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, Collection<Question> questions) {
