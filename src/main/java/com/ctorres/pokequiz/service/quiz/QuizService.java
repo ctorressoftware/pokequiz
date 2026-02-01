@@ -7,7 +7,6 @@ import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
-import com.ctorres.pokequiz.dto.api.response.EvaluateAnswersResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
 import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
@@ -112,7 +111,6 @@ public class QuizService {
         return buildQuizDtoResponse(quiz, insertedQuestions);
     }
 
-    // TODO Modify to make Idempotence
     @Transactional
     public QuizDtoResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
         final var quizId = request.getQuizId();
@@ -129,6 +127,12 @@ public class QuizService {
         final var quiz = quizRepository
                 .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId())
                 .orElseThrow(() -> new QuizNotFoundException(quizId));
+
+        var isQuizCompleted = quiz.getState().getCode().equals(QuizState.COMPLETED.getCode());
+
+        if (isQuizCompleted) {
+            return buildQuizDtoResponse(quiz, quiz.getQuestions());
+        }
 
         quizStateService.markInProgress(quiz);
         final var questionsById = quizEvaluationService.questionsById(quiz.getQuestions());
