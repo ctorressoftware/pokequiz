@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    container_name: pokequiz-qa-db
+    environment:
+      POSTGRES_DB: pokequiz_qa
+      POSTGRES_USER: pokequiz
+      POSTGRES_PASSWORD: pokequiz
+    ports:
+      - "5433:5432"
+    volumes:
+      - pokequiz_qa_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pokequiz -d pokequiz_qa"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pokequiz-qa-api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: qa
+      DB_URL: jdbc:postgresql://db:5432/pokequiz_qa
+      DB_USER: pokequiz
+      DB_PASSWORD: pokequiz
+      TOKEN_SECRET: "VnR6sXhP9qB3xWnZkF2uYjP8lT3mS0eKpD6hN2wR4tL8xM5qG9rV7cZ1yH5uE4dJ"
+volumes:
+  pokequiz_qa_db:
