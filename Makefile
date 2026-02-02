@@ -1,10 +1,13 @@
-.PHONY: qa-up qa-build qa-down qa-hard-reset qa-logs qa-ps
+.PHONY: qa-up qa-build qa-down qa-hard-reset qa-logs qa-ps test
+
+test:
+	mvn -B clean test
+
+qa-build: test
+	docker compose -f docker-compose.qa.yml up -d --build
 
 qa-up:
 	docker compose -f docker-compose.qa.yml up -d
-
-qa-build:
-	docker compose -f docker-compose.qa.yml up -d --build
 
 qa-down:
 	docker compose -f docker-compose.qa.yml down
