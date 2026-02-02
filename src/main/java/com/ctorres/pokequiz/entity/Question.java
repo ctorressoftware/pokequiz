@@ -1,6 +1,8 @@
 package com.ctorres.pokequiz.entity;
 
 import java.util.*;
+
+import com.ctorres.pokequiz.exception.BadRequestException;
 import jakarta.persistence.*;
 
 @Entity
@@ -31,10 +33,8 @@ public class Question {
             orphanRemoval=true)
     private final Set<Answer> answers = new HashSet<>();
 
-    @OneToOne(mappedBy = "question",
-            cascade=CascadeType.ALL,
-            orphanRemoval=true)
-    private UserAnswer userAnswer;
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    private final Set<UserAnswer> userAnswers = new HashSet<>();
 
     protected Question() {}
 
@@ -45,14 +45,14 @@ public class Question {
             String backImageUrl,
             Quiz quiz,
             Set<Answer> answers,
-            UserAnswer userAnswer) {
+            Set<UserAnswer> userAnswers) {
         this.description = description;
         this.active = active;
         this.frontImageUrl = frontImageUrl;
         this.backImageUrl = backImageUrl;
         this.quiz = quiz;
         this.setAnswers(answers);
-        this.userAnswer = userAnswer;
+        this.setUserAnswers(userAnswers);
     }
 
     public Long getId() {
@@ -79,8 +79,8 @@ public class Question {
         return Collections.unmodifiableSet(answers);
     }
 
-    public UserAnswer getUserAnswer() {
-        return userAnswer;
+    public Set<UserAnswer> getUserAnswers() {
+        return userAnswers;
     }
 
     private void setAnswers(Set<Answer> newAnswers) {
@@ -94,6 +94,24 @@ public class Question {
             a.setQuestion(this);
             this.answers.add(a);
         }
+    }
+
+    public void setUserAnswers(Set<UserAnswer> newUserAnswers) {
+        this.userAnswers.clear();
+
+        if (newUserAnswers == null || newUserAnswers.isEmpty()) {
+            return;
+        }
+
+        for (UserAnswer ua : newUserAnswers) {
+            ua.setQuestion(this);
+            this.userAnswers.add(ua);
+        }
+    }
+
+    public void setSingleUserAnswer(UserAnswer ua) {
+        if (ua == null) throw new IllegalArgumentException("UserAnswer cannot be null");
+        setUserAnswers(Set.of(ua));
     }
 
     public Quiz getQuiz() {

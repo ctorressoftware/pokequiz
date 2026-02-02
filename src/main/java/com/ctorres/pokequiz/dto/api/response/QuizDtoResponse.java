@@ -1,5 +1,6 @@
 package com.ctorres.pokequiz.dto.api.response;
 
+import com.ctorres.pokequiz.dto.api.QuizResult;
 import com.ctorres.pokequiz.exception.BadRequestException;
 import java.time.Instant;
 import java.util.Collection;
@@ -11,6 +12,7 @@ public final class QuizDtoResponse {
     private final String state;
     private final String difficultLevel;
     private final Collection<QuestionDto> questions;
+    private final QuizResult quizResult;
 
     private QuizDtoResponse(
             Long quizId,
@@ -18,13 +20,15 @@ public final class QuizDtoResponse {
             Instant endDate,
             String state,
             String difficultLevel,
-            Collection<QuestionDto> questions) {
+            Collection<QuestionDto> questions,
+            QuizResult quizResult) {
         this.quizId = quizId;
         this.initialDate = initialDate;
         this.endDate = endDate;
         this.state = state;
         this.difficultLevel = difficultLevel;
         this.questions = questions;
+        this.quizResult = quizResult;
     }
 
     private static void requireNonNull(Object value, String field) {
@@ -51,6 +55,9 @@ public final class QuizDtoResponse {
     public Collection<QuestionDto> getQuestions() {
         return questions;
     }
+    public QuizResult getQuizResult() {
+        return quizResult;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -63,6 +70,7 @@ public final class QuizDtoResponse {
         private String state;
         private String difficultLevel;
         private Collection<QuestionDto> questions;
+        private QuizResult quizResult;
 
         public Builder quizId(Long quizId) {
             this.quizId = quizId;
@@ -94,13 +102,18 @@ public final class QuizDtoResponse {
             return this;
         }
 
+        public Builder quizResult(QuizResult quizResult) {
+            this.quizResult = quizResult;
+            return this;
+        }
+
         public QuizDtoResponse build() {
             requireNonNull(quizId, "quizId");
             requireNonNull(initialDate, "initialDate");
             requireNonNull(state, "state");
             requireNonNull(difficultLevel, "difficultLevel");
             requireNonNull(questions, "questions");
-            return new QuizDtoResponse(quizId, initialDate, endDate, state, difficultLevel, questions);
+            return new QuizDtoResponse(quizId, initialDate, endDate, state, difficultLevel, questions, quizResult);
         }
     }
 }

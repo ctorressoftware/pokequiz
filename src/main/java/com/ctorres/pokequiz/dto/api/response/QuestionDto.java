@@ -9,7 +9,7 @@ public class QuestionDto {
     private final String frontImageUrl;
     private final String backImageUrl;
     private final Collection<AnswerDto> answers;
-    private final UserAnswerDto userAnswer;
+    private final Collection<UserAnswerDto> userAnswers;
 
     public QuestionDto(
             Long id,
@@ -17,13 +17,13 @@ public class QuestionDto {
             String frontImageUrl,
             String backImageUrl,
             Collection<AnswerDto> answers,
-            UserAnswerDto userAnswer) {
+            Collection<UserAnswerDto> userAnswers) {
         this.id = id;
         this.description = description;
         this.frontImageUrl = frontImageUrl;
         this.backImageUrl = backImageUrl;
         this.answers = answers;
-        this.userAnswer = userAnswer;
+        this.userAnswers = userAnswers;
     }
 
     public Long getId() {
@@ -41,8 +41,8 @@ public class QuestionDto {
     public Collection<AnswerDto> getAnswers() {
         return answers;
     }
-    public UserAnswerDto getUserAnswer() {
-        return userAnswer;
+    public Collection<UserAnswerDto> getUserAnswers() {
+        return userAnswers;
     }
 }
 

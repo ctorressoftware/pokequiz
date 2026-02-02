@@ -15,7 +15,7 @@ public class QuestionMapper {
                         q.getFrontImageUrl(),
                         q.getBackImageUrl(),
                         AnswerMapper.toDto(q.getAnswers()),
-                        UserAnswerMapper.toDto(q.getUserAnswer())
+                       q.getUserAnswers().isEmpty() ? null : UserAnswerMapper.toDto(q.getUserAnswers())
                 )).toList();
     }
 }

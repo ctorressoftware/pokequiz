@@ -31,6 +31,7 @@ public class DoesThePokemonEvolveGenerator implements EvolutionQuestionGenerator
         this.random = random;
     }
 
+    // TODO: REVIEW WITH POKEMON poochyena, to see why poochyena is the last evolution, according to the api.
     public GeneratedItem generate() {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();

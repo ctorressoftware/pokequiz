@@ -22,7 +22,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
             join fetch q.state
             join fetch q.difficultLevel
             left join fetch qu.answers
-            left join fetch qu.userAnswer
+            left join fetch qu.userAnswers
             where q.id = :id and q.user.id = :userId
             """)
     Optional<Quiz> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);

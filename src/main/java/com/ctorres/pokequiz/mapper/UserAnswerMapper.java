@@ -3,9 +3,12 @@ package com.ctorres.pokequiz.mapper;
 import com.ctorres.pokequiz.dto.api.UserAnswerDto;
 import com.ctorres.pokequiz.dto.api.request.UserAnswerDtoRequest;
 import com.ctorres.pokequiz.entity.Question;
+import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.entity.UserAnswer;
+
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UserAnswerMapper {
 
@@ -20,14 +23,16 @@ public class UserAnswerMapper {
                 ).toList();
     }
 
-    public static UserAnswerDto toDto(UserAnswer userAnswer) {
+    public static Collection<UserAnswerDto> toDto(Collection<UserAnswer> userAnswers) {
 
-        if (userAnswer == null) return null;
+        if (userAnswers == null || userAnswers.isEmpty()) {
+            throw new IllegalArgumentException("userAnswers is empty. Cannot do toDto mapping.");
+        }
 
-        return new UserAnswerDto(
-                userAnswer.getQuestion().getId(),
-                userAnswer.getDescription(),
-                userAnswer.getCanonicalKey()
-        );
+        return userAnswers.stream().map(ua -> new UserAnswerDto(
+                ua.getQuestion().getId(),
+                ua.getDescription(),
+                ua.getCanonicalKey())
+        ).collect(Collectors.toSet());
     }
 }

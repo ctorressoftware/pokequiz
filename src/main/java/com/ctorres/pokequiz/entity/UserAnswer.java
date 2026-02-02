@@ -1,11 +1,6 @@
 package com.ctorres.pokequiz.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class UserAnswer {
@@ -22,11 +17,11 @@ public class UserAnswer {
     @Column(nullable = false)
     private boolean active;
 
-    @OneToOne(targetEntity = Question.class)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    public UserAnswer() {
-    }
+    public UserAnswer() {}
 
     public UserAnswer(String description, String canonicalKey, boolean active, Question question) {
         this.description = description;

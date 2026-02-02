@@ -3,40 +3,41 @@ package com.ctorres.pokequiz.service.quiz;
 import java.time.Instant;
 import java.util.*;
 
+import com.ctorres.pokequiz.dto.api.QuizResult;
 import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
 import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
-import com.ctorres.pokequiz.entity.Question;
 import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.enums.QuizState;
 import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.mapper.QuestionMapper;
-import com.ctorres.pokequiz.mapper.UserAnswerMapper;
 import com.ctorres.pokequiz.repository.*;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class QuizService {
+public class QuizOrchestrator {
     private final QuizContentPersister quizContentPersister;
     private final QuizEvaluationService quizEvaluationService;
     private final QuizStateService quizStateService;
     private final QuizRepository quizRepository;
     private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
+    private final UserAnswerAssembler userAnswerAssembler;
     private final UserAnswerRepository userAnswerRepository;
     private final UserRepository userRepository;
 
-    public QuizService(
+    public QuizOrchestrator(
             QuizEvaluationService quizEvaluationService,
             QuizContentPersister quizContentPersister,
             QuizStateService quizStateService,
             QuizRepository quizRepository,
             DifficultLevelRepository difficultLevelRepository,
             StateRepository stateRepository,
+            UserAnswerAssembler userAnswerAssembler,
             UserAnswerRepository userAnswerRepository,
             UserRepository userRepository) {
         this.difficultLevelRepository = difficultLevelRepository;
@@ -45,6 +46,7 @@ public class QuizService {
         this.quizStateService = quizStateService;
         this.quizRepository = quizRepository;
         this.stateRepository = stateRepository;
+        this.userAnswerAssembler = userAnswerAssembler;
         this.userAnswerRepository = userAnswerRepository;
         this.userRepository = userRepository;
     }
@@ -76,16 +78,16 @@ public class QuizService {
             throw new BadRequestException("Invalid quizId field.");
         }
 
-        final var optionalQuiz = quizRepository
-                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId());
+        final var quiz = quizRepository
+                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId())
+                .orElseThrow(() -> new QuizNotFoundException(quizId));
 
-        if (optionalQuiz.isEmpty()) {
-            throw new QuizNotFoundException(quizId);
+        if (quiz.getState().getCode().equals(QuizState.COMPLETED.getCode())) {
+            final var quizResult = quizEvaluationService.processQuizResult(quiz);
+            return buildQuizDtoResponse(quiz, quizResult);
         }
 
-        final var quiz = optionalQuiz.get();
-
-        return buildQuizDtoResponse(quiz, quiz.getQuestions());
+        return buildQuizDtoResponse(quiz, null);
     }
 
     @Transactional
@@ -108,7 +110,9 @@ public class QuizService {
         var insertedQuestions = quizContentPersister
                 .createAndSaveQuizContent(quiz, questionsQuantity);
 
-        return buildQuizDtoResponse(quiz, insertedQuestions);
+        quiz.getQuestions().addAll(insertedQuestions);
+
+        return buildQuizDtoResponse(quiz, null);
     }
 
     @Transactional
@@ -131,34 +135,34 @@ public class QuizService {
         var isQuizCompleted = quiz.getState().getCode().equals(QuizState.COMPLETED.getCode());
 
         if (isQuizCompleted) {
-            return buildQuizDtoResponse(quiz, quiz.getQuestions());
+            var quizResult = quizEvaluationService.processQuizResult(quiz);
+            return buildQuizDtoResponse(quiz, quizResult);
         }
 
         quizStateService.markInProgress(quiz);
-        final var questionsById = quizEvaluationService.questionsById(quiz.getQuestions());
-        final var userAnswers = UserAnswerMapper.toDomain(userAnswerDtos, questionsById)
-                .stream()
-                .toList();
+        final var questionsById = userAnswerAssembler.questionsById(quiz.getQuestions());
 
-        final var insertedUserAnswers = userAnswerRepository.saveAll(userAnswers);
+        final var userAnswersByQuestionId = userAnswerAssembler
+                .createUserAnswersByQuestionId(request.getUserAnswersDtos(), questionsById);
+
+        userAnswerAssembler.validateAllAnswered(questionsById.keySet(), userAnswersByQuestionId.keySet());
+        userAnswerAssembler.applyToQuiz(quiz, userAnswersByQuestionId);
+        userAnswerRepository.saveAll(new ArrayList<>(userAnswersByQuestionId.values()));
         quizStateService.markCompleted(quiz);
 
-        final var quizResult = quizEvaluationService
-                .evaluateUserAnswers(questionsById, insertedUserAnswers);
-
-        final var score = quizEvaluationService.calculateScore(quizResult);
-        //return new EvaluateAnswersResponse(quizResult, score);
-        return buildQuizDtoResponse(quiz, quiz.getQuestions());
+        var quizResult = quizEvaluationService.processQuizResult(quiz);
+        return buildQuizDtoResponse(quiz, quizResult);
     }
 
-    private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, Collection<Question> questions) {
+    private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, QuizResult quizResult) {
         return QuizDtoResponse.builder()
                 .quizId(quiz.getId())
                 .initialDate(quiz.getInitialDate())
                 .endDate(quiz.getEndDate())
                 .state(quiz.getState().getDescription())
                 .difficultLevel(quiz.getDifficultLevel().getDescription())
-                .questions(QuestionMapper.toDto(questions))
+                .questions(QuestionMapper.toDto(quiz.getQuestions()))
+                .quizResult(quizResult)
                 .build();
     }
 }

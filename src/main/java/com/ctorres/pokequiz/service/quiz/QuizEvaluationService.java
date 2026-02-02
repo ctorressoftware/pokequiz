@@ -1,71 +1,57 @@
 package com.ctorres.pokequiz.service.quiz;
 
+import com.ctorres.pokequiz.dto.api.QuizResult;
 import com.ctorres.pokequiz.entity.Answer;
-import com.ctorres.pokequiz.entity.Question;
-import com.ctorres.pokequiz.entity.UserAnswer;
-import com.ctorres.pokequiz.repository.QuizRepository;
-import com.ctorres.pokequiz.repository.UserAnswerRepository;
+import com.ctorres.pokequiz.entity.Quiz;
+import com.ctorres.pokequiz.enums.QuizState;
 import org.springframework.stereotype.Service;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class QuizEvaluationService {
 
-    private final QuizRepository quizRepository;
-    private final UserAnswerRepository userAnswerRepository;
+    public QuizResult processQuizResult(Quiz quiz) {
 
-    public QuizEvaluationService(
-            QuizRepository quizRepository,
-            UserAnswerRepository userAnswerRepository) {
-        this.quizRepository = quizRepository;
-        this.userAnswerRepository = userAnswerRepository;
+        if (quiz == null || !quiz.getState().getCode().equals(QuizState.COMPLETED.getCode())) {
+            throw new IllegalArgumentException("Invalid quiz");
+        }
+
+        var processedQuiz = evaluate(quiz);
+        var score = calculateScore(processedQuiz);
+        return QuizResult.of(processedQuiz, score);
     }
 
-    protected Map<Long, Question> questionsById(Set<Question> questions) {
-        return questions.stream()
-                .collect(Collectors.toMap(
-                        Question::getId,
-                        q -> q
-                ));
+    private Map<Long, Boolean> evaluate(Quiz quiz) {
+        var result = new HashMap<Long, Boolean>();
+
+        for (var q : quiz.getQuestions()) {
+            var ua = q.getUserAnswers().stream().findFirst()
+                    .orElseThrow(() ->
+                            new IllegalStateException(
+                                    "Missing user answer for questionId=" + q.getId()
+                            ));
+
+            var correct = q.getAnswers().stream()
+                    .filter(Answer::isCorrect)
+                    .findFirst()
+                    .orElseThrow(() ->
+                            new IllegalStateException(
+                                    "Question without correct answer: " + q.getId()
+                            ));
+
+            boolean ok = correct.getCanonicalKey().equals(ua.getCanonicalKey());
+            result.put(q.getId(), ok);
+        }
+
+        return result;
     }
 
-    private Map<Long, Set<Answer>> correctAnswersByQuestionId(Set<Question> questions) {
-        return questions.stream()
-                .collect(Collectors.toMap(
-                        Question::getId,
-                        q -> q.getAnswers().stream()
-                                .filter(Answer::isCorrect)
-                                .collect(Collectors.toUnmodifiableSet())
-                ));
-    }
+    private double calculateScore(Map<Long, Boolean> result) {
+        var totalQuestions = result.size();
+        var correctQuestions = (int) result.values().stream()
+                .filter(Boolean::booleanValue)
+                .count();
 
-    public Map<Long, Boolean> evaluateUserAnswers(
-            Map<Long, Question> questionsById,
-            List<UserAnswer> userAnswers) {
-
-        final var correctAnswers = correctAnswersByQuestionId(new HashSet<>(questionsById.values()));
-
-        return userAnswers.stream()
-                .collect(Collectors.toMap(
-                        UserAnswer::getId,
-                        q -> {
-                            var correctSet = correctAnswers.get(q.getQuestion().getId());
-
-                            return correctSet.stream()
-                                    .anyMatch(correct ->
-                                            correct.getCanonicalKey()
-                                                    .equals(q.getCanonicalKey())
-                                    );
-                        }
-                ));
-    }
-
-    private List<UserAnswer> saveUserAnswers(List<UserAnswer> answers) {
-        return null; // TODO
-    }
-
-    protected int calculateScore(Map<Long, Boolean> result) {
-        return 100; // TODO
+        return ((double) correctQuestions / totalQuestions) * 100;
     }
 }

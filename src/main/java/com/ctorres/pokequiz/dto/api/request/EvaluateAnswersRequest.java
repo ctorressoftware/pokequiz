@@ -15,7 +15,7 @@ public final class EvaluateAnswersRequest {
     private final Long quizId;
 
     @NotEmpty(message = "Invalid answers field")
-    private final Collection<@Valid UserAnswerDtoRequest> userAnswersDto;
+    private final Collection<@Valid UserAnswerDtoRequest> userAnswersDto; // TODO: Correct name.
 
     @JsonCreator
     public EvaluateAnswersRequest(
