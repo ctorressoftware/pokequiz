@@ -2,7 +2,8 @@ package com.ctorres.pokequiz.service.generator.name;
 
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 
+import java.util.Locale;
+
 public interface NameQuestionGenerator {
-    
-    public GeneratedItem generate();
+    GeneratedItem generate(Locale locale);
 }

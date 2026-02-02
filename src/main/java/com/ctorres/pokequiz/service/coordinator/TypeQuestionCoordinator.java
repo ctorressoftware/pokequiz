@@ -1,6 +1,7 @@
 package com.ctorres.pokequiz.service.coordinator;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
@@ -17,10 +18,10 @@ public class TypeQuestionCoordinator implements QuestionCoordinator {
         this.random = random;
     }
 
-    public GeneratedItem coordinate() {
+    public GeneratedItem coordinate(Locale locale) {
         int randomIndex = random.nextInt(generators.size());        
         TypeQuestionGenerator questionGenerator = generators.get(randomIndex);
-        return questionGenerator.generate();
+        return questionGenerator.generate(locale);
     }
     
 }

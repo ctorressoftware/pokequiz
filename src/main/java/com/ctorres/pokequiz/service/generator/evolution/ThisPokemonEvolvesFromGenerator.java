@@ -32,11 +32,11 @@ public class ThisPokemonEvolvesFromGenerator implements EvolutionQuestionGenerat
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
@@ -54,7 +54,7 @@ public class ThisPokemonEvolvesFromGenerator implements EvolutionQuestionGenerat
                 : "It doesn't have pre-evolution.";
 
         final List<String> distractorsList = pokemonList.stream()
-                .map(t -> t.getName())
+                .map(Result::getName)
                 .filter(t -> !t.equals(correctOption))
                 .toList();
 
@@ -69,7 +69,7 @@ public class ThisPokemonEvolvesFromGenerator implements EvolutionQuestionGenerat
             }
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.POKEMON_EVOLVES_FROM, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.POKEMON_EVOLVES_FROM, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

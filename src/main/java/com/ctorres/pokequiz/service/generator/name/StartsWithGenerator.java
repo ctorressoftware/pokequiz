@@ -18,7 +18,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class StartsWithGenerator implements NameQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -29,11 +28,11 @@ public class StartsWithGenerator implements NameQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
@@ -59,7 +58,7 @@ public class StartsWithGenerator implements NameQuestionGenerator {
             index++;
         }
 
-        final String questionText = texts.getRandomText(QuestionKeys.NAME_STARTS_WITH, Locale.ENGLISH);
+        final String questionText = texts.getRandomText(QuestionKeys.NAME_STARTS_WITH, locale);
         final GeneratedQuestion question = new GeneratedQuestion(
                 questionText,
                 images.getFrontDefault(),

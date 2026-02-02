@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 @RestController
 @RequestMapping("/quiz")
 public class QuizController {
@@ -37,8 +39,9 @@ public class QuizController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<QuizDtoResponse>> generateAndSaveContent(
             @RequestBody GenerateQuizContentRequest request,
+            @RequestHeader(name = "Accept-Language", required = false) Locale locale,
             @AuthenticationPrincipal AuthUser user) {
-        var response = quizOrchestrator.generateAndSaveContent(request, user);
+        var response = quizOrchestrator.generateAndSaveContent(request, locale, user);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

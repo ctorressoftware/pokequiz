@@ -20,7 +20,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -31,11 +30,11 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
@@ -50,46 +49,45 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
         final Evolution evolution = client.getEvolutionChain(evolutionId);
 
         final Evolution.ChainLink root = evolution.getChain();
-        final boolean isSpeciePreevolution = root.getSpecies().getName().equals(randomSpecie.getName());
+        final boolean isSpecieInvolution = root.getSpecies().getName().equals(randomSpecie.getName());
         List<Evolution.ChainLink> evolutions = root.getEvolvesTo();
         String correctOption = "";
 
-        if (!isSpeciePreevolution) {
+        if (!isSpecieInvolution) {
 
-            for (int i = 0; i < evolutions.size(); i++) {
-
-                final List<Evolution.ChainLink> secondStageEvolutions = evolutions.get(i).getEvolvesTo();
-                final String specieName = evolutions.get(i).getSpecies().getName();
+            for (Evolution.ChainLink chainLink : evolutions) {
+                final List<Evolution.ChainLink> secondStageEvolutions = chainLink.getEvolvesTo();
+                final String specieName = chainLink.getSpecies().getName();
 
                 if (specieName.equals(randomSpecie.getName())) {
-                    
-                    List<Evolution.ChainLink> species = evolutions.get(i).getEvolvesTo();
+
+                    List<Evolution.ChainLink> species = chainLink.getEvolvesTo();
 
                     correctOption = species.isEmpty()
                             ? "Not evolve."
                             : species.get(random.nextInt(species.size()))
-                                    .getSpecies()
-                                    .getName();
+                            .getSpecies()
+                            .getName();
                 }
 
                 if (!correctOption.isEmpty()) {
                     break;
                 }
 
-                for (int j = 0; j < secondStageEvolutions.size(); j++) {
-                    final List<Evolution.ChainLink> thirdStageEvolutions = secondStageEvolutions.get(j).getEvolvesTo();
-                    final String specieName2 = thirdStageEvolutions.isEmpty() 
+                for (Evolution.ChainLink secondStageEvolution : secondStageEvolutions) {
+                    final List<Evolution.ChainLink> thirdStageEvolutions = secondStageEvolution.getEvolvesTo();
+                    final String specieName2 = thirdStageEvolutions.isEmpty()
                             ? "Not evolve."
                             : thirdStageEvolutions.get(random.nextInt(thirdStageEvolutions.size()))
-                                    .getSpecies()
-                                    .getName();
+                            .getSpecies()
+                            .getName();
 
                     if (!specieName2.isEmpty()) {
                         correctOption = specieName2;
                         break;
                     }
                 }
-            
+
                 if (!correctOption.isEmpty()) {
                     break;
                 }
@@ -102,13 +100,13 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
                             .getName();
         }
 
-        final List<String> evolutiosnNames = evolutions.stream()
+        final List<String> evolutionsNames = evolutions.stream()
                 .map(t -> t.getSpecies().getName())
                 .toList();
 
         final List<String> distractorsList = pokemonList.stream()
-                .filter(t -> !evolutiosnNames.contains(t.getName()))
-                .map(t -> t.getName())
+                .map(Result::getName)
+                .filter(name -> !evolutionsNames.contains(name))
                 .toList();
 
         List<String> distractors = new ArrayList<>(3);
@@ -122,7 +120,7 @@ public class ThisPokemonEvolvesToGenerator implements EvolutionQuestionGenerator
             }
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.POKEMON_EVOLVES_TO, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.POKEMON_EVOLVES_TO, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

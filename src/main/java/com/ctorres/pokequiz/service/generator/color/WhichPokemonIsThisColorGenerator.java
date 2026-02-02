@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-// import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
@@ -16,10 +15,10 @@ import com.ctorres.pokequiz.dto.pokeapi.PokemonSpecie;
 import com.ctorres.pokequiz.dto.pokeapi.Result;
 import com.ctorres.pokequiz.service.QuestionTextService;
 import com.ctorres.pokequiz.util.QuestionKeys;
+import org.springframework.stereotype.Component;
 
-// @Component TODO QUESTION CLASS
+@Component
 public class WhichPokemonIsThisColorGenerator implements ColorQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -30,16 +29,15 @@ public class WhichPokemonIsThisColorGenerator implements ColorQuestionGenerator 
         this.random = random;
     }
 
-    public GeneratedItem generate() {
-
+    public GeneratedItem generate(Locale locale) {
         final List<Result> pokemonList = client.getAllPokemon().getResults();
         final List<Result> colorList = client.getAllPokemonColors().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
-        if (colorList == null || colorList.size() == 0) {
+        if (colorList == null || colorList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid color.");
         }
 
@@ -61,7 +59,7 @@ public class WhichPokemonIsThisColorGenerator implements ColorQuestionGenerator 
             }
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_IS_THE_COLOR_OF, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_IS_THE_COLOR_OF, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

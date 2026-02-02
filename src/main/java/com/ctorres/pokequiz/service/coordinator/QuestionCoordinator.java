@@ -2,8 +2,8 @@ package com.ctorres.pokequiz.service.coordinator;
 
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 
-public interface QuestionCoordinator {
-    
-    public GeneratedItem coordinate();
+import java.util.Locale;
 
+public interface QuestionCoordinator {
+    GeneratedItem coordinate(Locale locale);
 }

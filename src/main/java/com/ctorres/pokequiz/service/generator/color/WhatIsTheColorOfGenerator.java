@@ -19,7 +19,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class WhatIsTheColorOfGenerator implements ColorQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -30,16 +29,15 @@ public class WhatIsTheColorOfGenerator implements ColorQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
-
+    public GeneratedItem generate(Locale locale) {
         final List<Result> pokemonList = client.getAllPokemon().getResults();
         final List<Result> colorList = client.getAllPokemonColors().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
-        if (colorList == null || colorList.size() == 0) {
+        if (colorList == null || colorList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid color.");
         }
 
@@ -61,7 +59,7 @@ public class WhatIsTheColorOfGenerator implements ColorQuestionGenerator {
             }
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_IS_THE_COLOR_OF, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_IS_THE_COLOR_OF, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +28,9 @@ public class QuizContentPersister {
         this.questionRepository = questionRepository;
     }
 
-    private List<Question> createQuizContent(Quiz quiz, int questionsQuantity) {
+    private List<Question> createQuizContent(Quiz quiz, int questionsQuantity, Locale locale) {
 
-        final var generated = questionService.generateQuestions(questionsQuantity);
+        final var generated = questionService.generateQuestions(questionsQuantity, locale);
 
         if (generated.isEmpty()) {
             throw new GenerationModuleException("An error ocurred generating questions and answers.");
@@ -56,10 +57,10 @@ public class QuizContentPersister {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public List<Question> createAndSaveQuizContent(Quiz quiz, int questionsQuantity) {
+    public List<Question> createAndSaveQuizContent(Quiz quiz, int questionsQuantity, Locale locale) {
         quizStateService.claimGenerating(quiz);
         try {
-            var questions = createQuizContent(quiz, questionsQuantity);
+            var questions = createQuizContent(quiz, questionsQuantity, locale);
             var inserted = questionRepository.saveAll(questions);
             quizStateService.markReady(quiz);
             return inserted;

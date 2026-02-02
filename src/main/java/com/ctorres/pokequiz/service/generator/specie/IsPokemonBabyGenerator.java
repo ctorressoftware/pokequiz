@@ -19,7 +19,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class IsPokemonBabyGenerator implements SpecieQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -30,11 +29,11 @@ public class IsPokemonBabyGenerator implements SpecieQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
@@ -48,7 +47,7 @@ public class IsPokemonBabyGenerator implements SpecieQuestionGenerator {
         final String correctOption = String.valueOf(specieData.isBaby());
         final String wrongOption = String.valueOf(!specieData.isBaby());
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.IS_POKEMON_BABY, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.IS_POKEMON_BABY, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

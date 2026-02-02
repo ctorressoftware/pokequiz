@@ -20,7 +20,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class DoesThePokemonEvolveGenerator implements EvolutionQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -32,11 +31,11 @@ public class DoesThePokemonEvolveGenerator implements EvolutionQuestionGenerator
     }
 
     // TODO: REVIEW WITH POKEMON poochyena, to see why poochyena is the last evolution, according to the api.
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
@@ -51,26 +50,26 @@ public class DoesThePokemonEvolveGenerator implements EvolutionQuestionGenerator
         final Evolution evolution = client.getEvolutionChain(evolutionId);
 
         final Evolution.ChainLink root = evolution.getChain();
-        final boolean isSpeciePreevolution = root.getSpecies().getName().equals(randomSpecie.getName());
+        final boolean isSpecieInvolution = root.getSpecies().getName().equals(randomSpecie.getName());
         List<Evolution.ChainLink> evolutions = root.getEvolvesTo();
         boolean correctOption = false;
 
-        if (!isSpeciePreevolution) {
+        if (!isSpecieInvolution) {
 
-            for (int i = 0; i < evolutions.size(); i++) {
+            for (Evolution.ChainLink chainLink : evolutions) {
 
-                final String specieName = evolutions.get(i).getSpecies().getName();
+                final String specieName = chainLink.getSpecies().getName();
 
                 if (specieName.equals(randomSpecie.getName())) {
-                    List<Evolution.ChainLink> species = evolutions.get(i).getEvolvesTo();
+                    List<Evolution.ChainLink> species = chainLink.getEvolvesTo();
                     correctOption = !species.isEmpty();
                     break;
                 }
 
-                final List<Evolution.ChainLink> secondStageEvolutions = evolutions.get(i).getEvolvesTo();
+                final List<Evolution.ChainLink> secondStageEvolutions = chainLink.getEvolvesTo();
 
                 if (!secondStageEvolutions.isEmpty()) {
-                    final List<Evolution.ChainLink> thirdStageEvolutions = secondStageEvolutions.get(0).getEvolvesTo();
+                    final List<Evolution.ChainLink> thirdStageEvolutions = secondStageEvolutions.getFirst().getEvolvesTo();
                     final boolean specieName2 = thirdStageEvolutions.isEmpty();
                     correctOption = !specieName2;
                     break;
@@ -80,7 +79,7 @@ public class DoesThePokemonEvolveGenerator implements EvolutionQuestionGenerator
             correctOption = !evolutions.isEmpty();
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.DOES_POKEMON_EVOLVE, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.DOES_POKEMON_EVOLVE, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, randomPokemonName);
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

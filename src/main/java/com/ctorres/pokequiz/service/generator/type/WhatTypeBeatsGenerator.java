@@ -18,7 +18,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -29,7 +28,7 @@ public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> allTypes = client.getAllTypes().getResults()
                 .stream()
@@ -44,7 +43,7 @@ public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
         final Type.DamageRelations relations = type.getDamageRelations();
         final List<String> beatenTypes = relations.getDoubleDamageTo()
                 .stream()
-                .map(t -> t.getName())
+                .map(Type.NamedAPIResource::getName)
                 .toList();
 
         final String correctTypeName = beatenTypes.isEmpty() 
@@ -61,7 +60,7 @@ public class WhatTypeBeatsGenerator implements TypeQuestionGenerator {
             }
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_TYPE_BEATS, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_TYPE_BEATS, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, type.getName());
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
         

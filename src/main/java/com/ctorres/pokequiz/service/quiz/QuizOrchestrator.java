@@ -91,7 +91,7 @@ public class QuizOrchestrator {
     }
 
     @Transactional
-    public QuizDtoResponse generateAndSaveContent(GenerateQuizContentRequest request, AuthUser user) {
+    public QuizDtoResponse generateAndSaveContent(GenerateQuizContentRequest request, Locale locale, AuthUser user) {
         final Long quizId = request.getQuizId();
         final int questionsQuantity = request.getQuestionsQuantity();
 
@@ -108,7 +108,7 @@ public class QuizOrchestrator {
                 .orElseThrow(() -> new QuizNotFoundException(quizId));
 
         var insertedQuestions = quizContentPersister
-                .createAndSaveQuizContent(quiz, questionsQuantity);
+                .createAndSaveQuizContent(quiz, questionsQuantity, locale);
 
         quiz.getQuestions().addAll(insertedQuestions);
 

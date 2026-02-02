@@ -1,6 +1,7 @@
 package com.ctorres.pokequiz.service.coordinator;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.springframework.stereotype.Component;
@@ -19,10 +20,10 @@ public class ColorQuestionCoordinator implements QuestionCoordinator {
         this.random = random;
     }
 
-    public GeneratedItem coordinate() {
+    public GeneratedItem coordinate(Locale locale) {
         int randomIndex = random.nextInt(generators.size());        
         ColorQuestionGenerator questionGenerator = generators.get(randomIndex);
-        return questionGenerator.generate();
+        return questionGenerator.generate(locale);
     }
     
 }

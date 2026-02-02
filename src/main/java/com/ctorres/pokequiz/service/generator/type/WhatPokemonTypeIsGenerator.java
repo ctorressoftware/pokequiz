@@ -19,7 +19,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class WhatPokemonTypeIsGenerator implements TypeQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -30,11 +29,11 @@ public class WhatPokemonTypeIsGenerator implements TypeQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
-        if (pokemonList == null || pokemonList.size() == 0) {
+        if (pokemonList == null || pokemonList.isEmpty()) {
             throw new IllegalStateException("Required at least one valid pokemon.");
         }
 
@@ -65,9 +64,8 @@ public class WhatPokemonTypeIsGenerator implements TypeQuestionGenerator {
             }
         }
 
-        String correctTypeName = pokemonTypes.get(0);
-
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_POKEMON_TYPE_IS, Locale.ENGLISH);
+        final String correctTypeName = pokemonTypes.getFirst();
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_POKEMON_TYPE_IS, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, pokemon.getName());
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

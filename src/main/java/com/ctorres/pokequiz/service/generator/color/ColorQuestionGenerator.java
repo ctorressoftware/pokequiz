@@ -2,7 +2,8 @@ package com.ctorres.pokequiz.service.generator.color;
 
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
 
+import java.util.Locale;
+
 public interface ColorQuestionGenerator {
-    
-    public GeneratedItem generate();
+    GeneratedItem generate(Locale locale);
 }

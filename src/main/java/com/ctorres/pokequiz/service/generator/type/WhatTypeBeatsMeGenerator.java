@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Random;
 
 import org.springframework.stereotype.Component;
-
 import com.ctorres.pokequiz.client.PokeApiClient;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedAnswer;
 import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
@@ -30,8 +29,7 @@ public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
-
+    public GeneratedItem generate(Locale locale) {
         final List<Result> allTypes = client.getAllTypes().getResults()
                 .stream()
                 .filter(t -> !List.of("unknown", "shadow").contains(t.getName()))
@@ -45,7 +43,7 @@ public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
         final Type.DamageRelations relations = type.getDamageRelations();
         final List<String> weaknesses = relations.getDoubleDamageFrom()
                 .stream()
-                .map(t -> t.getName())
+                .map(Type.NamedAPIResource::getName)
                 .toList();
 
         final String correctTypeName = weaknesses.isEmpty() 
@@ -62,7 +60,7 @@ public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {
             }
         }
 
-        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_TYPE_BEATS_ME, Locale.ENGLISH);
+        final String questionTextUnformatted = texts.getRandomText(QuestionKeys.WHAT_TYPE_BEATS_ME, locale);
         final String questionText = MessageFormat.format(questionTextUnformatted, type.getName());
         final GeneratedQuestion question = new GeneratedQuestion(questionText);
 

@@ -17,7 +17,6 @@ import com.ctorres.pokequiz.util.QuestionKeys;
 
 @Component
 public class WhatPokemonIsGenerator implements NameQuestionGenerator {
-
     final private PokeApiClient client;
     final private QuestionTextService texts;
     final private Random random;
@@ -28,7 +27,7 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
         this.random = random;
     }
 
-    public GeneratedItem generate() {
+    public GeneratedItem generate(Locale locale) {
 
         final List<Result> pokemonList = client.getAllPokemon().getResults();
 
@@ -43,7 +42,7 @@ public class WhatPokemonIsGenerator implements NameQuestionGenerator {
         Pokemon correctPokemon = client.getPokemon(distractors.get(0).getName());
         Pokemon.Sprites images = correctPokemon.getSprites();
 
-        final String questionText = texts.getRandomText(QuestionKeys.WHAT_POKEMON_IS, Locale.ENGLISH);
+        final String questionText = texts.getRandomText(QuestionKeys.WHAT_POKEMON_IS, locale);
         final GeneratedQuestion question = new GeneratedQuestion(
                 questionText,
                 images.getFrontDefault(),
