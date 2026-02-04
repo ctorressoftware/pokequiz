@@ -1,6 +1,5 @@
 package com.ctorres.pokequiz.service.quiz.evaluation;
 
-import com.ctorres.pokequiz.dto.api.QuizResult;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

@@ -1,7 +1,5 @@
 package com.ctorres.pokequiz.service.quiz.evaluation;
 
-import com.ctorres.pokequiz.dto.api.QuizResult;
-
 import java.util.Map;
 
 public class EvaluationResult {
