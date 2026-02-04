@@ -1,7 +1,7 @@
 package com.ctorres.pokequiz.exception;
 
 import com.ctorres.pokequiz.dto.api.ApiResponse;
-import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
+import com.ctorres.pokequiz.service.generator.GeneratedItem;
 import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
 import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
 import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;

@@ -18,7 +18,12 @@ public class State {
     @Column(nullable = false)
     private boolean active;
 
-    public State() {
+    public State() {}
+
+    public State(String description, String code, boolean active) {
+        this.description = description;
+        this.code = code;
+        this.active = active;
     }
 
     public Long getId() {

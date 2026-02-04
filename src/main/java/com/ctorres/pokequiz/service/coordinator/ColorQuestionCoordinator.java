@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
-import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
+import com.ctorres.pokequiz.service.generator.GeneratedItem;
 import com.ctorres.pokequiz.service.generator.color.ColorQuestionGenerator;
 
 @Component

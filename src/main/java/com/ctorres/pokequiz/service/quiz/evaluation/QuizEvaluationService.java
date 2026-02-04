@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.quiz;
+package com.ctorres.pokequiz.service.quiz.evaluation;
 
 import com.ctorres.pokequiz.dto.api.QuizResult;
 import com.ctorres.pokequiz.entity.Answer;
@@ -25,11 +25,9 @@ public class QuizEvaluationService {
         var result = new HashMap<Long, Boolean>();
 
         for (var q : quiz.getQuestions()) {
-            var ua = q.getUserAnswers().stream().findFirst()
-                    .orElseThrow(() ->
-                            new IllegalStateException(
-                                    "Missing user answer for questionId=" + q.getId()
-                            ));
+            var ua = q.getUserAnswers().stream()
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Missing user answer for questionId=" + q.getId()));
 
             var correct = q.getAnswers().stream()
                     .filter(Answer::isCorrect)

@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.quiz;
+package com.ctorres.pokequiz.service.quiz.state;
 
 import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.enums.QuizState;

@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api.generator;
+package com.ctorres.pokequiz.service.generator;
 
 import java.util.Objects;
 

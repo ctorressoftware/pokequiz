@@ -1,6 +1,6 @@
 package com.ctorres.pokequiz.service;
 
-import com.ctorres.pokequiz.dto.api.generator.GeneratedItem;
+import com.ctorres.pokequiz.service.generator.GeneratedItem;
 import com.ctorres.pokequiz.exception.QuestionQuantityException;
 import com.ctorres.pokequiz.util.Constants;
 import org.springframework.stereotype.Service;

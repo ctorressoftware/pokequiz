@@ -6,6 +6,7 @@ import com.ctorres.pokequiz.entity.Quiz;
 import com.ctorres.pokequiz.exception.GenerationModuleException;
 import com.ctorres.pokequiz.repository.QuestionRepository;
 import com.ctorres.pokequiz.service.QuestionService;
+import com.ctorres.pokequiz.service.quiz.state.QuizStateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

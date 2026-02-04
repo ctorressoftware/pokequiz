@@ -1,6 +1,7 @@
 package com.ctorres.pokequiz.entity;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -30,7 +31,7 @@ public class Quiz {
     private User user;
 
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY)
-    private Set<Question> questions;
+    private final Set<Question> questions = new HashSet<>();
 
     public Quiz() {}
 

@@ -29,7 +29,7 @@ public class Response {
 
     public static class Builder {
         
-        private Response response = new Response();
+        private final Response response = new Response();
 
         public Builder code(int code) {
             response.setCode(code);
