@@ -5,6 +5,7 @@ import com.ctorres.pokequiz.entity.Question;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class EvaluatableQuestionAssembler {
@@ -12,7 +13,7 @@ public class EvaluatableQuestionAssembler {
     private static final int EXPECTED_USER_ANSWERS = 1;
     private static final int EXPECTED_CORRECT_ANSWERS = 1;
 
-    public List<EvaluatableQuestion> assemble(List<Question> questions) {
+    public List<EvaluatableQuestion> assemble(Set<Question> questions) {
 
         if (questions == null || questions.isEmpty())
             throw new IllegalArgumentException("Questions must not be empty");
@@ -20,7 +21,10 @@ public class EvaluatableQuestionAssembler {
         return questions.stream().map(question -> {
 
             if (question.getUserAnswers().size() != EXPECTED_USER_ANSWERS) {
-                throw new IllegalStateException("Question has many user answer: " + question.getId());
+                throw new IllegalStateException(
+                        "Expected user answer: " + EXPECTED_USER_ANSWERS +
+                        ", actual user answer: " + question.getUserAnswers().size() +
+                        ", Quiz id: " + question.getId());
             }
 
             var userAnswer = question.getUserAnswers().iterator().next();
@@ -29,11 +33,7 @@ public class EvaluatableQuestionAssembler {
                     .filter(Answer::isCorrect)
                     .toList();
 
-            if (correctAnswer.isEmpty()) {
-                throw new IllegalStateException("Question without correct answer: " + question.getId());
-            }
-
-            if (correctAnswer.size() > EXPECTED_CORRECT_ANSWERS) {
+            if (correctAnswer.size() != EXPECTED_CORRECT_ANSWERS) {
                 throw new IllegalStateException("Question with multiple correct answers: " + question.getId());
             }
 

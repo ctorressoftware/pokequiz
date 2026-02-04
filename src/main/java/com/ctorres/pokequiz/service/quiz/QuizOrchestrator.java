@@ -14,7 +14,8 @@ import com.ctorres.pokequiz.enums.QuizState;
 import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.mapper.QuestionMapper;
 import com.ctorres.pokequiz.repository.*;
-import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationService;
+import com.ctorres.pokequiz.service.quiz.evaluation.EvaluatableQuestionAssembler;
+import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationCore;
 import com.ctorres.pokequiz.service.quiz.state.QuizStateService;
 import com.ctorres.pokequiz.service.security.AuthUser;
 import org.springframework.stereotype.Service;
@@ -22,28 +23,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuizOrchestrator {
+    private final DifficultLevelRepository difficultLevelRepository;
+    private final EvaluatableQuestionAssembler evaluatableQuestionAssembler;
     private final QuizContentPersister quizContentPersister;
-    private final QuizEvaluationService quizEvaluationService;
+    private final QuizEvaluationCore quizEvaluationCore;
     private final QuizStateService quizStateService;
     private final QuizRepository quizRepository;
-    private final DifficultLevelRepository difficultLevelRepository;
     private final StateRepository stateRepository;
     private final UserAnswerAssembler userAnswerAssembler;
     private final UserAnswerRepository userAnswerRepository;
     private final UserRepository userRepository;
 
     public QuizOrchestrator(
-            QuizEvaluationService quizEvaluationService,
+            DifficultLevelRepository difficultLevelRepository,
+            EvaluatableQuestionAssembler evaluatableQuestionAssembler,
+            QuizEvaluationCore quizEvaluationCore,
             QuizContentPersister quizContentPersister,
             QuizStateService quizStateService,
             QuizRepository quizRepository,
-            DifficultLevelRepository difficultLevelRepository,
             StateRepository stateRepository,
             UserAnswerAssembler userAnswerAssembler,
             UserAnswerRepository userAnswerRepository,
             UserRepository userRepository) {
         this.difficultLevelRepository = difficultLevelRepository;
-        this.quizEvaluationService = quizEvaluationService;
+        this.evaluatableQuestionAssembler = evaluatableQuestionAssembler;
+        this.quizEvaluationCore = quizEvaluationCore;
         this.quizContentPersister = quizContentPersister;
         this.quizStateService = quizStateService;
         this.quizRepository = quizRepository;
@@ -85,8 +89,9 @@ public class QuizOrchestrator {
                 .orElseThrow(() -> new QuizNotFoundException(quizId));
 
         if (quiz.getState().getCode().equals(QuizState.COMPLETED.getCode())) {
-            final var quizResult = quizEvaluationService.processQuizResult(quiz);
-            return buildQuizDtoResponse(quiz, quizResult);
+            var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
+            var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
+            return buildQuizDtoResponse(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
         }
 
         return buildQuizDtoResponse(quiz, null);
@@ -137,8 +142,9 @@ public class QuizOrchestrator {
         var isQuizCompleted = quiz.getState().getCode().equals(QuizState.COMPLETED.getCode());
 
         if (isQuizCompleted) {
-            var quizResult = quizEvaluationService.processQuizResult(quiz);
-            return buildQuizDtoResponse(quiz, quizResult);
+            var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
+            var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
+            return buildQuizDtoResponse(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
         }
 
         quizStateService.markInProgress(quiz);
@@ -152,8 +158,9 @@ public class QuizOrchestrator {
         userAnswerRepository.saveAll(new ArrayList<>(userAnswersByQuestionId.values()));
         quizStateService.markCompleted(quiz);
 
-        var quizResult = quizEvaluationService.processQuizResult(quiz);
-        return buildQuizDtoResponse(quiz, quizResult);
+        var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
+        var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
+        return buildQuizDtoResponse(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
     }
 
     private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, QuizResult quizResult) {

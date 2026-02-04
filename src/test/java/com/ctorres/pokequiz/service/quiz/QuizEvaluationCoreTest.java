@@ -2,7 +2,7 @@ package com.ctorres.pokequiz.service.quiz;
 
 import com.ctorres.pokequiz.dto.api.QuizResult;
 import com.ctorres.pokequiz.entity.*;
-import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationService;
+import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationCore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +15,9 @@ import java.util.Map;
 import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
-public class QuizEvaluationServiceTest {
+public class QuizEvaluationCoreTest {
 
-    private final QuizEvaluationService quizEvaluationService = new QuizEvaluationService();
+    private final QuizEvaluationCore quizEvaluationCore = new QuizEvaluationCore();
 
     @Test
     void shouldReturnWellCompletedQuizResults() {
@@ -112,7 +112,7 @@ public class QuizEvaluationServiceTest {
 
         mockQuiz.getQuestions().addAll(mockQuestions);
 
-        QuizResult quizResult = quizEvaluationService.processQuizResult(mockQuiz);
+        QuizResult quizResult = quizEvaluationCore.processQuizResult(mockQuiz);
 
         Map<Long, Boolean> result = new HashMap<>();
         result.put(1L, true);
