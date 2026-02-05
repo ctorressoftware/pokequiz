@@ -1,179 +1,98 @@
 package com.ctorres.pokequiz.service.quiz;
 
-import com.ctorres.pokequiz.dto.api.QuizResult;
-import com.ctorres.pokequiz.entity.*;
+import com.ctorres.pokequiz.service.quiz.evaluation.EvaluatableQuestion;
 import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationCore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-@ExtendWith(MockitoExtension.class)
 public class QuizEvaluationCoreTest {
 
     private final QuizEvaluationCore quizEvaluationCore = new QuizEvaluationCore();
 
     @Test
     void shouldReturnWellCompletedQuizResults() {
+        var first = new EvaluatableQuestion(1L, "correct", "correct");
+        var second = new EvaluatableQuestion(2L, "correct", "correct");
+        var third = new EvaluatableQuestion(3L, "correct", "correct");
+        var fourth = new EvaluatableQuestion(4L, "correct", "correct");
+        var questions = List.of(first, second, third, fourth);
 
-        State mockState = new State(
-                "COMPLETED",
-                "COMPLETED",
-                true
+        Map<Long, Boolean> result = Map.of(
+                1L, true,
+                2L, true,
+                3L, true,
+                4L, true
         );
 
-        DifficultLevel mockDifficultLevel = new DifficultLevel(
-                "NORMAL",
-                true
-        );
+        var evaluation = quizEvaluationCore.processQuizResult(questions);
 
-        User mockUser = new User(
-                "user",
-                "password",
-                true
-        );
-
-        Quiz mockQuiz = Quiz.builder()
-                .initialDate(Instant.now())
-                .endDate(null)
-                .state(mockState)
-                .difficultLevel(mockDifficultLevel)
-                .user(mockUser)
-                .build();
-
-        var mockQuestion1 = createMockQuestion(
-                1L,
-                mockQuiz,
-                Set.of(createMockAnswer(
-                                "description",
-                                "answer1",
-                                true,
-                                true,
-                                null
-                        ),
-                        createMockAnswer(
-                                "description",
-                                "answer2",
-                                false,
-                                true,
-                                null
-                        )
-                ),
-                null
-        );
-
-        var mockQuestion2 = createMockQuestion(
-                2L,
-                mockQuiz,
-                Set.of(
-                        createMockAnswer(
-                                "description",
-                                "answer1",
-                                false,
-                                true,
-                                null),
-                        createMockAnswer(
-                                "description",
-                                "answer2",
-                                true,
-                                true,
-                                null)
-                ),
-                null
-        );
-
-        var mockUserAnswer1 = createMockUserAnswer(
-                "description",
-                "answer1",
-                true,
-                mockQuestion1
-        );
-
-        var mockUserAnswer2 = createMockUserAnswer(
-                "description",
-                "answer2",
-                true,
-                mockQuestion2
-        );
-
-        mockQuestion1.setSingleUserAnswer(mockUserAnswer1);
-        mockQuestion2.setSingleUserAnswer(mockUserAnswer2);
-
-        List<Question> mockQuestions = List.of(
-                mockQuestion1,
-                mockQuestion2
-        );
-
-        mockQuiz.getQuestions().addAll(mockQuestions);
-
-        QuizResult quizResult = quizEvaluationCore.processQuizResult(mockQuiz);
-
-        Map<Long, Boolean> result = new HashMap<>();
-        result.put(1L, true);
-        result.put(2L, true);
-
-        Assertions.assertEquals(100.0D, quizResult.getScore());
-        Assertions.assertEquals(result, quizResult.getResult());
+        Assertions.assertEquals(100.0D, evaluation.getScore());
+        Assertions.assertEquals(result, evaluation.getResult());
     }
 
     @Test
     void shouldReturnWrongCompletedQuizResults() {
+        var first = new EvaluatableQuestion(1L, "correct", "other");
+        var second = new EvaluatableQuestion(2L, "correct", "other");
+        var third = new EvaluatableQuestion(3L, "correct", "other");
+        var fourth = new EvaluatableQuestion(4L, "correct", "other");
+        var questions = List.of(first, second, third, fourth);
 
+        Map<Long, Boolean> result = Map.of(
+                1L, false,
+                2L, false,
+                3L, false,
+                4L, false
+        );
+
+        var evaluation = quizEvaluationCore.processQuizResult(questions);
+
+        Assertions.assertEquals(0.0D, evaluation.getScore());
+        Assertions.assertEquals(result, evaluation.getResult());
     }
 
     @Test
     void shouldReturnNormalCompletedQuizResults() {
+        var first = new EvaluatableQuestion(1L, "correct", "correct");
+        var second = new EvaluatableQuestion(2L, "correct", "other");
+        var third = new EvaluatableQuestion(3L, "correct", "correct");
+        var fourth = new EvaluatableQuestion(4L, "correct", "other");
+        var questions = List.of(first, second, third, fourth);
 
+        Map<Long, Boolean> result = Map.of(
+                1L, true,
+                2L, false,
+                3L, true,
+                4L, false
+        );
+
+        var evaluation = quizEvaluationCore.processQuizResult(questions);
+
+        Assertions.assertEquals(50.0D, evaluation.getScore());
+        Assertions.assertEquals(result, evaluation.getResult());
     }
 
-    private Question createMockQuestion(
-            Long id,
-            Quiz quiz,
-            Set<Answer> answers,
-            Set<UserAnswer> userAnswers) {
+    @Test
+    void shouldFailWhenDuplicateQuestionIds() {
+        var first = new EvaluatableQuestion(1L, "correct", "correct");
+        var second = new EvaluatableQuestion(1L, "correct", "other");
 
-        return new Question(
-                id,
-                "description",
-                true,
-                "image1.jpg",
-                "image2.jpg",
-                quiz,
-                answers,
-                null);
+        Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> quizEvaluationCore.processQuizResult(List.of(first, second))
+        );
     }
 
-    private Answer createMockAnswer(
-            String description,
-            String canonicalKey,
-            boolean correct,
-            boolean active,
-            Question question) {
+    @Test
+    void shouldFailWhenQuestionIdIsNull() {
+        var question = new EvaluatableQuestion(null, "correct", "correct");
 
-        return new Answer(
-                description,
-                canonicalKey,
-                correct,
-                active,
-                question);
-    }
-
-    private UserAnswer createMockUserAnswer(
-            String description,
-            String canonicalKey,
-            boolean active,
-            Question question) {
-
-        return new UserAnswer(
-                description,
-                canonicalKey,
-                active,
-                question);
+        Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> quizEvaluationCore.processQuizResult(List.of(question))
+        );
     }
 }
