@@ -2,7 +2,6 @@ package com.ctorres.pokequiz.entity;
 
 import java.util.*;
 
-import com.ctorres.pokequiz.exception.BadRequestException;
 import jakarta.persistence.*;
 
 @Entity
@@ -29,14 +28,15 @@ public class Question {
 
     @OneToMany(mappedBy = "question",
             fetch = FetchType.LAZY,
-            cascade=CascadeType.ALL,
-            orphanRemoval=true)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private final Set<Answer> answers = new HashSet<>();
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private final Set<UserAnswer> userAnswers = new HashSet<>();
 
-    protected Question() {}
+    protected Question() {
+    }
 
     public Question(
             String description,

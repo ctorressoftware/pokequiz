@@ -57,7 +57,7 @@ public class QuizController {
     @PostMapping("/completeQuizAnswers")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<QuizDtoResponse>> completeQuizAnswers(
-            @Valid @RequestBody EvaluateAnswersRequest request,
+            @Valid @RequestBody EvaluateAnswersRequest request, // TODO: Configure @Valid in each request
             @AuthenticationPrincipal AuthUser user) {
         var response = quizOrchestrator.completeQuizAnswers(request, user);
         return ResponseEntity.ok(ApiResponse.success(response));

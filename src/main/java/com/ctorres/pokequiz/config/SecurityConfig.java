@@ -29,18 +29,22 @@ import com.ctorres.pokequiz.service.security.JwtAuthFilter;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-
     @Bean
     @Profile({Environment.QA, Environment.PROD})
     SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwt) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                // .exceptionHandling(ex -> ex.accessDeniedHandler()) TODO
+                // .exceptionHandling(ex -> ex.accessDeniedHandler()) // TODO: Add exception handler
                 .sessionManagement(sm -> sm
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/auth/register",
+                                "/auth/login",
+                                "/auth/refresh")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -52,16 +56,23 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                // .exceptionHandling(ex -> ex.accessDeniedHandler()) TODO
+                // .exceptionHandling(ex -> ex.accessDeniedHandler()) // TODO: Add exception handler
                 .sessionManagement(sm -> sm
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/health")
+                        .permitAll()
                         .requestMatchers("/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/v3/api-docs.yaml").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
+                                "/v3/api-docs.yaml")
+                        .permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/auth/register",
+                                "/auth/login",
+                                "/auth/refresh")
+                        .permitAll()
                         .anyRequest().permitAll())
                 .addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -70,7 +81,7 @@ public class SecurityConfig {
     @Bean
     @Profile(Environment.LOCAL)
     CorsConfigurationSource localCorsConfiguration() {
-        CorsConfiguration config = new CorsConfiguration();
+        var config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("*"));
         return getCorsConfigurationSource(config);
     }
@@ -78,7 +89,7 @@ public class SecurityConfig {
     @Bean
     @Profile(Environment.QA)
     CorsConfigurationSource qualityAssuranceCorsConfiguration() {
-        CorsConfiguration config = new CorsConfiguration();
+        var config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("pokequiz-generator-qa.com"));
         return getCorsConfigurationSource(config);
     }
@@ -86,7 +97,7 @@ public class SecurityConfig {
     @Bean
     @Profile(Environment.PROD)
     CorsConfigurationSource corsConfiguration() {
-        CorsConfiguration config = new CorsConfiguration();
+        var config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("pokequiz-generator.com"));
         return getCorsConfigurationSource(config);
     }
@@ -97,7 +108,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }

@@ -74,7 +74,7 @@ public class PokeApiClient {
                 throw new PokemonClientException(url);
             }
 
-            if (pokemonList.get().getResults().size() == 0) {
+            if (pokemonList.get().getResults().isEmpty()) {
                 throw new PokemonNotFoundException();
             }
 
@@ -100,7 +100,7 @@ public class PokeApiClient {
                 throw new PokemonClientException(url);
             }
 
-            if (typeList.get().getResults().size() == 0) {
+            if (typeList.get().getResults().isEmpty()) {
                 throw new TypesNotFoundException();
             }
 
@@ -168,7 +168,7 @@ public class PokeApiClient {
                 throw new PokemonClientException(url);
             }
 
-            if (pokemonList.get().getResults().size() == 0) {
+            if (pokemonList.get().getResults().isEmpty()) {
                 throw new PokemonNotFoundException();
             }
 

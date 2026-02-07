@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
+// TODO: Add more exceptions
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
