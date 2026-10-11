@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.config;
+package com.ctorres.pokequiz.infrastructure.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

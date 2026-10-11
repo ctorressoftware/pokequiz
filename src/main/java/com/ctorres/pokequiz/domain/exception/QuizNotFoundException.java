@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.exception;
+package com.ctorres.pokequiz.domain.exception;
 
 public class QuizNotFoundException extends RuntimeException {
 

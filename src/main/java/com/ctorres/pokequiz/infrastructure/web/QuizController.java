@@ -1,13 +1,13 @@
 package com.ctorres.pokequiz.infrastructure.web;
 
-import com.ctorres.pokequiz.dto.api.ApiResponse;
-import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
-import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
-import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
-import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
-import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
-import com.ctorres.pokequiz.service.quiz.QuizOrchestrator;
-import com.ctorres.pokequiz.service.security.AuthUser;
+import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.CreateQuizRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.EvaluateAnswersRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.GenerateQuizContentRequest;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDtoResponse;
+import com.ctorres.pokequiz.application.usecase.core.quiz.QuizOrchestrator;
+import com.ctorres.pokequiz.infrastructure.security.AuthUser;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,10 +1,9 @@
-package com.ctorres.pokequiz.service.quiz;
+package com.ctorres.pokequiz.application.usecase.core.quiz;
 
-import com.ctorres.pokequiz.dto.api.request.UserAnswerDtoRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.UserAnswerDtoRequest;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.UserAnswer;
-import com.ctorres.pokequiz.exception.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -26,7 +25,7 @@ public class UserAnswerAssembler {
     protected void validateAllAnswered(Set<Long> questionsIds, Set<Long> userAnswerQuestionsIds){
         var hasEachQuestionBeenAnswered = questionsIds.equals(userAnswerQuestionsIds);
         if (!hasEachQuestionBeenAnswered) {
-            throw new BadRequestException("Each quiz's question has to have an answer.");
+            throw new IllegalArgumentException("Each quiz's question has to have an answer.");
         }
     }
 
@@ -40,12 +39,12 @@ public class UserAnswerAssembler {
                         dto -> {
                             var q = questionsById.get(dto.getQuestionId());
                             if (q == null) {
-                                throw new BadRequestException("Invalid questionId=" + dto.getQuestionId());
+                                throw new IllegalArgumentException("Invalid questionId=" + dto.getQuestionId());
                             }
                             return new UserAnswer(dto.getDescription(), dto.getValue(), true, q);
                         },
                         (a, b) -> {
-                            throw new BadRequestException(
+                            throw new IllegalArgumentException(
                                     "Duplicate answer for questionId=" + a.getQuestion().getId()
                             );
                         }

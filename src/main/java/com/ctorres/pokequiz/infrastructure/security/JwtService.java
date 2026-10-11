@@ -1,6 +1,6 @@
-package com.ctorres.pokequiz.application.usecase.security;
+package com.ctorres.pokequiz.infrastructure.security;
 
-import com.ctorres.pokequiz.config.JwtProperties;
+import com.ctorres.pokequiz.infrastructure.security.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

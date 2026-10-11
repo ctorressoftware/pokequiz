@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.generator.type;
+package com.ctorres.pokequiz.application.usecase.core.generator.type;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -8,14 +8,14 @@ import java.util.Locale;
 import java.util.Random;
 
 import org.springframework.stereotype.Component;
-import com.ctorres.pokequiz.client.PokeApiClient;
-import com.ctorres.pokequiz.service.generator.GeneratedAnswer;
-import com.ctorres.pokequiz.service.generator.GeneratedItem;
-import com.ctorres.pokequiz.service.generator.GeneratedQuestion;
-import com.ctorres.pokequiz.dto.pokeapi.Result;
-import com.ctorres.pokequiz.dto.pokeapi.Type;
-import com.ctorres.pokequiz.service.QuestionTextService;
-import com.ctorres.pokequiz.util.QuestionKeys;
+import com.ctorres.pokequiz.infrastructure.pokeapi.PokeApiClient;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedAnswer;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedQuestion;
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Result;
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Type;
+import com.ctorres.pokequiz.application.usecase.core.QuestionTextService;
+import com.ctorres.pokequiz.application.usecase.core.generator.QuestionKeys;
 
 @Component
 public class WhatTypeBeatsMeGenerator implements TypeQuestionGenerator {

@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api.response;
+package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
 public class AnswerDto {
 

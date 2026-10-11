@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api.request;
+package com.ctorres.pokequiz.infrastructure.web.request.quiz;
 
 public class CreateQuizRequest {
 

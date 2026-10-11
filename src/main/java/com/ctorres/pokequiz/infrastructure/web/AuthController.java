@@ -1,8 +1,11 @@
 package com.ctorres.pokequiz.infrastructure.web;
 
-import com.ctorres.pokequiz.dto.api.ApiResponse;
-import com.ctorres.pokequiz.dto.auth.*;
-import com.ctorres.pokequiz.service.AuthService;
+import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
+import com.ctorres.pokequiz.application.usecase.auth.AuthService;
+import com.ctorres.pokequiz.infrastructure.web.request.auth.LoginRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.auth.RefreshRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.auth.RegisterRequest;
+import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

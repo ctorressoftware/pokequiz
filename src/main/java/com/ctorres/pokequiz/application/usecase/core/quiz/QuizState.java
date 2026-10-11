@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.enums;
+package com.ctorres.pokequiz.application.usecase.core.quiz;
 
 public enum QuizState {
     CREATED(1L, "CREATED"),

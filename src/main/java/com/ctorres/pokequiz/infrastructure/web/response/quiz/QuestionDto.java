@@ -1,6 +1,5 @@
-package com.ctorres.pokequiz.dto.api.response;
+package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
-import com.ctorres.pokequiz.dto.api.UserAnswerDto;
 import java.util.Collection;
 
 public class QuestionDto {

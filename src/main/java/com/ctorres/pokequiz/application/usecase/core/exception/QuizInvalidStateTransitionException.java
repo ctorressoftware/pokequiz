@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.exception;
+package com.ctorres.pokequiz.application.usecase.core.exception;
 
 public class QuizInvalidStateTransitionException extends RuntimeException {
 

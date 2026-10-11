@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.pokeapi;
+package com.ctorres.pokequiz.infrastructure.pokeapi.dto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api;
+package com.ctorres.pokequiz.application.usecase.core;
 
 import java.util.Map;
 

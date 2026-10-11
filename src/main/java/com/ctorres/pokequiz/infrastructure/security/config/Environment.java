@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.util;
+package com.ctorres.pokequiz.infrastructure.security.config;
 
 public class Environment {
     public final static String LOCAL = "local";

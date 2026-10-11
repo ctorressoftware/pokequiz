@@ -1,6 +1,4 @@
-package com.ctorres.pokequiz.dto.api.response;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
 public class CreateQuizResponse {
 

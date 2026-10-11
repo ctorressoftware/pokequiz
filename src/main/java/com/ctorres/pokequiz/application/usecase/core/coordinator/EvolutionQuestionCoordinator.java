@@ -1,11 +1,11 @@
-package com.ctorres.pokequiz.service.coordinator;
+package com.ctorres.pokequiz.application.usecase.core.coordinator;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import org.springframework.stereotype.Component;
-import com.ctorres.pokequiz.service.generator.GeneratedItem;
-import com.ctorres.pokequiz.service.generator.evolution.EvolutionQuestionGenerator;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.core.generator.evolution.EvolutionQuestionGenerator;
 
 @Component
 public class EvolutionQuestionCoordinator implements QuestionCoordinator {

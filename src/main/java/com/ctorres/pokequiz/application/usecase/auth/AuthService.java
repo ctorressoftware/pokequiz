@@ -1,13 +1,13 @@
-package com.ctorres.pokequiz.application.usecase;
+package com.ctorres.pokequiz.application.usecase.auth;
 
 import com.ctorres.pokequiz.infrastructure.security.config.JwtProperties;
 import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshToken;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.User;
-import com.ctorres.pokequiz.exception.DuplicatedUsernameException;
-import com.ctorres.pokequiz.exception.InactiveUserException;
-import com.ctorres.pokequiz.exception.InvalidRefreshTokenException;
-import com.ctorres.pokequiz.exception.WeakPasswordException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.DuplicatedUsernameException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.InactiveUserException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.InvalidRefreshTokenException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.WeakPasswordException;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.RefreshTokenRepository;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.RoleRepository;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.UserRepository;

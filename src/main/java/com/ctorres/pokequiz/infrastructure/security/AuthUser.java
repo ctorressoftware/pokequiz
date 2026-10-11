@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.application.usecase.security;
+package com.ctorres.pokequiz.infrastructure.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

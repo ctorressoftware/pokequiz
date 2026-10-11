@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.infrastructure.web.exception;
+package com.ctorres.pokequiz.infrastructure.web.api;
 
 import com.ctorres.pokequiz.application.usecase.auth.exception.DuplicatedUsernameException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.InactiveUserException;
@@ -7,7 +7,6 @@ import com.ctorres.pokequiz.application.usecase.auth.exception.WeakPasswordExcep
 import com.ctorres.pokequiz.application.usecase.core.exception.*;
 import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
-import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
 import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
 import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
 import com.ctorres.pokequiz.infrastructure.web.response.quiz.GenerateQuizContentResponse;

@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.quiz.evaluation;
+package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
 
 import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;

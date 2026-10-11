@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api.request;
+package com.ctorres.pokequiz.infrastructure.web.request.quiz;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

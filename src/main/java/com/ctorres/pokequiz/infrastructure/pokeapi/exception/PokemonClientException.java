@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.exception;
+package com.ctorres.pokequiz.infrastructure.pokeapi.exception;
 
 public class PokemonClientException extends RuntimeException {
 

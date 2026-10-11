@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.generator.evolution;
+package com.ctorres.pokequiz.application.usecase.core.generator.evolution;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import org.springframework.stereotype.Component;
-import com.ctorres.pokequiz.client.PokeApiClient;
-import com.ctorres.pokequiz.service.generator.GeneratedAnswer;
-import com.ctorres.pokequiz.service.generator.GeneratedItem;
-import com.ctorres.pokequiz.service.generator.GeneratedQuestion;
-import com.ctorres.pokequiz.dto.pokeapi.Evolution;
-import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
-import com.ctorres.pokequiz.dto.pokeapi.PokemonSpecie;
-import com.ctorres.pokequiz.dto.pokeapi.Result;
-import com.ctorres.pokequiz.service.QuestionTextService;
-import com.ctorres.pokequiz.util.QuestionKeys;
+import com.ctorres.pokequiz.infrastructure.pokeapi.PokeApiClient;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedAnswer;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedQuestion;
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Evolution;
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Pokemon;
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.PokemonSpecie;
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Result;
+import com.ctorres.pokequiz.application.usecase.core.QuestionTextService;
+import com.ctorres.pokequiz.application.usecase.core.generator.QuestionKeys;
 
 @Component
 public class DoesThePokemonEvolveGenerator implements EvolutionQuestionGenerator {

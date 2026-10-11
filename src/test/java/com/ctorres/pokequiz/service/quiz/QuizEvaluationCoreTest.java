@@ -1,7 +1,7 @@
 package com.ctorres.pokequiz.service.quiz;
 
-import com.ctorres.pokequiz.service.quiz.evaluation.EvaluatableQuestion;
-import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationCore;
+import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.EvaluatableQuestion;
+import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.QuizEvaluationCore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

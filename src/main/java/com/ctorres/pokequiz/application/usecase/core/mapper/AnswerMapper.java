@@ -1,6 +1,6 @@
-package com.ctorres.pokequiz.mapper;
+package com.ctorres.pokequiz.application.usecase.core.mapper;
 
-import com.ctorres.pokequiz.dto.api.response.AnswerDto;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.AnswerDto;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
 
 import java.util.Collection;

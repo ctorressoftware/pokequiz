@@ -1,6 +1,6 @@
-package com.ctorres.pokequiz.service.generator.type;
+package com.ctorres.pokequiz.application.usecase.core.generator.type;
 
-import com.ctorres.pokequiz.service.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
 
 import java.util.Locale;
 

@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.auth;
+package com.ctorres.pokequiz.infrastructure.web.request.auth;
 
 public class LoginRequest {
     

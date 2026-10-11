@@ -1,21 +1,17 @@
-package com.ctorres.pokequiz.client;
+package com.ctorres.pokequiz.infrastructure.pokeapi;
 
 import java.util.Optional;
 
+import com.ctorres.pokequiz.infrastructure.pokeapi.dto.*;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import com.ctorres.pokequiz.config.ApiConfig;
-import com.ctorres.pokequiz.dto.pokeapi.Pokemon;
-import com.ctorres.pokequiz.dto.pokeapi.PokemonSpecie;
-import com.ctorres.pokequiz.dto.pokeapi.Type;
-import com.ctorres.pokequiz.exception.PokemonClientException;
-import com.ctorres.pokequiz.exception.PokemonNotFoundException;
-import com.ctorres.pokequiz.exception.PokemonSpecieNotFound;
-import com.ctorres.pokequiz.exception.TypesNotFoundException;
-import com.ctorres.pokequiz.dto.pokeapi.Evolution;
-import com.ctorres.pokequiz.dto.pokeapi.GenericList;
+import com.ctorres.pokequiz.infrastructure.config.ApiConfig;
+import com.ctorres.pokequiz.infrastructure.pokeapi.exception.PokemonClientException;
+import com.ctorres.pokequiz.domain.exception.PokemonNotFoundException;
+import com.ctorres.pokequiz.domain.exception.PokemonSpecieNotFoundException;
+import com.ctorres.pokequiz.domain.exception.TypesNotFoundException;
 
 @Component
 public class PokeApiClient {
@@ -145,7 +141,7 @@ public class PokeApiClient {
                     .ofNullable(restTemplate.getForObject(url, PokemonSpecie.class));
 
             if (pokemonSpecieData.isEmpty()) {
-                throw new PokemonSpecieNotFound(pokemonName);
+                throw new PokemonSpecieNotFoundException(pokemonName);
             }
 
             return pokemonSpecieData.get();

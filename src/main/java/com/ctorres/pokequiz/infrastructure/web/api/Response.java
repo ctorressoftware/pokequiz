@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api;
+package com.ctorres.pokequiz.infrastructure.web.api;
 
 public class Response {
     private int code;

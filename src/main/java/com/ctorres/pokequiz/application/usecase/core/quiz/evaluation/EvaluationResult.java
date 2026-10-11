@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.quiz.evaluation;
+package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
 
 import java.util.Map;
 

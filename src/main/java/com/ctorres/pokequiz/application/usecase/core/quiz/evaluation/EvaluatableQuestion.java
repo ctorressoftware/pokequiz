@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.quiz.evaluation;
+package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
 
 public class EvaluatableQuestion {
     private final Long questionId;

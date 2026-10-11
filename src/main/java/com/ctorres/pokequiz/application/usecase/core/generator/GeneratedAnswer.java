@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.generator;
+package com.ctorres.pokequiz.application.usecase.core.generator;
 
 import java.util.Objects;
 

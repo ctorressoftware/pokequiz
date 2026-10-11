@@ -1,12 +1,12 @@
-package com.ctorres.pokequiz.exception;
+package com.ctorres.pokequiz.domain.exception;
 
-public class PokemonSpecieNotFound extends RuntimeException {
+public class PokemonSpecieNotFoundException extends RuntimeException {
 
-    public PokemonSpecieNotFound() {
+    public PokemonSpecieNotFoundException() {
         super("Cannot find any pokemon specie.");
     }
 
-    public PokemonSpecieNotFound(String name) {
+    public PokemonSpecieNotFoundException(String name) {
         super("Pokemon specie not found with name: " + name);
     } 
     

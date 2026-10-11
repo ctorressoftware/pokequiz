@@ -1,23 +1,23 @@
-package com.ctorres.pokequiz.service.quiz;
+package com.ctorres.pokequiz.application.usecase.core.quiz;
 
 import java.time.Instant;
 import java.util.*;
 
-import com.ctorres.pokequiz.dto.api.QuizResult;
-import com.ctorres.pokequiz.dto.api.request.CreateQuizRequest;
-import com.ctorres.pokequiz.dto.api.request.EvaluateAnswersRequest;
-import com.ctorres.pokequiz.dto.api.request.GenerateQuizContentRequest;
-import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
-import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
+import com.ctorres.pokequiz.application.usecase.core.QuizResult;
+import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
+import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.CreateQuizRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.EvaluateAnswersRequest;
+import com.ctorres.pokequiz.infrastructure.web.request.quiz.GenerateQuizContentRequest;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDtoResponse;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
-import com.ctorres.pokequiz.enums.QuizState;
-import com.ctorres.pokequiz.exception.*;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.*;
-import com.ctorres.pokequiz.mapper.QuestionMapper;
-import com.ctorres.pokequiz.service.quiz.evaluation.EvaluatableQuestionAssembler;
-import com.ctorres.pokequiz.service.quiz.evaluation.QuizEvaluationCore;
-import com.ctorres.pokequiz.service.quiz.state.QuizStateService;
-import com.ctorres.pokequiz.service.security.AuthUser;
+import com.ctorres.pokequiz.application.usecase.core.mapper.QuestionMapper;
+import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.EvaluatableQuestionAssembler;
+import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.QuizEvaluationCore;
+import com.ctorres.pokequiz.application.usecase.core.quiz.state.QuizStateService;
+import com.ctorres.pokequiz.infrastructure.security.AuthUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +81,7 @@ public class QuizOrchestrator {
     public QuizDtoResponse getQuizById(Long quizId, AuthUser user) {
 
         if (quizId == null || quizId <= 0) {
-            throw new BadRequestException("Invalid quizId field.");
+            throw new IllegalArgumentException("Invalid quizId field.");
         }
 
         final var quiz = quizRepository
@@ -103,11 +103,11 @@ public class QuizOrchestrator {
         final int questionsQuantity = request.getQuestionsQuantity();
 
         if (quizId == null || quizId <= 0) {
-            throw new BadRequestException("Invalid quizId field.");
+            throw new IllegalArgumentException("Invalid quizId field.");
         }
 
         if (questionsQuantity <= 0) {
-            throw new BadRequestException("Invalid questionsQuantity field.");
+            throw new IllegalArgumentException("Invalid questionsQuantity field.");
         }
 
         final var quiz = quizRepository
@@ -128,11 +128,11 @@ public class QuizOrchestrator {
         final var userAnswerDtos = request.getUserAnswersDtos();
 
         if (quizId == null || quizId <= 0) {
-            throw new BadRequestException("Invalid quizId field.");
+            throw new IllegalArgumentException("Invalid quizId field.");
         }
 
         if (userAnswerDtos == null || userAnswerDtos.isEmpty()) {
-            throw new BadRequestException("Invalid answers field.");
+            throw new IllegalArgumentException("Invalid answers field.");
         }
 
         final var quiz = quizRepository

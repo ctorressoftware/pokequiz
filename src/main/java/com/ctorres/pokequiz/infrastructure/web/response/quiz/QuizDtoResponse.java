@@ -1,7 +1,6 @@
-package com.ctorres.pokequiz.dto.api.response;
+package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
-import com.ctorres.pokequiz.dto.api.QuizResult;
-import com.ctorres.pokequiz.exception.BadRequestException;
+import com.ctorres.pokequiz.application.usecase.core.QuizResult;
 import java.time.Instant;
 import java.util.Collection;
 
@@ -33,7 +32,7 @@ public final class QuizDtoResponse {
 
     private static void requireNonNull(Object value, String field) {
         if (value == null) {
-            throw new BadRequestException(field + " is required");
+            throw new IllegalArgumentException(field + " is required");
         }
     }
 

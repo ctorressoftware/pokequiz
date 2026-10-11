@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.exception;
+package com.ctorres.pokequiz.application.usecase.auth.exception;
 
 public class WeakPasswordException extends RuntimeException {
 

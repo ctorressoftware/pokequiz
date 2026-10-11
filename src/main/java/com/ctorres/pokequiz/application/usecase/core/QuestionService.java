@@ -1,10 +1,9 @@
-package com.ctorres.pokequiz.service;
+package com.ctorres.pokequiz.application.usecase.core;
 
-import com.ctorres.pokequiz.service.generator.GeneratedItem;
-import com.ctorres.pokequiz.exception.QuestionQuantityException;
-import com.ctorres.pokequiz.util.Constants;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.core.exception.QuestionQuantityException;
 import org.springframework.stereotype.Service;
-import com.ctorres.pokequiz.service.coordinator.QuestionCoordinator;
+import com.ctorres.pokequiz.application.usecase.core.coordinator.QuestionCoordinator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +14,7 @@ public class QuestionService {
     private final List<QuestionCoordinator> coordinators;
     private final Random random;
     private final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final int MAX_QUESTIONS_QUANTITY = 15;
 
     public QuestionService(List<QuestionCoordinator> coordinators, Random random) {
         this.coordinators = coordinators;
@@ -29,7 +29,7 @@ public class QuestionService {
             throw new QuestionQuantityException("Quantity must be between one (1) and fifteen (15).");
         }
 
-        if (questionsQuantity > Constants.MAX_QUESTIONS_QUANTITY) {
+        if (questionsQuantity > MAX_QUESTIONS_QUANTITY) {
             throw new QuestionQuantityException("Can only generate fifteen (15) questions.");
         }
 

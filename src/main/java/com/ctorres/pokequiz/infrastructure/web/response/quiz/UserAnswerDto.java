@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.dto.api;
+package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
 public final class UserAnswerDto {
     private final Long questionId;
