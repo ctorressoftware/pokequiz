@@ -1,6 +1,6 @@
 package com.ctorres.pokequiz.service.security;
 
-import com.ctorres.pokequiz.repository.UserRepository;
+import com.ctorres.pokequiz.infrastructure.persistence.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;

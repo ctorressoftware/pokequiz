@@ -1,9 +1,9 @@
 package com.ctorres.pokequiz.service.quiz;
 
 import com.ctorres.pokequiz.dto.api.request.UserAnswerDtoRequest;
-import com.ctorres.pokequiz.entity.Question;
-import com.ctorres.pokequiz.entity.Quiz;
-import com.ctorres.pokequiz.entity.UserAnswer;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.UserAnswer;
 import com.ctorres.pokequiz.exception.BadRequestException;
 import org.springframework.stereotype.Component;
 

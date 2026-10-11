@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.entity;
+package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import java.time.Instant;
 import java.util.HashSet;

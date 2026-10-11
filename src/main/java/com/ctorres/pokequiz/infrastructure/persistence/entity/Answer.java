@@ -1,9 +1,9 @@
-package com.ctorres.pokequiz.entity;
+package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-public class UserAnswer {
+public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,27 +15,35 @@ public class UserAnswer {
     private String canonicalKey;
 
     @Column(nullable = false)
+    private boolean correct;
+
+    @Column(nullable = false)
     private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    public UserAnswer() {}
+    public Answer() {}
 
-    public UserAnswer(String description, String canonicalKey, boolean active, Question question) {
+    public Answer(String description, String canonicalKey, boolean correct, boolean active, Question question) {
         this.description = description;
         this.canonicalKey = canonicalKey;
+        this.correct = correct;
         this.active = active;
         this.question = question;
     }
 
-    public Long getId() {
-        return id;
+    public Answer(String description, String canonicalKey, boolean correct, boolean active) {
+        this.description = description;
+        this.canonicalKey = canonicalKey;
+        this.correct = correct;
+        this.active = active;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // Getters y Setters
+    public Long getId() {
+        return id;
     }
 
     public String getDescription() {
@@ -52,6 +60,14 @@ public class UserAnswer {
 
     public void setCanonicalKey(String canonicalKey) {
         this.canonicalKey = canonicalKey;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
+    public boolean isCorrect() {
+        return correct;
     }
 
     public boolean isActive() {
@@ -71,13 +87,25 @@ public class UserAnswer {
     }
 
     @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", canonicalKey='" + canonicalKey + '\'' +
+                ", correct='" + correct + '\'' +
+                ", active=" + active +
+                ", question=" + (question != null ? question.getId() : null) +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof UserAnswer))
+        if (!(o instanceof Answer))
             return false;
-        UserAnswer that = (UserAnswer) o;
-        return id != null && id.equals(that.id);
+        Answer answer = (Answer) o;
+        return id != null && id.equals(answer.id);
     }
 
     @Override

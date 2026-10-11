@@ -1,7 +1,7 @@
 package com.ctorres.pokequiz.service.quiz.evaluation;
 
-import com.ctorres.pokequiz.entity.Answer;
-import com.ctorres.pokequiz.entity.Question;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

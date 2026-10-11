@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.controller;
+package com.ctorres.pokequiz.infrastructure.web;
 
 import com.ctorres.pokequiz.dto.api.ApiResponse;
 import com.ctorres.pokequiz.dto.auth.*;

@@ -1,28 +1,34 @@
-package com.ctorres.pokequiz.entity;
+package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class State {
+public class DifficultLevel {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
     private String description;
 
-    @Column(nullable = false, length = 100)
-    private String code;
-
     @Column(nullable = false)
     private boolean active;
 
-    public State() {}
+    public DifficultLevel() {
+    }
 
-    public State(String description, String code, boolean active) {
+    public DifficultLevel(Long id, String description, boolean active) {
+        this.id = id;
         this.description = description;
-        this.code = code;
+        this.active = active;
+    }
+
+    public DifficultLevel(String description, boolean active) {
+        this.description = description;
         this.active = active;
     }
 
@@ -42,14 +48,6 @@ public class State {
         this.description = description;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public boolean isActive() {
         return active;
     }
@@ -59,13 +57,22 @@ public class State {
     }
 
     @Override
+    public String toString() {
+        return "DifficultLevel{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", active=" + active +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof State))
+        if (!(o instanceof DifficultLevel))
             return false;
-        State state = (State) o;
-        return id != null && id.equals(state.id);
+        DifficultLevel that = (DifficultLevel) o;
+        return id != null && id.equals(that.id);
     }
 
     @Override

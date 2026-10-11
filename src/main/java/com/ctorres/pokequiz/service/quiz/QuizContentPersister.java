@@ -1,10 +1,10 @@
 package com.ctorres.pokequiz.service.quiz;
 
-import com.ctorres.pokequiz.entity.Answer;
-import com.ctorres.pokequiz.entity.Question;
-import com.ctorres.pokequiz.entity.Quiz;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
 import com.ctorres.pokequiz.exception.GenerationModuleException;
-import com.ctorres.pokequiz.repository.QuestionRepository;
+import com.ctorres.pokequiz.infrastructure.persistence.repository.QuestionRepository;
 import com.ctorres.pokequiz.service.QuestionService;
 import com.ctorres.pokequiz.service.quiz.state.QuizStateService;
 import org.springframework.stereotype.Service;

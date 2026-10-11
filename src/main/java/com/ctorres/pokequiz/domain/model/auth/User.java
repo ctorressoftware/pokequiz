@@ -1,6 +1,6 @@
 package com.ctorres.pokequiz.domain.model.auth;
 
-import com.ctorres.pokequiz.entity.Role;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Role;
 
 import java.util.HashSet;
 import java.util.Objects;

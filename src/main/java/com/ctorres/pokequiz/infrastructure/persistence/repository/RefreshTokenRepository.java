@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.repository;
+package com.ctorres.pokequiz.infrastructure.persistence.repository;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.ctorres.pokequiz.entity.RefreshToken;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshToken;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 

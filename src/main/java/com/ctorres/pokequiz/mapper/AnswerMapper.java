@@ -1,7 +1,7 @@
 package com.ctorres.pokequiz.mapper;
 
 import com.ctorres.pokequiz.dto.api.response.AnswerDto;
-import com.ctorres.pokequiz.entity.Answer;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
 
 import java.util.Collection;
 
