@@ -2,7 +2,7 @@ package com.ctorres.pokequiz.config;
 
 import java.time.Clock;
 import java.util.List;
-import com.ctorres.pokequiz.service.security.CustomUserDetailsService;
+import com.ctorres.pokequiz.application.usecase.security.CustomUserDetailsService;
 import com.ctorres.pokequiz.util.Environment;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import com.ctorres.pokequiz.service.security.JwtAuthFilter;
+import com.ctorres.pokequiz.application.usecase.security.JwtAuthFilter;
 
 @Configuration
 @EnableMethodSecurity

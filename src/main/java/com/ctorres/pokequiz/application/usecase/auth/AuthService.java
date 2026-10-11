@@ -1,7 +1,7 @@
-package com.ctorres.pokequiz.service;
+package com.ctorres.pokequiz.application.usecase;
 
-import com.ctorres.pokequiz.config.JwtProperties;
-import com.ctorres.pokequiz.dto.auth.TokenResponse;
+import com.ctorres.pokequiz.infrastructure.security.config.JwtProperties;
+import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshToken;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.User;
 import com.ctorres.pokequiz.exception.DuplicatedUsernameException;
@@ -11,8 +11,8 @@ import com.ctorres.pokequiz.exception.WeakPasswordException;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.RefreshTokenRepository;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.RoleRepository;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.UserRepository;
-import com.ctorres.pokequiz.service.security.AuthUser;
-import com.ctorres.pokequiz.service.security.JwtService;
+import com.ctorres.pokequiz.infrastructure.security.AuthUser;
+import com.ctorres.pokequiz.infrastructure.security.JwtService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

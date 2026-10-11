@@ -1,11 +1,18 @@
-package com.ctorres.pokequiz.exception;
+package com.ctorres.pokequiz.infrastructure.web.exception;
 
-import com.ctorres.pokequiz.dto.api.ApiResponse;
-import com.ctorres.pokequiz.service.generator.GeneratedItem;
-import com.ctorres.pokequiz.dto.api.response.CreateQuizResponse;
-import com.ctorres.pokequiz.dto.api.response.GenerateQuizContentResponse;
-import com.ctorres.pokequiz.dto.api.response.QuizDtoResponse;
-import com.ctorres.pokequiz.dto.auth.TokenResponse;
+import com.ctorres.pokequiz.application.usecase.auth.exception.DuplicatedUsernameException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.InactiveUserException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.InvalidRefreshTokenException;
+import com.ctorres.pokequiz.application.usecase.auth.exception.WeakPasswordException;
+import com.ctorres.pokequiz.application.usecase.core.exception.*;
+import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
+import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
+import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
+import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.GenerateQuizContentResponse;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDtoResponse;
+import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -70,14 +77,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.error(HttpStatus.NOT_FOUND.value(), e.getMessage()));
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    ResponseEntity<ApiResponse<Object>> handleBadRequestException(
-            BadRequestException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(GenerationModuleException.class)

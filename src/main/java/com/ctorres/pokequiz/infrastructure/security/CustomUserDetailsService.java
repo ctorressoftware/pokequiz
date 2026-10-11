@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.security;
+package com.ctorres.pokequiz.application.usecase.security;
 
 import com.ctorres.pokequiz.infrastructure.persistence.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

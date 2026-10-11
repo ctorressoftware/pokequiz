@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.service.security;
+package com.ctorres.pokequiz.application.usecase.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
