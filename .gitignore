@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# MAC files
+.DS_Store
+
 # Environment variable files
 .env
 .env.local
