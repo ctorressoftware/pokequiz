@@ -1,5 +1,17 @@
 package com.ctorres.pokequiz.application.usecase.auth;
 
+import com.ctorres.pokequiz.application.port.in.auth.login.LoginCommand;
+import com.ctorres.pokequiz.application.port.in.auth.login.LoginResult;
+import com.ctorres.pokequiz.application.port.in.auth.login.LoginUseCase;
+import com.ctorres.pokequiz.application.port.in.auth.logout.LogoutCommand;
+import com.ctorres.pokequiz.application.port.in.auth.logout.LogoutResult;
+import com.ctorres.pokequiz.application.port.in.auth.logout.LogoutUseCase;
+import com.ctorres.pokequiz.application.port.in.auth.refresh.RefreshCommand;
+import com.ctorres.pokequiz.application.port.in.auth.refresh.RefreshResult;
+import com.ctorres.pokequiz.application.port.in.auth.refresh.RefreshUseCase;
+import com.ctorres.pokequiz.application.port.in.auth.register.RegisterCommand;
+import com.ctorres.pokequiz.application.port.in.auth.register.RegisterResult;
+import com.ctorres.pokequiz.application.port.in.auth.register.RegisterUseCase;
 import com.ctorres.pokequiz.infrastructure.security.config.JwtProperties;
 import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshToken;
@@ -31,7 +43,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthService {
+public class AuthService implements LoginUseCase, RegisterUseCase, RefreshUseCase, LogoutUseCase {
     private final AuthenticationManager authenticationManager;
     private final Clock clock;
     private final JwtService jwt;
@@ -59,7 +71,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    private static String sha256Hex(String s) {
+    private String sha256Hex(String s) {
         try {
             var md = MessageDigest.getInstance("SHA-256");
             return HexFormat.of().formatHex(md.digest(s.getBytes(StandardCharsets.UTF_8)));
@@ -112,9 +124,9 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse register(String username, String password, String ip, String userAgent) {
-        if (!isStrongPassword(password)) throw new WeakPasswordException();
-        var user = new User(username, encoder.encode(password), true);
+    public RegisterResult register(RegisterCommand command) {
+        if (!isStrongPassword(command.password())) throw new WeakPasswordException();
+        var user = new User(command.username(), encoder.encode(command.password()), true);
         var roleUser = roles.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
         user.getRoles().add(roleUser);
@@ -122,22 +134,27 @@ public class AuthService {
         try {
             users.save(user);
         } catch (DataIntegrityViolationException exception) {
-            throw new DuplicatedUsernameException(username);
+            throw new DuplicatedUsernameException(command.username());
         }
 
         var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
                 .map(role -> "ROLE_" + role.getName())
                 .collect(Collectors.toList()));
-        var pair = issueRefresh(user, ip, userAgent);
-        return TokenResponse.builder()
+        var pair = issueRefresh(user, command.ip(), command.userAgent());
+        return new RegisterResult(TokenResponse.builder()
                 .accessToken(access)
                 .refreshToken(pair[0])
-                .build();
+                .build());
     }
 
     @Transactional
-    public TokenResponse login(String username, String rawPassword, String ip, String userAgent) {
-        var token = new UsernamePasswordAuthenticationToken(username, rawPassword);
+    public LoginResult login(LoginCommand command) {
+
+        var token = new UsernamePasswordAuthenticationToken(
+                command.username(),
+                command.rawPassword()
+        );
+
         var auth = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
         var user = (AuthUser) auth.getPrincipal();
@@ -145,16 +162,17 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
         var domainUser = users.getReferenceById(user.getId());
-        var pair = issueRefresh(domainUser, ip, userAgent);
-        return TokenResponse.builder()
+        var pair = issueRefresh(domainUser, command.ip(), command.userAgent());
+        return new LoginResult(TokenResponse.builder()
                 .accessToken(access)
                 .refreshToken(pair[0])
-                .build();
+                .build()
+        );
     }
 
     @Transactional
-    public TokenResponse refresh(String refreshTokenValue, String ip, String userAgent) {
-        var hash = sha256Hex(refreshTokenValue);
+    public RefreshResult refresh(RefreshCommand command) {
+        var hash = sha256Hex(command.refreshTokenValue());
         var now = OffsetDateTime.now(clock);
         var stored = refreshTokens.findByTokenHashAndRevokedAtIsNullAndExpiresAtAfter(hash, now)
                 .orElseThrow(InvalidRefreshTokenException::new);
@@ -164,17 +182,18 @@ public class AuthService {
         var access = issueAccess(user.getId(), user.getUsername(), user.getRoles().stream()
                 .map(role -> "ROLE_" + role.getName())
                 .collect(Collectors.toList()));
-        var pair = issueRefresh(user, ip, userAgent);
+        var pair = issueRefresh(user, command.ip(), command.userAgent());
         stored.setReplacedByHash(pair[1]);
-        return TokenResponse.builder()
+        return new RefreshResult(TokenResponse.builder()
                 .accessToken(access)
                 .refreshToken(pair[0])
-                .build();
+                .build());
     }
 
     @Transactional
-    public void logout(String refreshTokenValue) {
-        var hash = sha256Hex(refreshTokenValue);
-        refreshTokens.revokeByHash(hash);
+    public LogoutResult logout(LogoutCommand command) {
+        var hash = sha256Hex(command.refreshTokenValue());
+        boolean revoked = refreshTokens.revokeByHash(hash) > 0;
+        return new LogoutResult(revoked);
     }
 }
