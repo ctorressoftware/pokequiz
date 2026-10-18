@@ -1,5 +1,5 @@
-package com.ctorres.pokequiz.application.port.in.auth.refresh;
+package com.ctorres.pokequiz.application.port.in.auth.logout;
 
-public interface RefreshUseCase {
-    RefreshResult refresh(RefreshCommand command);
+public interface LogoutUseCase {
+    LogoutResult logout(LogoutCommand command);
 }

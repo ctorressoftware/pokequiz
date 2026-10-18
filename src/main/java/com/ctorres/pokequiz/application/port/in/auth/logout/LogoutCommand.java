@@ -1,9 +1,5 @@
-package com.ctorres.pokequiz.application.port.in.auth.refresh;
+package com.ctorres.pokequiz.application.port.in.auth.logout;
 
 import jakarta.validation.Valid;
 
-public record RefreshCommand(
-        @Valid String refreshTokenValue,
-        @Valid String ip,
-        @Valid String userAgent
-) {}
+public record LogoutCommand(@Valid String refreshTokenValue) {}

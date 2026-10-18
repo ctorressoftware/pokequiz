@@ -1,7 +1,5 @@
-package com.ctorres.pokequiz.application.port.in.auth.refresh;
+package com.ctorres.pokequiz.application.port.in.auth.logout;
 
-import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
-
-public record RefreshResult(
-        TokenResponse tokenResponse
+public record LogoutResult(
+        boolean revoked
 ) {}
