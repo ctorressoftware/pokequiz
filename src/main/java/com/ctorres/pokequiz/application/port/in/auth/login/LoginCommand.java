@@ -4,5 +4,7 @@ import jakarta.validation.Valid;
 
 public record LoginCommand (
         @Valid String username,
-        @Valid String password
+        @Valid String rawPassword,
+        @Valid String ip,
+        @Valid String userAgent
 ) {}
