@@ -1,5 +1,5 @@
-package com.ctorres.pokequiz.application.port.in.auth.register;
+package com.ctorres.pokequiz.application.port.in.auth.refresh;
 
-public interface RegisterUseCase {
-    RegisterResult register(RegisterCommand command);
+public interface RefreshUseCase {
+    RefreshResult refresh(RefreshCommand command);
 }

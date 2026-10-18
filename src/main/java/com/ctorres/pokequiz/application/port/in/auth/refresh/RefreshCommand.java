@@ -1,10 +1,9 @@
-package com.ctorres.pokequiz.application.port.in.auth.register;
+package com.ctorres.pokequiz.application.port.in.auth.refresh;
 
 import jakarta.validation.Valid;
 
-public record RegisterCommand(
-        @Valid String username,
-        @Valid String password,
+public record RefreshCommand(
+        @Valid String refreshTokenValue,
         @Valid String ip,
         @Valid String userAgent
 ) {}
