@@ -1,5 +1,5 @@
-package com.ctorres.pokequiz.application.port.in.auth.login;
+package com.ctorres.pokequiz.application.port.in.auth.register;
 
-public interface LoginUseCase {
-    LoginResult login(LoginCommand command);
+public interface RegisterUseCase {
+    RegisterResult register(RegisterCommand command);
 }

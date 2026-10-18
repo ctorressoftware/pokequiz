@@ -1,7 +1,7 @@
-package com.ctorres.pokequiz.application.port.in.auth.login;
+package com.ctorres.pokequiz.application.port.in.auth.register;
 
 import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 
-public record LoginResult(
+public record RegisterResult(
         TokenResponse tokenResponse
 ) {}
