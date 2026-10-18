@@ -1,5 +1,9 @@
 package com.ctorres.pokequiz.infrastructure.web;
 
+import com.ctorres.pokequiz.application.port.in.auth.login.LoginCommand;
+import com.ctorres.pokequiz.application.port.in.auth.logout.LogoutCommand;
+import com.ctorres.pokequiz.application.port.in.auth.refresh.RefreshCommand;
+import com.ctorres.pokequiz.application.port.in.auth.register.RegisterCommand;
 import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
 import com.ctorres.pokequiz.application.usecase.auth.AuthService;
 import com.ctorres.pokequiz.infrastructure.web.request.auth.LoginRequest;
@@ -27,8 +31,13 @@ public class AuthController {
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
         var ip = xff != null ? xff : http.getRemoteAddr();
-        var response = auth.register(req.getUsername(), req.getPassword(), ip, ua);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        var response = auth.register(new RegisterCommand(
+                req.getUsername(),
+                req.getPassword(),
+                ip,
+                ua
+        ));
+        return ResponseEntity.ok(ApiResponse.success(response.tokenResponse()));
     }
 
     @PostMapping("/login")
@@ -38,8 +47,14 @@ public class AuthController {
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
         var ip = xff != null ? xff : http.getRemoteAddr();
-        var response = auth.login(req.getUsername(), req.getPassword(), ip, ua);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        var response = auth.login(new LoginCommand(
+                req.getUsername(),
+                req.getPassword(),
+                ip,
+                ua
+        ));
+
+        return ResponseEntity.ok(ApiResponse.success(response.tokenResponse()));
     }
 
     @PostMapping("/refresh")
@@ -49,13 +64,17 @@ public class AuthController {
             @RequestHeader(value = "X-Forwarded-For", required = false) String xff,
             HttpServletRequest http) {
         var ip = xff != null ? xff : http.getRemoteAddr();
-        var response = auth.refresh(req.getRefreshToken(), ip, ua);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        var response = auth.refresh(new RefreshCommand(
+                req.getRefreshToken(),
+                ip,
+                ua
+        ));
+        return ResponseEntity.ok(ApiResponse.success(response.tokenResponse()));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(@RequestBody RefreshRequest req) {
-        auth.logout(req.getRefreshToken());
+        auth.logout(new LogoutCommand(req.getRefreshToken()));
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
