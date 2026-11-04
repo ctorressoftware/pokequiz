@@ -1,6 +1,6 @@
 package com.ctorres.pokequiz.infrastructure.security;
 
-import com.ctorres.pokequiz.infrastructure.persistence.repository.UserRepository;
+import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataUserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository users;
+    private final SpringDataUserRepository users;
 
-    public CustomUserDetailsService(UserRepository users) {
+    public CustomUserDetailsService(SpringDataUserRepository users) {
         this.users = users;
     }
 

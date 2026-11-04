@@ -12,17 +12,17 @@ import com.ctorres.pokequiz.application.port.in.auth.refresh.RefreshUseCase;
 import com.ctorres.pokequiz.application.port.in.auth.register.RegisterCommand;
 import com.ctorres.pokequiz.application.port.in.auth.register.RegisterResult;
 import com.ctorres.pokequiz.application.port.in.auth.register.RegisterUseCase;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.UserEntity;
 import com.ctorres.pokequiz.infrastructure.security.config.JwtProperties;
 import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshToken;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.User;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshTokenEntity;
 import com.ctorres.pokequiz.application.usecase.auth.exception.DuplicatedUsernameException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.InactiveUserException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.InvalidRefreshTokenException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.WeakPasswordException;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.RefreshTokenRepository;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.RoleRepository;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.UserRepository;
+import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataRefreshTokenRepository;
+import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataRoleRepository;
+import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.ctorres.pokequiz.infrastructure.security.AuthUser;
 import com.ctorres.pokequiz.infrastructure.security.JwtService;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -49,13 +49,13 @@ public class AuthService implements LoginUseCase, RegisterUseCase, RefreshUseCas
     private final JwtService jwt;
     private final JwtProperties jwtProperties;
     private final PasswordEncoder encoder;
-    private final RoleRepository roles;
-    private final RefreshTokenRepository refreshTokens;
-    private final UserRepository users;
+    private final SpringDataRoleRepository roles;
+    private final SpringDataRefreshTokenRepository refreshTokens;
+    private final SpringDataUserRepository users;
 
-    public AuthService(UserRepository users,
-                       RoleRepository roles,
-                       RefreshTokenRepository refreshTokens,
+    public AuthService(SpringDataUserRepository users,
+                       SpringDataRoleRepository roles,
+                       SpringDataRefreshTokenRepository refreshTokens,
                        PasswordEncoder encoder,
                        JwtService jwt,
                        Clock clock,
@@ -84,17 +84,17 @@ public class AuthService implements LoginUseCase, RegisterUseCase, RefreshUseCas
         return UUID.randomUUID() + "." + UUID.randomUUID();
     }
 
-    private String issueAccess(Long id, String username, Collection<String> roles) {
+    private String issueAccess(UUID id, String username, Collection<String> roles) {
         var claims = new HashMap<String, Object>();
         claims.put("uid", id);
         claims.put("roles", roles);
         return jwt.generateAccessToken(username, claims);
     }
 
-    private String[] issueRefresh(User u, String ip, String userAgent) {
+    private String[] issueRefresh(UserEntity u, String ip, String userAgent) {
         var value = newRefreshTokenValue();
         var now = OffsetDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS);
-        var rt = new RefreshToken();
+        var rt = new RefreshTokenEntity();
         rt.setUser(u);
         rt.setTokenHash(sha256Hex(value));
         rt.setIssuedAt(now);
@@ -126,7 +126,7 @@ public class AuthService implements LoginUseCase, RegisterUseCase, RefreshUseCas
     @Transactional
     public RegisterResult register(RegisterCommand command) {
         if (!isStrongPassword(command.password())) throw new WeakPasswordException();
-        var user = new User(command.username(), encoder.encode(command.password()), true);
+        var user = new UserEntity(command.username(), encoder.encode(command.password()), true);
         var roleUser = roles.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
         user.getRoles().add(roleUser);

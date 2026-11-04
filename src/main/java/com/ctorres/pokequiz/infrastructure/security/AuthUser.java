@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public class AuthUser implements UserDetails {
 
-    private final Long id;
+    private final UUID id;
     private final String username;
     private final String password;
     private final Set<GrantedAuthority> authorities;
@@ -19,7 +19,7 @@ public class AuthUser implements UserDetails {
     private final boolean credentialsNonExpired;
     private final boolean enabled;
 
-    public AuthUser(Long id,
+    public AuthUser(UUID id,
                     String username,
                     String password,
                     boolean enabled,
@@ -37,7 +37,7 @@ public class AuthUser implements UserDetails {
         this.enabled = enabled;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -106,7 +106,7 @@ public class AuthUser implements UserDetails {
     }
 
     public static final class Builder {
-        private Long id;
+        private UUID id;
         private String username;
         private String password;
         private List<GrantedAuthority> authorities = new ArrayList();
@@ -118,7 +118,7 @@ public class AuthUser implements UserDetails {
 
         private Builder() {}
 
-        public AuthUser.Builder id(Long id) {
+        public AuthUser.Builder id(UUID id) {
             Assert.notNull(id, "id cannot be null");
             this.id = id;
             return this;
