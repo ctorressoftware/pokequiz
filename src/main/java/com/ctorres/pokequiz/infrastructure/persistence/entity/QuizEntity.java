@@ -25,22 +25,22 @@ public class Quiz {
     // @ManyToOne(targetEntity = DifficultLevel.class)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "difficult_level_id", nullable = false)
-    private DifficultLevel difficultLevel;
+    private DifficultLevelEntity difficultLevelEntity;
 
-    @ManyToOne(targetEntity = User.class)
-    private User user;
+    @ManyToOne(targetEntity = UserEntity.class)
+    private UserEntity userEntity;
 
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY)
     private final Set<Question> questions = new HashSet<>();
 
     public Quiz() {}
 
-    public Quiz(Instant initialDate, Instant endDate, State state, DifficultLevel difficultLevel, User user) {
+    public Quiz(Instant initialDate, Instant endDate, State state, DifficultLevelEntity difficultLevelEntity, UserEntity userEntity) {
         this.initialDate = initialDate;
         this.endDate = endDate;
         this.state = state;
-        this.difficultLevel = difficultLevel;
-        this.user = user;
+        this.difficultLevelEntity = difficultLevelEntity;
+        this.userEntity = userEntity;
     }
 
     public Long getId() {
@@ -75,24 +75,24 @@ public class Quiz {
         this.state = state;
     }
 
-    public DifficultLevel getDifficultLevel() {
-        return difficultLevel;
+    public DifficultLevelEntity getDifficultLevel() {
+        return difficultLevelEntity;
     }
 
-    public void setDifficultLevel(DifficultLevel difficultLevel) {
-        this.difficultLevel = difficultLevel;
+    public void setDifficultLevel(DifficultLevelEntity difficultLevelEntity) {
+        this.difficultLevelEntity = difficultLevelEntity;
     }
 
-    public User getUser() {
-        return user;
+    public UserEntity getUser() {
+        return userEntity;
     }
 
     public Set<Question> getQuestions() {
         return questions;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     @Override
@@ -118,8 +118,8 @@ public class Quiz {
         private Instant initialDate;
         private Instant endDate;
         private State state;
-        private DifficultLevel difficultLevel;
-        private User user;
+        private DifficultLevelEntity difficultLevelEntity;
+        private UserEntity userEntity;
 
         private Builder() {}
 
@@ -138,13 +138,13 @@ public class Quiz {
             return this;
         }
 
-        public Builder difficultLevel(DifficultLevel difficultLevel) {
-            this.difficultLevel = difficultLevel;
+        public Builder difficultLevel(DifficultLevelEntity difficultLevelEntity) {
+            this.difficultLevelEntity = difficultLevelEntity;
             return this;
         }
 
-        public Builder user(User user) {
-            this.user = user;
+        public Builder user(UserEntity userEntity) {
+            this.userEntity = userEntity;
             return this;
         }
 
@@ -153,8 +153,8 @@ public class Quiz {
                     initialDate,
                     endDate,
                     state,
-                    difficultLevel,
-                    user
+                    difficultLevelEntity,
+                    userEntity
             );
         }
     }

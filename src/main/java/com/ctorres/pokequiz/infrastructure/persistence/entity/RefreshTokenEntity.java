@@ -20,7 +20,7 @@ public class RefreshToken {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "user_id")
-  private User user;
+  private UserEntity userEntity;
 
   @Column(name = "token_hash", nullable = false, length = 64)
   private String tokenHash;
@@ -51,12 +51,12 @@ public class RefreshToken {
     this.id = id;
   }
 
-  public User getUser() {
-    return user;
+  public UserEntity getUser() {
+    return userEntity;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUser(UserEntity userEntity) {
+    this.userEntity = userEntity;
   }
 
   public String getTokenHash() {

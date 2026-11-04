@@ -23,7 +23,7 @@ public class Role {
     private boolean active = true;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<User> users = new HashSet<>();
+    private Set<UserEntity> userEntities = new HashSet<>();
 
     public Role() {}
 
@@ -60,12 +60,12 @@ public class Role {
         this.active = active;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<UserEntity> getUsers() {
+        return userEntities;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUsers(Set<UserEntity> userEntities) {
+        this.userEntities = userEntities;
     }
 
     // equals/hashCode por id
