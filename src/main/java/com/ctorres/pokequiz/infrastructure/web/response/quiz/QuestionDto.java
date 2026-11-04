@@ -1,9 +1,10 @@
 package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class QuestionDto {
-    private final Long id;
+    private final UUID id;
     private final String description;
     private final String frontImageUrl;
     private final String backImageUrl;
@@ -11,7 +12,7 @@ public class QuestionDto {
     private final Collection<UserAnswerDto> userAnswers;
 
     public QuestionDto(
-            Long id,
+            UUID id,
             String description,
             String frontImageUrl,
             String backImageUrl,
@@ -25,7 +26,7 @@ public class QuestionDto {
         this.userAnswers = userAnswers;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
     public String getDescription() {

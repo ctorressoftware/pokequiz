@@ -1,12 +1,14 @@
 package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
+import java.util.UUID;
+
 public final class UserAnswerDto {
-    private final Long questionId;
+    private final UUID questionId;
     private final String description;
     private final String value;
 
     public UserAnswerDto(
-            Long questionId,
+            UUID questionId,
             String description,
             String value) {
         this.questionId = questionId;
@@ -14,7 +16,7 @@ public final class UserAnswerDto {
         this.value = value;
     }
 
-    public Long getQuestionId() {
+    public UUID getQuestionId() {
         return questionId;
     }
 

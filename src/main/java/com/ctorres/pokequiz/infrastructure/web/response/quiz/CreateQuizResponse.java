@@ -1,14 +1,5 @@
 package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
-public class CreateQuizResponse {
+import java.util.UUID;
 
-    private final Long quizId;
-
-    public CreateQuizResponse(Long quizId) {
-        this.quizId = quizId;
-    }
-
-    public Long getQuizId() {
-        return quizId;
-    }
-}
+public record CreateQuizResponse(UUID quizId) {}
