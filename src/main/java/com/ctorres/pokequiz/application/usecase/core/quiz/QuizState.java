@@ -1,22 +1,27 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz;
 
-public enum QuizState {
-    CREATED(1L, "CREATED"),
-    GENERATING(2L, "GENERATING"),
-    READY(3L, "READY"),
-    IN_PROGRESS(4L, "IN_PROGRESS"),
-    COMPLETED(5L, "COMPLETED"),
-    GENERATING_ERROR(10L, "GENERATING_ERROR");
+import java.util.UUID;
 
-    private final Long id;
+/* TODO: It's important to recreate this or delete it. Auto-increment ID is removed.
+*  For that, maybe it will be necessary to re-insert rows with static UUIDs.
+* */
+public enum QuizState {
+    CREATED(UUID.randomUUID(), "CREATED"),
+    GENERATING(UUID.randomUUID(), "GENERATING"),
+    READY(UUID.randomUUID(), "READY"),
+    IN_PROGRESS(UUID.randomUUID(), "IN_PROGRESS"),
+    COMPLETED(UUID.randomUUID(), "COMPLETED"),
+    GENERATING_ERROR(UUID.randomUUID(), "GENERATING_ERROR");
+
+    private final UUID id;
     private final String code;
 
-    QuizState(Long id, String code) {
+    QuizState(UUID id, String code) {
         this.id = id;
         this.code = code;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

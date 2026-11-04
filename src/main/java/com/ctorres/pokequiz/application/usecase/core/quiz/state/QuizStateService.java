@@ -1,11 +1,12 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz.state;
 
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
+import com.ctorres.pokequiz.application.port.out.QuizRepository;
+import com.ctorres.pokequiz.application.port.out.StateRepository;
+import com.ctorres.pokequiz.domain.model.Quiz;
+import com.ctorres.pokequiz.infrastructure.persistence.entity.QuizEntity;
 import com.ctorres.pokequiz.application.usecase.core.quiz.QuizState;
 import com.ctorres.pokequiz.application.usecase.core.exception.QuizInvalidStateGenerationException;
 import com.ctorres.pokequiz.application.usecase.core.exception.QuizInvalidStateTransitionException;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.QuizRepository;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.StateRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
