@@ -7,10 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 public final class UserAnswerDtoRequest {
     @NotNull(message = "questionId cannot be null")
     @Positive(message = "questionId must be greater than 0")
-    private final Long questionId;
+    private final UUID questionId;
 
     @NotBlank(message = "description field is invalid")
     @Size(max = 100, message = "description field is too long")
@@ -22,7 +24,7 @@ public final class UserAnswerDtoRequest {
 
     @JsonCreator
     public UserAnswerDtoRequest(
-            @JsonProperty("questionId") Long questionId,
+            @JsonProperty("questionId") UUID questionId,
             @JsonProperty("description") String description,
             @JsonProperty("value") String value) {
         this.questionId = questionId;
@@ -30,7 +32,7 @@ public final class UserAnswerDtoRequest {
         this.value = value;
     }
 
-    public Long getQuestionId() {
+    public UUID getQuestionId() {
         return questionId;
     }
 

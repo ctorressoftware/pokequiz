@@ -1,14 +1,16 @@
 package com.ctorres.pokequiz.infrastructure.web.request.quiz;
 
+import java.util.UUID;
+
 public class CreateQuizRequest {
 
-    private final Long difficultLevelId;
+    private final UUID difficultLevelId;
 
-    public CreateQuizRequest(Long difficultLevelId) {
+    public CreateQuizRequest(UUID difficultLevelId) {
         this.difficultLevelId = difficultLevelId;
     }
 
-    public Long getDifficultLevelId() {
+    public UUID getDifficultLevelId() {
         return difficultLevelId;
     }
 }
