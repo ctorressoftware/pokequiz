@@ -1,9 +1,10 @@
 package com.ctorres.pokequiz.domain.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public record DifficultLevel(
-        Long id,
+        UUID id,
         String description,
         boolean active
 ) {
