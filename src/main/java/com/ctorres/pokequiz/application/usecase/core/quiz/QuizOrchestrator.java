@@ -1,108 +1,109 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz;
 
-import java.time.Instant;
 import java.util.*;
 
+import com.ctorres.pokequiz.application.port.in.quiz.complete.CompleteQuizCommand;
+import com.ctorres.pokequiz.application.port.in.quiz.complete.CompleteQuizResult;
+import com.ctorres.pokequiz.application.port.in.quiz.complete.CompleteQuizUseCase;
+import com.ctorres.pokequiz.application.port.in.quiz.create.CreateQuizCommand;
+import com.ctorres.pokequiz.application.port.in.quiz.create.CreateQuizResult;
+import com.ctorres.pokequiz.application.port.in.quiz.create.CreateQuizUseCase;
+import com.ctorres.pokequiz.application.port.in.quiz.generate.GenerateQuizCommand;
+import com.ctorres.pokequiz.application.port.in.quiz.generate.GenerateQuizResult;
+import com.ctorres.pokequiz.application.port.in.quiz.generate.GenerateQuizUseCase;
+import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdCommand;
+import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdResult;
+import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdUseCase;
+import com.ctorres.pokequiz.application.port.out.*;
 import com.ctorres.pokequiz.application.usecase.core.QuizResult;
 import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
-import com.ctorres.pokequiz.infrastructure.web.request.quiz.CreateQuizRequest;
-import com.ctorres.pokequiz.infrastructure.web.request.quiz.EvaluateAnswersRequest;
-import com.ctorres.pokequiz.infrastructure.web.request.quiz.GenerateQuizContentRequest;
-import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
-import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDtoResponse;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
+import com.ctorres.pokequiz.domain.model.Quiz;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.*;
-import com.ctorres.pokequiz.application.usecase.core.mapper.QuestionMapper;
 import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.EvaluatableQuestionAssembler;
 import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.QuizEvaluationCore;
 import com.ctorres.pokequiz.application.usecase.core.quiz.state.QuizStateService;
-import com.ctorres.pokequiz.infrastructure.security.AuthUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class QuizOrchestrator {
-    private final DifficultLevelRepository difficultLevelRepository;
+public class QuizOrchestrator
+        implements CreateQuizUseCase, GetQuizByIdUseCase, GenerateQuizUseCase, CompleteQuizUseCase {
     private final EvaluatableQuestionAssembler evaluatableQuestionAssembler;
     private final QuizContentPersister quizContentPersister;
     private final QuizEvaluationCore quizEvaluationCore;
     private final QuizStateService quizStateService;
-    private final QuizRepository quizRepository;
-    private final StateRepository stateRepository;
     private final UserAnswerAssembler userAnswerAssembler;
     private final UserAnswerRepository userAnswerRepository;
+    private final QuizRepository quizRepository;
+    private final DifficultLevelRepository difficultLevelRepository;
     private final UserRepository userRepository;
+    private final StateRepository stateRepository;
 
     public QuizOrchestrator(
-            DifficultLevelRepository difficultLevelRepository,
             EvaluatableQuestionAssembler evaluatableQuestionAssembler,
             QuizEvaluationCore quizEvaluationCore,
             QuizContentPersister quizContentPersister,
             QuizStateService quizStateService,
-            QuizRepository quizRepository,
-            StateRepository stateRepository,
             UserAnswerAssembler userAnswerAssembler,
             UserAnswerRepository userAnswerRepository,
-            UserRepository userRepository) {
-        this.difficultLevelRepository = difficultLevelRepository;
+            QuizRepository quizRepository,
+            DifficultLevelRepository difficultLevelRepository,
+            UserRepository userRepository,
+            StateRepository stateRepository) {
         this.evaluatableQuestionAssembler = evaluatableQuestionAssembler;
         this.quizEvaluationCore = quizEvaluationCore;
         this.quizContentPersister = quizContentPersister;
         this.quizStateService = quizStateService;
-        this.quizRepository = quizRepository;
-        this.stateRepository = stateRepository;
         this.userAnswerAssembler = userAnswerAssembler;
         this.userAnswerRepository = userAnswerRepository;
+        this.quizRepository = quizRepository;
+        this.difficultLevelRepository = difficultLevelRepository;
         this.userRepository = userRepository;
+        this.stateRepository = stateRepository;
     }
 
     @Transactional
-    public CreateQuizResponse createQuiz(CreateQuizRequest request, AuthUser authenticatedUser) {
-        final var user = userRepository.getReferenceById(authenticatedUser.getId());
-        final var state = stateRepository.getReferenceById(QuizState.CREATED.getId());
-        final var difficultLevelId = request.getDifficultLevelId();
+    public CreateQuizResult createQuiz(CreateQuizCommand command) {
+        var user = userRepository.getReferenceById(command.user().id());
+        var state = stateRepository.getReferenceById(QuizState.CREATED.getId());
+        var difficult = difficultLevelRepository.findById(command.difficultLevelId())
+                .orElseThrow(() -> new DifficultLevelNotFoundException(command.difficultLevelId()));
+        var quiz = Quiz.create(state, difficult, user);
 
-        final var difficultLevel = difficultLevelRepository.findById(difficultLevelId)
-                .orElseThrow(() -> new DifficultLevelNotFoundException(difficultLevelId));
-
-        final var quiz = Quiz.builder()
-                .initialDate(Instant.now())
-                .endDate(null)
-                .state(state)
-                .difficultLevel(difficultLevel)
-                .user(user)
-                .build();
-
-        final var inserted = quizRepository.save(quiz);
-        return new CreateQuizResponse(inserted.getId());
+        var inserted = quizRepository.save(quiz);
+        return new CreateQuizResult(inserted.getId());
     }
 
-    public QuizDtoResponse getQuizById(Long quizId, AuthUser user) {
+    public GetQuizByIdResult getQuizById(GetQuizByIdCommand command) {
 
-        if (quizId == null || quizId <= 0) {
+        if (command.quizId() == null) {
             throw new IllegalArgumentException("Invalid quizId field.");
         }
 
         final var quiz = quizRepository
-                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId())
-                .orElseThrow(() -> new QuizNotFoundException(quizId));
+                .findQuizWithQuestionsAndAnswersByIdAndUserId(command.quizId(), command.user().id())
+                .orElseThrow(() -> new QuizNotFoundException(command.quizId()));
 
-        if (quiz.getState().getCode().equals(QuizState.COMPLETED.getCode())) {
+        if (quiz.getState().code().equals(QuizState.COMPLETED.getCode())) {
             var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
             var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-            return buildQuizDtoResponse(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
+
+            return new GetQuizByIdResult(
+                    quiz,
+                    QuizResult.of(evaluation.getResult(), evaluation.getScore())
+            );
         }
 
-        return buildQuizDtoResponse(quiz, null);
+        return new GetQuizByIdResult(quiz, null);
     }
 
     @Transactional
-    public QuizDtoResponse generateAndSaveContent(GenerateQuizContentRequest request, Locale locale, AuthUser user) {
-        final Long quizId = request.getQuizId();
-        final int questionsQuantity = request.getQuestionsQuantity();
+    public GenerateQuizResult generateAndSaveContent(GenerateQuizCommand command) {
+        final UUID quizId = command.quizId();
+        final int questionsQuantity = command.questionsQuantity();
 
-        if (quizId == null || quizId <= 0) {
+        if (quizId == null) {
             throw new IllegalArgumentException("Invalid quizId field.");
         }
 
@@ -111,23 +112,23 @@ public class QuizOrchestrator {
         }
 
         final var quiz = quizRepository
-                .findQuizByIdAndUserId(request.getQuizId(), user.getId())
+                .findQuizByIdAndUserId(command.quizId(), command.user().id())
                 .orElseThrow(() -> new QuizNotFoundException(quizId));
 
         var insertedQuestions = quizContentPersister
-                .createAndSaveQuizContent(quiz, questionsQuantity, locale);
+                .createAndSaveQuizContent(quiz, questionsQuantity, command.locale());
 
         quiz.getQuestions().addAll(insertedQuestions);
 
-        return buildQuizDtoResponse(quiz, null);
+        return new GenerateQuizResult(quiz, null);
     }
 
     @Transactional
-    public QuizDtoResponse completeQuizAnswers(EvaluateAnswersRequest request, AuthUser user) {
-        final var quizId = request.getQuizId();
-        final var userAnswerDtos = request.getUserAnswersDtos();
+    public CompleteQuizResult completeQuizAnswers(CompleteQuizCommand command) {
+        final var quizId = command.quizId();
+        final var userAnswerDtos = command.userAnswers();
 
-        if (quizId == null || quizId <= 0) {
+        if (quizId == null) {
             throw new IllegalArgumentException("Invalid quizId field.");
         }
 
@@ -136,22 +137,22 @@ public class QuizOrchestrator {
         }
 
         final var quiz = quizRepository
-                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, user.getId())
+                .findQuizWithQuestionsAndAnswersByIdAndUserId(quizId, command.user().id())
                 .orElseThrow(() -> new QuizNotFoundException(quizId));
 
-        var isQuizCompleted = quiz.getState().getCode().equals(QuizState.COMPLETED.getCode());
+        var isQuizCompleted = quiz.getState().code().equals(QuizState.COMPLETED.getCode());
 
         if (isQuizCompleted) {
             var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
             var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-            return buildQuizDtoResponse(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
+            return new CompleteQuizResult(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
         }
 
         quizStateService.markInProgress(quiz);
         final var questionsById = userAnswerAssembler.questionsById(quiz.getQuestions());
 
         final var userAnswersByQuestionId = userAnswerAssembler
-                .createUserAnswersByQuestionId(request.getUserAnswersDtos(), questionsById);
+                .createUserAnswersByQuestionId(command.userAnswers(), questionsById);
 
         userAnswerAssembler.validateAllAnswered(questionsById.keySet(), userAnswersByQuestionId.keySet());
         userAnswerAssembler.applyToQuiz(quiz, userAnswersByQuestionId);
@@ -160,18 +161,6 @@ public class QuizOrchestrator {
 
         var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
         var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-        return buildQuizDtoResponse(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
-    }
-
-    private QuizDtoResponse buildQuizDtoResponse(Quiz quiz, QuizResult quizResult) {
-        return QuizDtoResponse.builder()
-                .quizId(quiz.getId())
-                .initialDate(quiz.getInitialDate())
-                .endDate(quiz.getEndDate())
-                .state(quiz.getState().getDescription())
-                .difficultLevel(quiz.getDifficultLevel().getDescription())
-                .questions(QuestionMapper.toDto(quiz.getQuestions()))
-                .quizResult(quizResult)
-                .build();
+        return new CompleteQuizResult(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
     }
 }
