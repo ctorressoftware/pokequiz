@@ -1,21 +1,22 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class EvaluationResult {
-    private final Map<Long, Boolean> result;
+    private final Map<UUID, Boolean> result;
     private final double score;
 
-    private EvaluationResult(Map<Long, Boolean> result, double score) {
+    private EvaluationResult(Map<UUID, Boolean> result, double score) {
         this.result = result;
         this.score = score;
     }
 
-    public static EvaluationResult of(Map<Long, Boolean> result, double score) {
+    public static EvaluationResult of(Map<UUID, Boolean> result, double score) {
         return new EvaluationResult(result, score);
     }
 
-    public Map<Long, Boolean> getResult() {
+    public Map<UUID, Boolean> getResult() {
         return result;
     }
 

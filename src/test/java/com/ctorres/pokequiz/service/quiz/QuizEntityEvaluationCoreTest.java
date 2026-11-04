@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-public class QuizEvaluationCoreTest {
+public class QuizEntityEvaluationCoreTest {
 
     private final QuizEvaluationCore quizEvaluationCore = new QuizEvaluationCore();
 

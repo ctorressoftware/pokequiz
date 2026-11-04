@@ -1,7 +1,7 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
 
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;
+import com.ctorres.pokequiz.domain.model.Answer;
+import com.ctorres.pokequiz.domain.model.Question;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,25 +20,25 @@ public class EvaluatableQuestionAssembler {
 
         return questions.stream().map(question -> {
 
-            if (question.getUserAnswers().size() != EXPECTED_USER_ANSWERS) {
+            if (question.userAnswers().size() != EXPECTED_USER_ANSWERS) {
                 throw new IllegalStateException(
                         "Expected user answer: " + EXPECTED_USER_ANSWERS +
-                        ", actual user answer: " + question.getUserAnswers().size() +
-                        ", Quiz id: " + question.getId());
+                        ", actual user answer: " + question.userAnswers().size() +
+                        ", Quiz id: " + question.id());
             }
 
-            var userAnswer = question.getUserAnswers().iterator().next();
+            var userAnswer = question.userAnswers().iterator().next();
 
-            var correctAnswer = question.getAnswers().stream()
+            var correctAnswer = question.answers().stream()
                     .filter(Answer::isCorrect)
                     .toList();
 
             if (correctAnswer.size() != EXPECTED_CORRECT_ANSWERS) {
-                throw new IllegalStateException("Question with multiple correct answers: " + question.getId());
+                throw new IllegalStateException("Question with multiple correct answers: " + question.id());
             }
 
             return new EvaluatableQuestion(
-                    question.getId(),
+                    question.id(),
                     correctAnswer.getFirst().getCanonicalKey(),
                     userAnswer.getCanonicalKey());
         }).toList();

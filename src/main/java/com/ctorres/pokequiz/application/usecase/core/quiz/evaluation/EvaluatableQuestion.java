@@ -1,17 +1,19 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
 
+import java.util.UUID;
+
 public class EvaluatableQuestion {
-    private final Long questionId;
+    private final UUID questionId;
     private final String correctAnswer;
     private final String userAnswer;
 
-    public EvaluatableQuestion(Long questionId, String correctAnswer, String userAnswer) {
+    public EvaluatableQuestion(UUID questionId, String correctAnswer, String userAnswer) {
         this.questionId = questionId;
         this.correctAnswer = correctAnswer;
         this.userAnswer = userAnswer;
     }
 
-    public Long getQuestionId() {
+    public UUID getQuestionId() {
         return questionId;
     }
 

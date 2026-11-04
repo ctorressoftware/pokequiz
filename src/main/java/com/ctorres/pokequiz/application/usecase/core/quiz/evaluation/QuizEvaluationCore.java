@@ -16,7 +16,7 @@ public final class QuizEvaluationCore {
         return EvaluationResult.of(result, calculateScore(result));
     }
 
-    private Map<Long, Boolean> evaluate(List<EvaluatableQuestion> evaluatableQuestions) {
+    private Map<UUID, Boolean> evaluate(List<EvaluatableQuestion> evaluatableQuestions) {
         return evaluatableQuestions.stream()
                 .collect(Collectors.toMap(
                         eq -> {
@@ -34,7 +34,7 @@ public final class QuizEvaluationCore {
                 ));
     }
 
-    private double calculateScore(Map<Long, Boolean> result) {
+    private double calculateScore(Map<UUID, Boolean> result) {
         long correct = result.values().stream().filter(Boolean::booleanValue).count();
         return (correct * 100.0) / result.size();
     }
