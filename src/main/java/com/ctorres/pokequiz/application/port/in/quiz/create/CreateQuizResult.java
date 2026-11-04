@@ -1,4 +1,5 @@
 package com.ctorres.pokequiz.application.port.in.quiz.create;
 
-public record CreateQuizResult() {
-}
+import java.util.UUID;
+
+public record CreateQuizResult(UUID quizId) {}

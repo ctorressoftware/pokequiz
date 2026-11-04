@@ -1,4 +1,10 @@
 package com.ctorres.pokequiz.application.port.in.quiz.create;
 
-public record CreateQuizCommand() {
-}
+import com.ctorres.pokequiz.domain.model.auth.User;
+
+import java.util.UUID;
+
+public record CreateQuizCommand(
+        UUID difficultLevelId,
+        User user
+) {}
