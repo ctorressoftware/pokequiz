@@ -4,10 +4,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+import java.util.UUID;
+
 @Entity
-public class State {
+public class StateEntity {
     @Id
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, length = 100)
     private String description;
@@ -18,19 +20,20 @@ public class State {
     @Column(nullable = false)
     private boolean active;
 
-    public State() {}
+    public StateEntity() {}
 
-    public State(String description, String code, boolean active) {
+    public StateEntity(UUID id, String description, String code, boolean active) {
+        this.id = id;
         this.description = description;
         this.code = code;
         this.active = active;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -62,10 +65,9 @@ public class State {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof State))
+        if (!(o instanceof StateEntity stateEntity))
             return false;
-        State state = (State) o;
-        return id != null && id.equals(state.id);
+        return id != null && id.equals(stateEntity.id);
     }
 
     @Override

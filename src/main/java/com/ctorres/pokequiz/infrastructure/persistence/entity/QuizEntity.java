@@ -3,26 +3,24 @@ package com.ctorres.pokequiz.infrastructure.persistence.entity;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.*;
 
 @Entity
-public class Quiz {
+public class QuizEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false)
     private Instant initialDate;
 
     private Instant endDate;
 
-    // @ManyToOne(targetEntity = State.class)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "state_id", nullable = false)
-    private State state;
+    private StateEntity stateEntity;
 
-    // @ManyToOne(targetEntity = DifficultLevel.class)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "difficult_level_id", nullable = false)
     private DifficultLevelEntity difficultLevelEntity;
@@ -31,23 +29,32 @@ public class Quiz {
     private UserEntity userEntity;
 
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY)
-    private final Set<Question> questions = new HashSet<>();
+    private final Set<QuestionEntity> questionEntities = new HashSet<>();
 
-    public Quiz() {}
+    public QuizEntity() {}
 
-    public Quiz(Instant initialDate, Instant endDate, State state, DifficultLevelEntity difficultLevelEntity, UserEntity userEntity) {
+    public QuizEntity(Instant initialDate, Instant endDate, StateEntity stateEntity, DifficultLevelEntity difficultLevelEntity, UserEntity userEntity) {
         this.initialDate = initialDate;
         this.endDate = endDate;
-        this.state = state;
+        this.stateEntity = stateEntity;
         this.difficultLevelEntity = difficultLevelEntity;
         this.userEntity = userEntity;
     }
 
-    public Long getId() {
+    public QuizEntity(UUID id, Instant initialDate, Instant endDate, StateEntity stateEntity, DifficultLevelEntity difficultLevelEntity, UserEntity userEntity) {
+        this.id = id;
+        this.initialDate = initialDate;
+        this.endDate = endDate;
+        this.stateEntity = stateEntity;
+        this.difficultLevelEntity = difficultLevelEntity;
+        this.userEntity = userEntity;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -67,12 +74,12 @@ public class Quiz {
         this.endDate = endDate;
     }
 
-    public State getState() {
-        return state;
+    public StateEntity getState() {
+        return stateEntity;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setState(StateEntity stateEntity) {
+        this.stateEntity = stateEntity;
     }
 
     public DifficultLevelEntity getDifficultLevel() {
@@ -87,8 +94,8 @@ public class Quiz {
         return userEntity;
     }
 
-    public Set<Question> getQuestions() {
-        return questions;
+    public Set<QuestionEntity> getQuestions() {
+        return questionEntities;
     }
 
     public void setUser(UserEntity userEntity) {
@@ -99,10 +106,9 @@ public class Quiz {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Quiz))
+        if (!(o instanceof QuizEntity quizEntity))
             return false;
-        Quiz quiz = (Quiz) o;
-        return id != null && id.equals(quiz.id);
+        return id != null && id.equals(quizEntity.id);
     }
 
     @Override
@@ -117,7 +123,7 @@ public class Quiz {
     public static final class Builder {
         private Instant initialDate;
         private Instant endDate;
-        private State state;
+        private StateEntity stateEntity;
         private DifficultLevelEntity difficultLevelEntity;
         private UserEntity userEntity;
 
@@ -133,8 +139,8 @@ public class Quiz {
             return this;
         }
 
-        public Builder state(State state) {
-            this.state = state;
+        public Builder state(StateEntity stateEntity) {
+            this.stateEntity = stateEntity;
             return this;
         }
 
@@ -148,11 +154,11 @@ public class Quiz {
             return this;
         }
 
-        public Quiz build() {
-            return new Quiz(
+        public QuizEntity build() {
+            return new QuizEntity(
                     initialDate,
                     endDate,
-                    state,
+                    stateEntity,
                     difficultLevelEntity,
                     userEntity
             );

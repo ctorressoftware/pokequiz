@@ -6,11 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.UUID;
+
 @Entity
-public class DifficultLevel {
+public class DifficultLevelEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, length = 100)
     private String description;
@@ -18,25 +19,25 @@ public class DifficultLevel {
     @Column(nullable = false)
     private boolean active;
 
-    public DifficultLevel() {
+    public DifficultLevelEntity() {
     }
 
-    public DifficultLevel(Long id, String description, boolean active) {
+    public DifficultLevelEntity(UUID id, String description, boolean active) {
         this.id = id;
         this.description = description;
         this.active = active;
     }
 
-    public DifficultLevel(String description, boolean active) {
+    public DifficultLevelEntity(String description, boolean active) {
         this.description = description;
         this.active = active;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -69,9 +70,9 @@ public class DifficultLevel {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof DifficultLevel))
+        if (!(o instanceof DifficultLevelEntity))
             return false;
-        DifficultLevel that = (DifficultLevel) o;
+        DifficultLevelEntity that = (DifficultLevelEntity) o;
         return id != null && id.equals(that.id);
     }
 
