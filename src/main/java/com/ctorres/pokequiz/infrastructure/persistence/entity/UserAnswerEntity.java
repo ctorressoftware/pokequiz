@@ -2,11 +2,12 @@ package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
-public class UserAnswer {
+public class UserAnswerEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, length = 1000)
     private String description;
@@ -19,22 +20,30 @@ public class UserAnswer {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    private QuestionEntity questionEntity;
 
-    public UserAnswer() {}
+    public UserAnswerEntity() {}
 
-    public UserAnswer(String description, String canonicalKey, boolean active, Question question) {
+    public UserAnswerEntity(String description, String canonicalKey, boolean active, QuestionEntity questionEntity) {
         this.description = description;
         this.canonicalKey = canonicalKey;
         this.active = active;
-        this.question = question;
+        this.questionEntity = questionEntity;
     }
 
-    public Long getId() {
+    public UserAnswerEntity(UUID id, String description, String canonicalKey, boolean active, QuestionEntity questionEntity) {
+        this.id = id;
+        this.description = description;
+        this.canonicalKey = canonicalKey;
+        this.active = active;
+        this.questionEntity = questionEntity;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -62,21 +71,20 @@ public class UserAnswer {
         this.active = active;
     }
 
-    public Question getQuestion() {
-        return question;
+    public QuestionEntity getQuestion() {
+        return questionEntity;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestion(QuestionEntity questionEntity) {
+        this.questionEntity = questionEntity;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof UserAnswer))
+        if (!(o instanceof UserAnswerEntity that))
             return false;
-        UserAnswer that = (UserAnswer) o;
         return id != null && id.equals(that.id);
     }
 

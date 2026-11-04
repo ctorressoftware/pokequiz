@@ -5,10 +5,9 @@ import java.util.*;
 import jakarta.persistence.*;
 
 @Entity
-public class Question {
+public class QuestionEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, length = 1000)
     private String description;
@@ -24,38 +23,57 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
-    private Quiz quiz;
+    private QuizEntity quizEntity;
 
     @OneToMany(mappedBy = "question",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private final Set<Answer> answers = new HashSet<>();
+    private final Set<AnswerEntity> answerEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-    private final Set<UserAnswer> userAnswers = new HashSet<>();
+    private final Set<UserAnswerEntity> userAnswerEntities = new HashSet<>();
 
-    protected Question() {
+    protected QuestionEntity() {
     }
 
-    public Question(
+    public QuestionEntity(
             String description,
             boolean active,
             String frontImageUrl,
             String backImageUrl,
-            Quiz quiz,
-            Set<Answer> answers,
-            Set<UserAnswer> userAnswers) {
+            QuizEntity quizEntity,
+            Set<AnswerEntity> answerEntities,
+            Set<UserAnswerEntity> userAnswerEntities) {
         this.description = description;
         this.active = active;
         this.frontImageUrl = frontImageUrl;
         this.backImageUrl = backImageUrl;
-        this.quiz = quiz;
-        this.setAnswers(answers);
-        this.setUserAnswers(userAnswers);
+        this.quizEntity = quizEntity;
+        this.setAnswers(answerEntities);
+        this.setUserAnswers(userAnswerEntities);
     }
 
-    public Long getId() {
+    public QuestionEntity(
+            UUID id,
+            String description,
+            boolean active,
+            String frontImageUrl,
+            String backImageUrl,
+            QuizEntity quizEntity,
+            Set<AnswerEntity> answerEntities,
+            Set<UserAnswerEntity> userAnswerEntities) {
+        this.id = id;
+        this.description = description;
+        this.active = active;
+        this.frontImageUrl = frontImageUrl;
+        this.backImageUrl = backImageUrl;
+        this.quizEntity = quizEntity;
+        this.setAnswers(answerEntities);
+        this.setUserAnswers(userAnswerEntities);
+    }
+
+    public UUID getId() {
         return id;
     }
 
@@ -75,54 +93,54 @@ public class Question {
         return backImageUrl;
     }
 
-    public Set<Answer> getAnswers() {
-        return Collections.unmodifiableSet(answers);
+    public Set<AnswerEntity> getAnswers() {
+        return Collections.unmodifiableSet(answerEntities);
     }
 
-    public Set<UserAnswer> getUserAnswers() {
-        return userAnswers;
+    public Set<UserAnswerEntity> getUserAnswers() {
+        return userAnswerEntities;
     }
 
-    private void setAnswers(Set<Answer> newAnswers) {
-        this.answers.clear();
+    private void setAnswers(Set<AnswerEntity> newAnswerEntities) {
+        this.answerEntities.clear();
 
-        if (newAnswers == null || newAnswers.isEmpty()) {
+        if (newAnswerEntities == null || newAnswerEntities.isEmpty()) {
             return;
         }
 
-        for (Answer a : newAnswers) {
+        for (AnswerEntity a : newAnswerEntities) {
             a.setQuestion(this);
-            this.answers.add(a);
+            this.answerEntities.add(a);
         }
     }
 
-    public void setUserAnswers(Set<UserAnswer> newUserAnswers) {
-        this.userAnswers.clear();
+    public void setUserAnswers(Set<UserAnswerEntity> newUserAnswerEntities) {
+        this.userAnswerEntities.clear();
 
-        if (newUserAnswers == null || newUserAnswers.isEmpty()) {
+        if (newUserAnswerEntities == null || newUserAnswerEntities.isEmpty()) {
             return;
         }
 
-        for (UserAnswer ua : newUserAnswers) {
+        for (UserAnswerEntity ua : newUserAnswerEntities) {
             ua.setQuestion(this);
-            this.userAnswers.add(ua);
+            this.userAnswerEntities.add(ua);
         }
     }
 
-    public void setSingleUserAnswer(UserAnswer ua) {
+    public void setSingleUserAnswer(UserAnswerEntity ua) {
         if (ua == null) throw new IllegalArgumentException("UserAnswer cannot be null");
         setUserAnswers(Set.of(ua));
     }
 
-    public Quiz getQuiz() {
-        return quiz;
+    public QuizEntity getQuiz() {
+        return quizEntity;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Question question)) return false;
-        return id != null && id.equals(question.id);
+        if (!(o instanceof QuestionEntity questionEntity)) return false;
+        return id != null && id.equals(questionEntity.id);
     }
 
     @Override

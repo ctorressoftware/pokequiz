@@ -2,11 +2,12 @@ package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
-public class Answer {
+public class AnswerEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, length = 1000)
     private String description;
@@ -22,27 +23,27 @@ public class Answer {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    private QuestionEntity questionEntity;
 
-    public Answer() {}
+    public AnswerEntity() {}
 
-    public Answer(String description, String canonicalKey, boolean correct, boolean active, Question question) {
-        this.description = description;
-        this.canonicalKey = canonicalKey;
-        this.correct = correct;
-        this.active = active;
-        this.question = question;
-    }
-
-    public Answer(String description, String canonicalKey, boolean correct, boolean active) {
+    public AnswerEntity(String description, String canonicalKey, boolean correct, boolean active) {
         this.description = description;
         this.canonicalKey = canonicalKey;
         this.correct = correct;
         this.active = active;
     }
 
-    // Getters y Setters
-    public Long getId() {
+    public AnswerEntity(UUID id, String description, String canonicalKey, boolean correct, boolean active, QuestionEntity questionEntity) {
+        this.id = id;
+        this.description = description;
+        this.canonicalKey = canonicalKey;
+        this.correct = correct;
+        this.active = active;
+        this.questionEntity = questionEntity;
+    }
+
+    public UUID getId() {
         return id;
     }
 
@@ -78,12 +79,12 @@ public class Answer {
         this.active = active;
     }
 
-    public Question getQuestion() {
-        return question;
+    public QuestionEntity getQuestion() {
+        return questionEntity;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestion(QuestionEntity questionEntity) {
+        this.questionEntity = questionEntity;
     }
 
     @Override
@@ -94,7 +95,7 @@ public class Answer {
                 ", canonicalKey='" + canonicalKey + '\'' +
                 ", correct='" + correct + '\'' +
                 ", active=" + active +
-                ", question=" + (question != null ? question.getId() : null) +
+                ", question=" + (questionEntity != null ? questionEntity.getId() : null) +
                 '}';
     }
 
@@ -102,10 +103,9 @@ public class Answer {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Answer))
+        if (!(o instanceof AnswerEntity answerEntity))
             return false;
-        Answer answer = (Answer) o;
-        return id != null && id.equals(answer.id);
+        return id != null && id.equals(answerEntity.id);
     }
 
     @Override
