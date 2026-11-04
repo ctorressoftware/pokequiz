@@ -2,11 +2,11 @@ package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -15,10 +15,9 @@ import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, unique = true, length = 30)
     private String username;
@@ -31,32 +30,33 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "user_role",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles = new HashSet<>();
+    private Set<RoleEntity> roleEntities = new HashSet<>();
 
-    public User() {}
+    public UserEntity() {}
 
-    public User(Long id, String username, String password, boolean active) {
+    public UserEntity(String username, String password, boolean active) {
+        this.username = username;
+        this.passwordHash = password;
+        this.active = active;
+    }
+
+    public UserEntity(UUID id, String username, String password, boolean active, Set<RoleEntity> roles) {
         this.id = id;
         this.username = username;
         this.passwordHash = password;
         this.active = active;
+        this.roleEntities = roles;
     }
 
-    public User(String username, String password, boolean active) {
-        this.username = username;
-        this.passwordHash = password;
-        this.active = active;
-    }
-
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -84,14 +84,14 @@ public class User {
         this.active = active;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<RoleEntity> getRoles() {
+        return roleEntities;
     }
-    
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+
+    public void setRoles(Set<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
     }
-    
+
     @Override
     public String toString() {
         return "User{" +
@@ -105,10 +105,9 @@ public class User {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof User))
+        if (!(o instanceof UserEntity userEntity))
             return false;
-        User user = (User) o;
-        return id != null && id.equals(user.id);
+        return id != null && id.equals(userEntity.id);
     }
 
     @Override

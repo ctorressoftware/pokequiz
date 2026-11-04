@@ -1,17 +1,14 @@
 package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "role")
-public class Role {
-
+public class RoleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, unique = true, length = 50)
     private String name;
@@ -22,17 +19,16 @@ public class Role {
     @Column(nullable = false)
     private boolean active = true;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<UserEntity> userEntities = new HashSet<>();
+    public RoleEntity() {}
 
-    public Role() {}
-
-    public Role(String name) {
+    public RoleEntity(UUID id, String name, String description, boolean active) {
+        this.id = id;
         this.name = name;
-        this.active = true;
+        this.description = description;
+        this.active = active;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -60,23 +56,13 @@ public class Role {
         this.active = active;
     }
 
-    public Set<UserEntity> getUsers() {
-        return userEntities;
-    }
-
-    public void setUsers(Set<UserEntity> userEntities) {
-        this.userEntities = userEntities;
-    }
-
-    // equals/hashCode por id
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Role))
+        if (!(o instanceof RoleEntity roleEntity))
             return false;
-        Role role = (Role) o;
-        return id != null && id.equals(role.id);
+        return id != null && id.equals(roleEntity.id);
     }
 
     @Override

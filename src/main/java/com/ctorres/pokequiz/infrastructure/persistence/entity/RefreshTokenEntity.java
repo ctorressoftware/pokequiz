@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "refresh_token")
-public class RefreshToken {
+public class RefreshTokenEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
