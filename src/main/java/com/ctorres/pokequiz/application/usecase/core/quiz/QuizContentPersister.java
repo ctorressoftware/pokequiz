@@ -1,17 +1,20 @@
 package com.ctorres.pokequiz.application.usecase.core.quiz;
 
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Answer;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Question;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Quiz;
+import com.ctorres.pokequiz.application.port.out.QuestionRepository;
+import com.ctorres.pokequiz.domain.model.Answer;
+import com.ctorres.pokequiz.domain.model.Question;
+import com.ctorres.pokequiz.domain.model.Quiz;
 import com.ctorres.pokequiz.application.usecase.core.exception.GenerationModuleException;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.QuestionRepository;
 import com.ctorres.pokequiz.application.usecase.core.QuestionService;
 import com.ctorres.pokequiz.application.usecase.core.quiz.state.QuizStateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,31 +37,38 @@ public class QuizContentPersister {
         final var generated = questionService.generateQuestions(questionsQuantity, locale);
 
         if (generated.isEmpty()) {
-            throw new GenerationModuleException("An error ocurred generating questions and answers.");
+            throw new GenerationModuleException("An error occurred generating questions and answers.");
         }
 
         return generated.stream().map(gq -> {
-            var answers = gq.getGeneratedAnswers().stream()
-                    .map(answer -> new Answer(
-                            answer.getDescription(),
-                            answer.getCanonicalKey(),
-                            answer.isCorrect(),
-                            true))
-                    .collect(Collectors.toSet());
 
-            return new Question(
+            Question question = Question.create(
                     gq.getGeneratedQuestion().getDescription(),
                     true,
                     gq.getGeneratedQuestion().getPokemonFrontImage(),
                     gq.getGeneratedQuestion().getPokemonBackImage(),
                     quiz,
-                    answers,
+                    null,
                     null);
+
+            var answers = gq.getGeneratedAnswers().stream()
+                    .map(answer -> Answer.create(
+                            answer.getDescription(),
+                            answer.getCanonicalKey(),
+                            answer.isCorrect(),
+                            true,
+                            question
+                    ))
+                    .collect(Collectors.toSet());
+
+            question.answers().addAll(answers);
+
+            return question;
         }).toList();
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public List<Question> createAndSaveQuizContent(Quiz quiz, int questionsQuantity, Locale locale) {
+    public Collection<Question> createAndSaveQuizContent(Quiz quiz, int questionsQuantity, Locale locale) {
         quizStateService.claimGenerating(quiz);
         try {
             var questions = createQuizContent(quiz, questionsQuantity, locale);
