@@ -1,12 +1,13 @@
 package com.ctorres.pokequiz.infrastructure.persistence.repository;
 
 import java.util.Optional;
+import java.util.UUID;
+
+import com.ctorres.pokequiz.infrastructure.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface SpringDataUserRepository extends JpaRepository<UserEntity, UUID> {
 
-    Optional<User> findByUsernameAndActiveTrue(String username);
-
+    Optional<UserEntity> findByUsernameAndActiveTrue(String username);
     boolean existsByUsername(String username);
 }
