@@ -1,20 +1,19 @@
 package com.ctorres.pokequiz.domain.model.auth;
 
-import com.ctorres.pokequiz.infrastructure.persistence.entity.Role;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public record User(
-        Long id,
+        UUID id,
         String username,
         String passwordHash,
         boolean active,
         Set<Role> roles
 ) {
     public static User create(
-            Long id,
+            UUID id,
             String username,
             String passwordHash
     ) {
@@ -27,8 +26,8 @@ public record User(
         );
     }
 
-    public static User retrieve(
-            Long id,
+    public static User restore(
+            UUID id,
             String username,
             String passwordHash,
             boolean active,
@@ -39,7 +38,7 @@ public record User(
                 Objects.requireNonNull(username),
                 Objects.requireNonNull(passwordHash),
                 active,
-                roles
+                Objects.requireNonNull(roles)
         );
     }
 }
