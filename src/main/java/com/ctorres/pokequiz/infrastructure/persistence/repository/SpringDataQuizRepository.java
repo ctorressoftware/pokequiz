@@ -11,9 +11,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
+public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID> {
 
     // TODO: Check if this query method has to change its name.
     @Query("""
@@ -26,9 +27,9 @@ public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
             left join fetch qu.userAnswerEntities
             where q.id = :id and q.userEntity.id = :userId
             """)
-    Optional<QuizEntity> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);
+    Optional<QuizEntity> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") UUID quizId, @Param("userId") UUID userId);
 
-    Optional<QuizEntity> findQuizByIdAndUserId(@Param("id") Long quizId, @Param("userId") Long userId);
+    Optional<QuizEntity> findQuizByIdAndUserId(@Param("id") UUID quizId, @Param("userId") UUID userId);
 
     @QueryHints({@QueryHint(name = "javax.persistence.query.timeout", value = "3000")})
     @Modifying(flushAutomatically = true)
@@ -38,7 +39,7 @@ public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
             where q.id = :quizId and q.stateEntity = :previousStateEntity
             """)
     int compareAndSetState(
-            @Param("quizId") Long quizId,
+            @Param("quizId") UUID quizId,
             @Param("newStateEntity") StateEntity newStateEntity,
             @Param("previousStateEntity") StateEntity previousStateEntity);
 }

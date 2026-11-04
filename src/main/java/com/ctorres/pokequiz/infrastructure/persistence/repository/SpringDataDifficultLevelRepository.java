@@ -1,8 +1,10 @@
 package com.ctorres.pokequiz.infrastructure.persistence.repository;
 
+import com.ctorres.pokequiz.infrastructure.persistence.entity.DifficultLevelEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.DifficultLevel;
+
+import java.util.UUID;
 
 @Repository
-public interface DifficultLevelRepository extends JpaRepository<DifficultLevel, Long> {}
+public interface SpringDataDifficultLevelRepository extends JpaRepository<DifficultLevelEntity, UUID> {}

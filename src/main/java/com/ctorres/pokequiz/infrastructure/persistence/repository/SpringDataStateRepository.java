@@ -4,5 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.StateEntity;
 
+import java.util.UUID;
+
 @Repository
-public interface StateRepository extends JpaRepository<StateEntity, Long> {}
+public interface SpringDataStateRepository extends JpaRepository<StateEntity, UUID> {}
