@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class QuizEntityEvaluationCoreTest {
 
@@ -14,10 +15,10 @@ public class QuizEntityEvaluationCoreTest {
 
     @Test
     void shouldReturnWellCompletedQuizResults() {
-        var first = new EvaluatableQuestion(1L, "correct", "correct");
-        var second = new EvaluatableQuestion(2L, "correct", "correct");
-        var third = new EvaluatableQuestion(3L, "correct", "correct");
-        var fourth = new EvaluatableQuestion(4L, "correct", "correct");
+        var first = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
+        var second = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
+        var third = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
+        var fourth = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
         var questions = List.of(first, second, third, fourth);
 
         Map<Long, Boolean> result = Map.of(
@@ -35,10 +36,10 @@ public class QuizEntityEvaluationCoreTest {
 
     @Test
     void shouldReturnWrongCompletedQuizResults() {
-        var first = new EvaluatableQuestion(1L, "correct", "other");
-        var second = new EvaluatableQuestion(2L, "correct", "other");
-        var third = new EvaluatableQuestion(3L, "correct", "other");
-        var fourth = new EvaluatableQuestion(4L, "correct", "other");
+        var first = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
+        var second = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
+        var third = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
+        var fourth = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
         var questions = List.of(first, second, third, fourth);
 
         Map<Long, Boolean> result = Map.of(
@@ -56,10 +57,10 @@ public class QuizEntityEvaluationCoreTest {
 
     @Test
     void shouldReturnNormalCompletedQuizResults() {
-        var first = new EvaluatableQuestion(1L, "correct", "correct");
-        var second = new EvaluatableQuestion(2L, "correct", "other");
-        var third = new EvaluatableQuestion(3L, "correct", "correct");
-        var fourth = new EvaluatableQuestion(4L, "correct", "other");
+        var first = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
+        var second = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
+        var third = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
+        var fourth = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
         var questions = List.of(first, second, third, fourth);
 
         Map<Long, Boolean> result = Map.of(
@@ -77,8 +78,8 @@ public class QuizEntityEvaluationCoreTest {
 
     @Test
     void shouldFailWhenDuplicateQuestionIds() {
-        var first = new EvaluatableQuestion(1L, "correct", "correct");
-        var second = new EvaluatableQuestion(1L, "correct", "other");
+        var first = new EvaluatableQuestion(UUID.randomUUID(), "correct", "correct");
+        var second = new EvaluatableQuestion(UUID.randomUUID(), "correct", "other");
 
         Assertions.assertThrows(
                 IllegalStateException.class,
