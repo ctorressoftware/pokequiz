@@ -19,7 +19,6 @@ import com.ctorres.pokequiz.application.usecase.core.QuizResult;
 import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
 import com.ctorres.pokequiz.domain.model.Quiz;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.*;
 import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.EvaluatableQuestionAssembler;
 import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.QuizEvaluationCore;
 import com.ctorres.pokequiz.application.usecase.core.quiz.state.QuizStateService;

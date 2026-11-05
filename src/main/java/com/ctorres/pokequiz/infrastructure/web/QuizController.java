@@ -8,14 +8,12 @@ import com.ctorres.pokequiz.application.port.in.quiz.generate.GenerateQuizResult
 import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdCommand;
 import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdResult;
 import com.ctorres.pokequiz.application.usecase.core.quiz.useranswer.SubmittedUserAnswer;
-import com.ctorres.pokequiz.domain.model.UserAnswer;
 import com.ctorres.pokequiz.infrastructure.mapper.UserMapper;
 import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
 import com.ctorres.pokequiz.infrastructure.web.request.quiz.CreateQuizRequest;
 import com.ctorres.pokequiz.infrastructure.web.request.quiz.EvaluateAnswersRequest;
 import com.ctorres.pokequiz.infrastructure.web.request.quiz.GenerateQuizContentRequest;
 import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
-import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDtoResponse;
 import com.ctorres.pokequiz.application.usecase.core.quiz.QuizOrchestrator;
 import com.ctorres.pokequiz.infrastructure.security.AuthUser;
 import jakarta.validation.Valid;

@@ -3,7 +3,6 @@ package com.ctorres.pokequiz.application.usecase.core.quiz.state;
 import com.ctorres.pokequiz.application.port.out.QuizRepository;
 import com.ctorres.pokequiz.application.port.out.StateRepository;
 import com.ctorres.pokequiz.domain.model.Quiz;
-import com.ctorres.pokequiz.infrastructure.persistence.entity.QuizEntity;
 import com.ctorres.pokequiz.application.usecase.core.quiz.QuizState;
 import com.ctorres.pokequiz.application.usecase.core.exception.QuizInvalidStateGenerationException;
 import com.ctorres.pokequiz.application.usecase.core.exception.QuizInvalidStateTransitionException;
