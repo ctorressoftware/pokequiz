@@ -5,7 +5,7 @@ import com.ctorres.pokequiz.application.port.in.auth.logout.LogoutCommand;
 import com.ctorres.pokequiz.application.port.in.auth.refresh.RefreshCommand;
 import com.ctorres.pokequiz.application.port.in.auth.register.RegisterCommand;
 import com.ctorres.pokequiz.infrastructure.web.api.ApiResponse;
-import com.ctorres.pokequiz.application.usecase.auth.AuthService;
+import com.ctorres.pokequiz.application.usecase.auth.AuthenticationOrchestrator;
 import com.ctorres.pokequiz.infrastructure.web.request.auth.LoginRequest;
 import com.ctorres.pokequiz.infrastructure.web.request.auth.RefreshRequest;
 import com.ctorres.pokequiz.infrastructure.web.request.auth.RegisterRequest;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService auth;
+    private final AuthenticationOrchestrator auth;
 
-    public AuthController(AuthService auth) {
+    public AuthController(AuthenticationOrchestrator auth) {
         this.auth = auth;
     }
 
