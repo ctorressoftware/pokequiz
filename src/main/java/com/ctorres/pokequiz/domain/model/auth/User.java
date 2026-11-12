@@ -13,12 +13,11 @@ public record User(
         Set<Role> roles
 ) {
     public static User create(
-            UUID id,
             String username,
             String passwordHash
     ) {
         return new User(
-                Objects.requireNonNull(id),
+                UUID.randomUUID(),
                 Objects.requireNonNull(username),
                 Objects.requireNonNull(passwordHash),
                 true,
