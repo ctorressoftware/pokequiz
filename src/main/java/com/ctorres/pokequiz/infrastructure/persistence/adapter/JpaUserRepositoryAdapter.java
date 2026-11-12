@@ -25,4 +25,22 @@ public class JpaUserRepositoryAdapter implements UserRepository {
         UserEntity entity = repository.getReferenceById(id);
         return userMapper.map(entity);
     }
+
+    @Override
+    public User getByUsername(String username) {
+        UserEntity entity = repository.getByUsername(username);
+        return userMapper.map(entity);
+    }
+
+    @Override
+    public User getById(UUID id) {
+        UserEntity entity = repository.getById(id);
+        return userMapper.map(entity);
+    }
+
+    @Override
+    public User save(User user) {
+        UserEntity entity = repository.save(userMapper.map(user));
+        return userMapper.map(entity);
+    }
 }
