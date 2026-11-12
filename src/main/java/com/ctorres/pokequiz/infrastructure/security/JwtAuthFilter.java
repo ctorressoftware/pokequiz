@@ -12,10 +12,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtService jwt;
+    private final JwtTokenIssuer jwt;
     private final CustomUserDetailsService uds;
 
-    public JwtAuthFilter(JwtService jwt, CustomUserDetailsService uds) {
+    public JwtAuthFilter(JwtTokenIssuer jwt, CustomUserDetailsService uds) {
         this.jwt = jwt;
         this.uds = uds;
     }

@@ -1,5 +1,6 @@
 package com.ctorres.pokequiz.infrastructure.security;
 
+import com.ctorres.pokequiz.application.port.out.TokenIssuer;
 import com.ctorres.pokequiz.infrastructure.security.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -12,33 +13,36 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @Component
-public class JwtService {
+public class JwtTokenIssuer implements TokenIssuer {
 
   private final SecretKey key;
   private final String issuer;
   private final Duration accessTtl;
   private final Clock clock;
 
-  public JwtService(JwtProperties props, Clock clock) {
-    // OJO: la clave debe tener >= 32 bytes para HS256
+  public JwtTokenIssuer(JwtProperties props, Clock clock) {
     this.key = Keys.hmacShaKeyFor(props.getSecret().getBytes(StandardCharsets.UTF_8));
     this.issuer = props.getIssuer();
     this.accessTtl = Duration.ofMinutes(props.getAccessMins());
     this.clock = clock;
   }
 
-  public String generateAccessToken(String subject, Map<String, Object> claims) {
+  @Override
+  public String issueAccessToken(
+          UUID id,
+          String username,
+          Collection<String> roles
+  ) {
     Instant now = Instant.now(clock);
     return Jwts.builder()
-        .subject(subject)
+        .subject(username)
         .issuer(issuer)
         .issuedAt(Date.from(now))
         .expiration(Date.from(now.plus(accessTtl)))
-        .claims(claims)                  // en 0.12.x este setter acepta Map
+        .claims(Map.of("uid", id, "roles", roles))
         .signWith(key, Jwts.SIG.HS256)   // MacAlgorithm moderno
         .compact();
   }
