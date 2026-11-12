@@ -1,26 +1,21 @@
 package com.ctorres.pokequiz.infrastructure.persistence.entity;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "refresh_token")
 public class RefreshTokenEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private UUID id;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "user_id")
-  private UserEntity userEntity;
+  @Column(name = "user_id", nullable = false)
+  private UUID userId;
 
   @Column(name = "token_hash", nullable = false, length = 64)
   private String tokenHash;
@@ -43,20 +38,20 @@ public class RefreshTokenEntity {
   @Column(name = "user_agent", length = 255)
   private String userAgent;
 
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
-  public UserEntity getUser() {
-    return userEntity;
+  public UUID getUserId() {
+    return userId;
   }
 
-  public void setUser(UserEntity userEntity) {
-    this.userEntity = userEntity;
+  public void setUserId(UUID userId) {
+    this.userId = userId;
   }
 
   public String getTokenHash() {
