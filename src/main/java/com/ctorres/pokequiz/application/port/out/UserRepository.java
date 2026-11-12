@@ -6,4 +6,7 @@ import java.util.UUID;
 
 public interface UserRepository {
     User getReferenceById(UUID id);
+    User getByUsername(String username);
+    User getById(UUID id);
+    User save(User user);
 }
