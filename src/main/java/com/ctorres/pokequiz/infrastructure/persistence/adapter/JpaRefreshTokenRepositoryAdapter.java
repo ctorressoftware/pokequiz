@@ -8,7 +8,6 @@ import com.ctorres.pokequiz.infrastructure.persistence.entity.RefreshTokenEntity
 import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataRefreshTokenRepository;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
