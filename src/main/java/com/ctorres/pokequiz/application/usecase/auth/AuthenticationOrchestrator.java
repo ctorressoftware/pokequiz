@@ -123,18 +123,19 @@ public class AuthenticationOrchestrator
     public RefreshResult refresh(RefreshCommand command) {
         var hash = sha256Hex(command.refreshTokenValue());
         OffsetDateTime now = OffsetDateTime.now(clock);
-        com.ctorres.pokequiz.domain.model.auth.RefreshToken stored = refreshTokenRepository
+        com.ctorres.pokequiz.domain.model.auth.RefreshToken found = refreshTokenRepository
                 .findByTokenHashAndRevokedAtIsNullAndExpiresAtAfter(hash, now)
                 .orElseThrow(InvalidRefreshTokenException::new);
-        stored.setRevokedAt(now);
-        User user = userRepository.getById(stored.getUserId());
+        found.setRevokedAt(now);
+        User user = userRepository.getById(found.getUserId());
         if (!user.active()) throw new InactiveUserException();
         var accessToken = tokenIssuer.issueAccessToken(user.id(), user.username(), user.roles().stream()
                 .map(role -> "ROLE_" + role.name())
                 .collect(Collectors.toList()));
         RefreshToken refreshToken = refreshTokenIssuer
                 .issueRefreshToken(user, command.ip(), command.userAgent());
-        stored.setReplacedByHash(refreshToken.hash());
+        found.setReplacedByHash(refreshToken.hash());
+        refreshTokenRepository.save(found);
         return new RefreshResult(TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.value())
