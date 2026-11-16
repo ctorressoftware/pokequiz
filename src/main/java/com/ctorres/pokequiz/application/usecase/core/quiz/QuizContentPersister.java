@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class QuizContentPersister {
                     gq.getGeneratedQuestion().getPokemonFrontImage(),
                     gq.getGeneratedQuestion().getPokemonBackImage(),
                     quiz,
-                    null,
+                    new HashSet<>(),
                     null);
 
             var answers = gq.getGeneratedAnswers().stream()
@@ -61,8 +62,8 @@ public class QuizContentPersister {
                     .collect(Collectors.toSet());
 
             question.answers().addAll(answers);
-
             return question;
+
         }).toList();
     }
 
