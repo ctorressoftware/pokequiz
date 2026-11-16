@@ -37,7 +37,12 @@ public class AuthController {
                 ip,
                 ua
         ));
-        return ResponseEntity.ok(ApiResponse.success(response.tokenResponse()));
+
+        return ResponseEntity.ok(ApiResponse.success(TokenResponse.builder()
+                .accessToken(response.accessToken())
+                .refreshToken(response.refreshToken())
+                .build()
+        ));
     }
 
     @PostMapping("/login")
@@ -54,7 +59,11 @@ public class AuthController {
                 ua
         ));
 
-        return ResponseEntity.ok(ApiResponse.success(response.tokenResponse()));
+        return ResponseEntity.ok(ApiResponse.success(TokenResponse.builder()
+                .accessToken(response.accessToken())
+                .refreshToken(response.refreshToken())
+                .build()
+        ));
     }
 
     @PostMapping("/refresh")
@@ -69,7 +78,12 @@ public class AuthController {
                 ip,
                 ua
         ));
-        return ResponseEntity.ok(ApiResponse.success(response.tokenResponse()));
+
+        return ResponseEntity.ok(ApiResponse.success(TokenResponse.builder()
+                .accessToken(response.accessToken())
+                .refreshToken(response.refreshToken())
+                .build()
+        ));
     }
 
     @PostMapping("/logout")
