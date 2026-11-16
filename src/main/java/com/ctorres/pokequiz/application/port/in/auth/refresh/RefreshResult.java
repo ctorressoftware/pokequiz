@@ -1,7 +1,15 @@
 package com.ctorres.pokequiz.application.port.in.auth.refresh;
 
-import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
+import java.util.Objects;
 
 public record RefreshResult(
-        TokenResponse tokenResponse
-) {}
+        String accessToken,
+        String refreshToken
+) {
+    public static RefreshResult of(String accessToken, String refreshToken) {
+        return new RefreshResult(
+                Objects.requireNonNull(accessToken),
+                Objects.requireNonNull(refreshToken)
+        );
+    }
+}
