@@ -28,7 +28,7 @@ public class JpaRefreshTokenRepositoryAdapter implements RefreshTokenRepository 
             OffsetDateTime now
     ) {
         Optional<RefreshTokenEntity> entities =
-                repository.findByTokenHashAndRevokedAtIsNullAndExpiresAtAfter(tokenHash, OffsetDateTime.now());
+                repository.findByTokenHashAndRevokedAtIsNullAndExpiresAtAfter(tokenHash, now);
         return entities.map(refreshTokenMapper::map);
     }
 
