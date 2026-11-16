@@ -1,7 +1,16 @@
 package com.ctorres.pokequiz.application.port.in.auth.login;
 
-import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
+import java.util.Objects;
 
 public record LoginResult(
-        TokenResponse tokenResponse
-) {}
+        String accessToken,
+        String refreshToken
+) {
+
+    public static LoginResult of(String accessToken, String refreshToken) {
+        return new LoginResult(
+                Objects.requireNonNull(accessToken),
+                Objects.requireNonNull(refreshToken)
+        );
+    }
+}
