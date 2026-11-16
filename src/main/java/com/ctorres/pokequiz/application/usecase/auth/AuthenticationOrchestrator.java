@@ -14,7 +14,6 @@ import com.ctorres.pokequiz.application.port.in.auth.register.RegisterResult;
 import com.ctorres.pokequiz.application.port.in.auth.register.RegisterUseCase;
 import com.ctorres.pokequiz.application.port.out.*;
 import com.ctorres.pokequiz.domain.model.auth.User;
-import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import com.ctorres.pokequiz.application.usecase.auth.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -99,10 +98,7 @@ public class AuthenticationOrchestrator
                         .collect(Collectors.toList()));
 
         var refreshToken = refreshTokenIssuer.issueRefreshToken(user, command.ip(), command.userAgent());
-        return new RegisterResult(TokenResponse.builder()
-                .accessToken(access)
-                .refreshToken(refreshToken.value())
-                .build());
+        return RegisterResult.of(access, refreshToken.value());
     }
 
     @Transactional
@@ -112,11 +108,7 @@ public class AuthenticationOrchestrator
                 .authenticate(command.username(), command.rawPassword());
         User user = userRepository.getByUsername(command.username());
         var refreshToken = refreshTokenIssuer.issueRefreshToken(user, command.ip(), command.userAgent());
-        return new LoginResult(TokenResponse.builder()
-                .accessToken(accessToken.value())
-                .refreshToken(refreshToken.value())
-                .build()
-        );
+        return LoginResult.of(accessToken.value(), refreshToken.value());
     }
 
     @Transactional
@@ -136,10 +128,7 @@ public class AuthenticationOrchestrator
                 .issueRefreshToken(user, command.ip(), command.userAgent());
         found.setReplacedByHash(refreshToken.hash());
         refreshTokenRepository.save(found);
-        return new RefreshResult(TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.value())
-                .build());
+        return RefreshResult.of(accessToken, refreshToken.value());
     }
 
     @Transactional
