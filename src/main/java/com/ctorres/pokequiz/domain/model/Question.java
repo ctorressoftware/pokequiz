@@ -58,19 +58,6 @@ public record Question(
         );
     }
 
-    private void setAnswers(Set<Answer> newAnswers) {
-        this.answers.clear();
-
-        if (newAnswers == null || newAnswers.isEmpty()) {
-            return;
-        }
-
-        for (Answer a : newAnswers) {
-            a.setQuestion(this);
-            this.answers.add(a);
-        }
-    }
-
     public void setUserAnswers(Set<UserAnswer> newUserAnswers) {
         this.userAnswers.clear();
 
