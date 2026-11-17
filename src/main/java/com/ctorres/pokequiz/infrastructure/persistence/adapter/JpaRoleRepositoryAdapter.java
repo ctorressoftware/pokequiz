@@ -1,17 +1,12 @@
 package com.ctorres.pokequiz.infrastructure.persistence.adapter;
 
-import com.ctorres.pokequiz.application.port.out.DifficultLevelRepository;
 import com.ctorres.pokequiz.application.port.out.RoleRepository;
-import com.ctorres.pokequiz.domain.model.DifficultLevel;
 import com.ctorres.pokequiz.domain.model.auth.Role;
-import com.ctorres.pokequiz.infrastructure.mapper.DifficultLevelMapper;
 import com.ctorres.pokequiz.infrastructure.mapper.RoleMapper;
-import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataDifficultLevelRepository;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataRoleRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class JpaRoleRepositoryAdapter implements RoleRepository {
