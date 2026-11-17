@@ -2,7 +2,6 @@ package com.ctorres.pokequiz.application.port.out;
 
 import com.ctorres.pokequiz.domain.model.auth.RefreshToken;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
