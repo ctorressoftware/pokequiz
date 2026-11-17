@@ -109,7 +109,7 @@ public class AuthUser implements UserDetails {
         private UUID id;
         private String username;
         private String password;
-        private List<GrantedAuthority> authorities = new ArrayList();
+        private List<GrantedAuthority> authorities = new ArrayList<>();
         private boolean accountExpired;
         private boolean accountLocked;
         private boolean credentialsExpired;
@@ -143,30 +143,30 @@ public class AuthUser implements UserDetails {
         }
 
         public AuthUser.Builder roles(String... roles) {
-            List<GrantedAuthority> authorities = new ArrayList(roles.length);
+            List<GrantedAuthority> authorities = new ArrayList<>(roles.length);
 
             for(String role : roles) {
                 Assert.isTrue(!role.startsWith("ROLE_"), () -> role + " cannot start with ROLE_ (it is automatically added)");
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
             }
 
-            return this.authorities((Collection)authorities);
+            return this.authorities(authorities);
         }
 
         public AuthUser.Builder authorities(GrantedAuthority... authorities) {
             Assert.notNull(authorities, "authorities cannot be null");
-            return this.authorities((Collection) Arrays.asList(authorities));
+            return this.authorities(Arrays.asList(authorities));
         }
 
         public AuthUser.Builder authorities(Collection<? extends GrantedAuthority> authorities) {
             Assert.notNull(authorities, "authorities cannot be null");
-            this.authorities = new ArrayList(authorities);
+            this.authorities = new ArrayList<>(authorities);
             return this;
         }
 
         public AuthUser.Builder authorities(String... authorities) {
             Assert.notNull(authorities, "authorities cannot be null");
-            return this.authorities((Collection) AuthorityUtils.createAuthorityList(authorities));
+            return this.authorities(AuthorityUtils.createAuthorityList(authorities));
         }
 
         public AuthUser.Builder accountExpired(boolean accountExpired) {
