@@ -15,7 +15,6 @@ import com.ctorres.pokequiz.application.port.in.auth.register.RegisterUseCase;
 import com.ctorres.pokequiz.application.port.out.*;
 import com.ctorres.pokequiz.domain.model.auth.User;
 import com.ctorres.pokequiz.application.usecase.auth.exception.*;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,13 +82,7 @@ public class AuthenticationOrchestrator
         var roleUser = roleRepository.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role USER not seeded"));
         user.roles().add(roleUser);
-
-        try {
-            userRepository.save(user);
-        } catch (DataIntegrityViolationException exception) {
-            throw new DuplicatedUsernameException(command.username());
-        }
-
+        userRepository.save(user);
         var access = tokenIssuer.issueAccessToken(
                 user.id(),
                 user.username(),
