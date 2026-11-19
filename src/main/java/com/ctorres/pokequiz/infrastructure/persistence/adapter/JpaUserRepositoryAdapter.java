@@ -1,10 +1,13 @@
 package com.ctorres.pokequiz.infrastructure.persistence.adapter;
 
 import com.ctorres.pokequiz.application.port.out.UserRepository;
+import com.ctorres.pokequiz.application.usecase.auth.exception.DuplicatedUsernameException;
 import com.ctorres.pokequiz.domain.model.auth.User;
 import com.ctorres.pokequiz.infrastructure.mapper.UserMapper;
 import com.ctorres.pokequiz.infrastructure.persistence.entity.UserEntity;
 import com.ctorres.pokequiz.infrastructure.persistence.repository.SpringDataUserRepository;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -40,7 +43,11 @@ public class JpaUserRepositoryAdapter implements UserRepository {
 
     @Override
     public User save(User user) {
-        UserEntity entity = repository.save(userMapper.map(user));
-        return userMapper.map(entity);
+        try {
+            UserEntity entity = repository.save(userMapper.map(user));
+            return userMapper.map(entity);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicatedUsernameException(user.username());
+        }
     }
 }
