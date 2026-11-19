@@ -16,7 +16,6 @@ public class QuizResult {
         return new QuizResult(result, score);
     }
 
-    // TODO: Change this to a Object List
     public Map<UUID, Boolean> getResult() {
         return result;
     }
