@@ -1,20 +1,3 @@
 package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
-public class AnswerDto {
-
-    private final String description;
-    private final String value;
-
-    public AnswerDto(String description, String value) {
-        this.description = description;
-        this.value = value;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getValue() {
-        return value;
-    }
-}
+public record AnswerDto(String description, String value) {}
