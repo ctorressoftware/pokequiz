@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.application.usecase.core.exception;
+package com.ctorres.pokequiz.application.usecase.quiz.exception;
 
 import java.util.UUID;
 
