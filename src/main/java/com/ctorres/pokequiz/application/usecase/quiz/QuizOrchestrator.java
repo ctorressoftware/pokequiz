@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.application.usecase.core.quiz;
+package com.ctorres.pokequiz.application.usecase.quiz;
 
 import java.util.*;
 
@@ -15,13 +15,15 @@ import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdCommand;
 import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdResult;
 import com.ctorres.pokequiz.application.port.in.quiz.getById.GetQuizByIdUseCase;
 import com.ctorres.pokequiz.application.port.out.*;
-import com.ctorres.pokequiz.application.usecase.core.QuizResult;
+import com.ctorres.pokequiz.application.usecase.quiz.persistence.QuizStateService;
+import com.ctorres.pokequiz.application.usecase.quiz.evaluation.EvaluatableQuestionAssembler;
+import com.ctorres.pokequiz.application.usecase.quiz.evaluation.QuizEvaluationCore;
+import com.ctorres.pokequiz.application.usecase.quiz.model.EvaluationResult;
+import com.ctorres.pokequiz.application.usecase.quiz.model.QuizState;
+import com.ctorres.pokequiz.application.usecase.quiz.persistence.QuizContentPersister;
 import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
 import com.ctorres.pokequiz.domain.model.Quiz;
-import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.EvaluatableQuestionAssembler;
-import com.ctorres.pokequiz.application.usecase.core.quiz.evaluation.QuizEvaluationCore;
-import com.ctorres.pokequiz.application.usecase.core.quiz.state.QuizStateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,7 +92,7 @@ public class QuizOrchestrator
 
             return new GetQuizByIdResult(
                     quiz,
-                    QuizResult.of(evaluation.getResult(), evaluation.getScore())
+                    EvaluationResult.of(evaluation.result(), evaluation.score())
             );
         }
 
@@ -144,7 +146,7 @@ public class QuizOrchestrator
         if (isQuizCompleted) {
             var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
             var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-            return new CompleteQuizResult(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
+            return new CompleteQuizResult(quiz, EvaluationResult.of(evaluation.result(), evaluation.score()));
         }
 
         quizStateService.markInProgress(quiz);
@@ -160,6 +162,6 @@ public class QuizOrchestrator
 
         var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
         var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-        return new CompleteQuizResult(quiz, QuizResult.of(evaluation.getResult(), evaluation.getScore()));
+        return new CompleteQuizResult(quiz, EvaluationResult.of(evaluation.result(), evaluation.score()));
     }
 }
