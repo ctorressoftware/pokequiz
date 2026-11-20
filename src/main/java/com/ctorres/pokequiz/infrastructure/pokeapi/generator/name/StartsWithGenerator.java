@@ -1,19 +1,21 @@
-package com.ctorres.pokequiz.application.usecase.core.generator.name;
+package com.ctorres.pokequiz.infrastructure.pokeapi.generator.name;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import com.ctorres.pokequiz.application.usecase.quiz.generator.NameQuestionGenerator;
 import org.springframework.stereotype.Component;
 import com.ctorres.pokequiz.infrastructure.pokeapi.PokeApiClient;
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedAnswer;
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedQuestion;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedAnswer;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedQuestion;
 import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Pokemon;
 import com.ctorres.pokequiz.infrastructure.pokeapi.dto.Result;
-import com.ctorres.pokequiz.application.usecase.core.QuestionTextService;
-import com.ctorres.pokequiz.application.usecase.core.generator.QuestionKeys;
+import com.ctorres.pokequiz.application.usecase.quiz.QuestionTextService;
+import com.ctorres.pokequiz.infrastructure.pokeapi.generator.QuestionKeys;
 
 @Component
 public class StartsWithGenerator implements NameQuestionGenerator {
