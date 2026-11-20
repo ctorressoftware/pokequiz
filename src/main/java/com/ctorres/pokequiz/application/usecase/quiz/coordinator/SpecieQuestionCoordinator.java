@@ -1,11 +1,11 @@
-package com.ctorres.pokequiz.application.usecase.core.coordinator;
+package com.ctorres.pokequiz.application.usecase.quiz.coordinator;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import org.springframework.stereotype.Component;
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
-import com.ctorres.pokequiz.application.usecase.core.generator.specie.SpecieQuestionGenerator;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.quiz.generator.SpecieQuestionGenerator;
 
 @Component
 public class SpecieQuestionCoordinator implements QuestionCoordinator {
