@@ -1,29 +1,11 @@
 package com.ctorres.pokequiz.infrastructure.web.response.quiz;
 
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedItem;
 
 import java.util.List;
 
-public class GenerateQuizContentResponse {
-    private final Long quizId;
-    private final int questionsQuantity;
-    private final List<GeneratedItem> questions;
-
-    public GenerateQuizContentResponse(Long quizId, int questionsQuantity, List<GeneratedItem> questions) {
-        this.quizId = quizId;
-        this.questionsQuantity = questionsQuantity;
-        this.questions = questions;
-    }
-
-    public Long getQuizId() {
-        return  quizId;
-    }
-
-    public int getQuestionsQuantity() {
-        return questionsQuantity;
-    }
-
-    public List<GeneratedItem> getQuestions() {
-        return questions;
-    }
-}
+public record GenerateQuizContentResponse(
+        Long quizId,
+        int questionsQuantity,
+        List<GeneratedItem> questions
+) {}
