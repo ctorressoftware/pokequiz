@@ -1,5 +1,6 @@
-package com.ctorres.pokequiz.application.usecase.core.quiz.evaluation;
+package com.ctorres.pokequiz.application.usecase.quiz.evaluation;
 
+import com.ctorres.pokequiz.application.usecase.quiz.model.EvaluatableQuestion;
 import com.ctorres.pokequiz.domain.model.Answer;
 import com.ctorres.pokequiz.domain.model.Question;
 import org.springframework.stereotype.Component;
