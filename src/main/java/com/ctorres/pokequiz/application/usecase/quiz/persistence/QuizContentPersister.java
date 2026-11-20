@@ -1,12 +1,11 @@
-package com.ctorres.pokequiz.application.usecase.core.quiz;
+package com.ctorres.pokequiz.application.usecase.quiz.persistence;
 
 import com.ctorres.pokequiz.application.port.out.QuestionRepository;
 import com.ctorres.pokequiz.domain.model.Answer;
 import com.ctorres.pokequiz.domain.model.Question;
 import com.ctorres.pokequiz.domain.model.Quiz;
-import com.ctorres.pokequiz.application.usecase.core.exception.GenerationModuleException;
-import com.ctorres.pokequiz.application.usecase.core.QuestionService;
-import com.ctorres.pokequiz.application.usecase.core.quiz.state.QuizStateService;
+import com.ctorres.pokequiz.application.usecase.quiz.exception.GenerationModuleException;
+import com.ctorres.pokequiz.application.usecase.quiz.QuestionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,22 +39,22 @@ public class QuizContentPersister {
             throw new GenerationModuleException("An error occurred generating questions and answers.");
         }
 
-        return generated.stream().map(gq -> {
+        return generated.stream().map(item -> {
 
             Question question = Question.create(
-                    gq.getGeneratedQuestion().getDescription(),
+                    item.question().description(),
                     true,
-                    gq.getGeneratedQuestion().getPokemonFrontImage(),
-                    gq.getGeneratedQuestion().getPokemonBackImage(),
+                    item.question().pokemonFrontImage(),
+                    item.question().pokemonBackImage(),
                     quiz,
                     new HashSet<>(),
                     null);
 
-            var answers = gq.getGeneratedAnswers().stream()
+            var answers = item.answers().stream()
                     .map(answer -> Answer.create(
-                            answer.getDescription(),
-                            answer.getCanonicalKey(),
-                            answer.isCorrect(),
+                            answer.description(),
+                            answer.canonicalKey(),
+                            answer.correct(),
                             true,
                             question
                     ))
