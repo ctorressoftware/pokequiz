@@ -1,9 +1,9 @@
-package com.ctorres.pokequiz.application.usecase.core;
+package com.ctorres.pokequiz.application.usecase.quiz;
 
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
-import com.ctorres.pokequiz.application.usecase.core.exception.QuestionQuantityException;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.quiz.exception.QuestionQuantityException;
 import org.springframework.stereotype.Service;
-import com.ctorres.pokequiz.application.usecase.core.coordinator.QuestionCoordinator;
+import com.ctorres.pokequiz.application.usecase.quiz.coordinator.QuestionCoordinator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
