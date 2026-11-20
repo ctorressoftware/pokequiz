@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.application.usecase.core.generator;
+package com.ctorres.pokequiz.infrastructure.pokeapi.generator;
 
 public class QuestionKeys {
     public static final String WHAT_POKEMON_IS = "question.what-pokemon-is";

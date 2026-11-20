@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.application.usecase.core;
+package com.ctorres.pokequiz.application.usecase.quiz;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
