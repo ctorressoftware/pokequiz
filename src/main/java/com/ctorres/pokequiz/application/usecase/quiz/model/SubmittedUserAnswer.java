@@ -1,4 +1,4 @@
-package com.ctorres.pokequiz.application.usecase.core.quiz.useranswer;
+package com.ctorres.pokequiz.application.usecase.quiz.model;
 
 import java.util.UUID;
 
