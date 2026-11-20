@@ -1,6 +1,6 @@
-package com.ctorres.pokequiz.application.usecase.core.quiz;
+package com.ctorres.pokequiz.application.usecase.quiz;
 
-import com.ctorres.pokequiz.application.usecase.core.quiz.useranswer.SubmittedUserAnswer;
+import com.ctorres.pokequiz.application.usecase.quiz.model.SubmittedUserAnswer;
 import com.ctorres.pokequiz.domain.model.Quiz;
 import com.ctorres.pokequiz.domain.model.Question;
 import com.ctorres.pokequiz.domain.model.UserAnswer;
