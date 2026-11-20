@@ -15,14 +15,14 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> success(T data) {
-        return new ApiResponse<T>(Response.builder()
+        return new ApiResponse<>(Response.builder()
                 .code(200)
                 .message("OK")
                 .build(), data);
     }
 
     public static <T> ApiResponse<T> error(int code, String message) {
-        return new ApiResponse<T>(Response.builder()
+        return new ApiResponse<>(Response.builder()
                 .code(code)
                 .message(message)
                 .build(), null);

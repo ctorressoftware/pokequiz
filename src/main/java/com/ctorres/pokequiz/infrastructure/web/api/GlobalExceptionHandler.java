@@ -1,16 +1,16 @@
 package com.ctorres.pokequiz.infrastructure.web.api;
 
+import com.ctorres.pokequiz.application.port.in.quiz.complete.CompleteQuizResult;
 import com.ctorres.pokequiz.application.usecase.auth.exception.DuplicatedUsernameException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.InactiveUserException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.InvalidRefreshTokenException;
 import com.ctorres.pokequiz.application.usecase.auth.exception.WeakPasswordException;
-import com.ctorres.pokequiz.application.usecase.core.exception.*;
+import com.ctorres.pokequiz.application.usecase.quiz.exception.*;
 import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
-import com.ctorres.pokequiz.application.usecase.core.generator.GeneratedItem;
+import com.ctorres.pokequiz.application.usecase.quiz.model.GeneratedItem;
 import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
 import com.ctorres.pokequiz.infrastructure.web.response.quiz.GenerateQuizContentResponse;
-import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDtoResponse;
 import com.ctorres.pokequiz.infrastructure.web.response.auth.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(QuizInvalidStateGenerationException.class)
-    ResponseEntity<ApiResponse<QuizDtoResponse>> handleQuizInvalidStateGenerationException(
+    ResponseEntity<ApiResponse<CreateQuizResponse>> handleQuizInvalidStateGenerationException(
             QuizInvalidStateGenerationException e) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
@@ -110,7 +110,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(QuizInvalidStateTransitionException.class)
-    ResponseEntity<ApiResponse<QuizDtoResponse>> handleQuizInvalidStateTransitionException(
+    ResponseEntity<ApiResponse<CompleteQuizResult>> handleQuizInvalidStateTransitionException(
             QuizInvalidStateTransitionException e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
