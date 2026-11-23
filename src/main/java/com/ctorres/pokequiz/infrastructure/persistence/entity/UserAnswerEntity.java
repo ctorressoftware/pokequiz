@@ -20,23 +20,23 @@ public class UserAnswerEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
-    private QuestionEntity questionEntity;
+    private QuestionEntity question;
 
     public UserAnswerEntity() {}
 
-    public UserAnswerEntity(String description, String canonicalKey, boolean active, QuestionEntity questionEntity) {
+    public UserAnswerEntity(String description, String canonicalKey, boolean active, QuestionEntity question) {
         this.description = description;
         this.canonicalKey = canonicalKey;
         this.active = active;
-        this.questionEntity = questionEntity;
+        this.question = question;
     }
 
-    public UserAnswerEntity(UUID id, String description, String canonicalKey, boolean active, QuestionEntity questionEntity) {
+    public UserAnswerEntity(UUID id, String description, String canonicalKey, boolean active, QuestionEntity question) {
         this.id = id;
         this.description = description;
         this.canonicalKey = canonicalKey;
         this.active = active;
-        this.questionEntity = questionEntity;
+        this.question = question;
     }
 
     public UUID getId() {
@@ -72,11 +72,11 @@ public class UserAnswerEntity {
     }
 
     public QuestionEntity getQuestion() {
-        return questionEntity;
+        return question;
     }
 
-    public void setQuestion(QuestionEntity questionEntity) {
-        this.questionEntity = questionEntity;
+    public void setQuestion(QuestionEntity question) {
+        this.question = question;
     }
 
     @Override
