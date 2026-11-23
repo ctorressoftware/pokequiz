@@ -30,8 +30,8 @@ public class QuizEntityEvaluationCoreTest {
 
         var evaluation = quizEvaluationCore.processQuizResult(questions);
 
-        Assertions.assertEquals(100.0D, evaluation.getScore());
-        Assertions.assertEquals(result, evaluation.getResult());
+        Assertions.assertEquals(100.0D, evaluation.score());
+        Assertions.assertEquals(result, evaluation.result());
     }
 
     @Test
@@ -51,8 +51,8 @@ public class QuizEntityEvaluationCoreTest {
 
         var evaluation = quizEvaluationCore.processQuizResult(questions);
 
-        Assertions.assertEquals(0.0D, evaluation.getScore());
-        Assertions.assertEquals(result, evaluation.getResult());
+        Assertions.assertEquals(0.0D, evaluation.score());
+        Assertions.assertEquals(result, evaluation.result());
     }
 
     @Test
@@ -72,8 +72,8 @@ public class QuizEntityEvaluationCoreTest {
 
         var evaluation = quizEvaluationCore.processQuizResult(questions);
 
-        Assertions.assertEquals(50.0D, evaluation.getScore());
-        Assertions.assertEquals(result, evaluation.getResult());
+        Assertions.assertEquals(50.0D, evaluation.score());
+        Assertions.assertEquals(result, evaluation.result());
     }
 
     @Test
