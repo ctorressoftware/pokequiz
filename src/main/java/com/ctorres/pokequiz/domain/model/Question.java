@@ -58,6 +58,17 @@ public record Question(
         );
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        return other instanceof Question question && id != null && id.equals(question.id());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
     public void setUserAnswers(Set<UserAnswer> newUserAnswers) {
         this.userAnswers.clear();
 
