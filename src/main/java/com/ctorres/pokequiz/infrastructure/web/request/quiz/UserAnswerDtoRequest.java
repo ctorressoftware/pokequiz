@@ -11,7 +11,6 @@ import java.util.UUID;
 
 public final class UserAnswerDtoRequest {
     @NotNull(message = "questionId cannot be null")
-    @Positive(message = "questionId must be greater than 0")
     private final UUID questionId;
 
     @NotBlank(message = "description field is invalid")
