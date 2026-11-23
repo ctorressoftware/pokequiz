@@ -16,10 +16,9 @@ import java.util.UUID;
 @Repository
 public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID> {
 
-    // TODO: Check if this query method has to change its name.
     @Query("""
             select distinct q
-            from QuizEntity q
+            from quiz q
             left join fetch q.questionEntities qu
             join fetch q.stateEntity
             join fetch q.difficultLevelEntity
@@ -34,7 +33,7 @@ public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID
     @QueryHints({@QueryHint(name = "javax.persistence.query.timeout", value = "3000")})
     @Modifying(flushAutomatically = true)
     @Query("""
-            update QuizEntity q set
+            update quiz q set
             q.stateEntity = :newStateEntity
             where q.id = :quizId and q.stateEntity = :previousStateEntity
             """)

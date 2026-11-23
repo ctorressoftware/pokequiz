@@ -16,16 +16,16 @@ public interface SpringDataRefreshTokenRepository extends JpaRepository<RefreshT
     Optional<RefreshTokenEntity> findByTokenHashAndRevokedAtIsNullAndExpiresAtAfter(String tokenHash, OffsetDateTime now);
 
     @Modifying
-    @Query("update RefreshTokenEntity rt set rt.revokedAt = CURRENT_TIMESTAMP " +
+    @Query("update refresh_token rt set rt.revokedAt = CURRENT_TIMESTAMP " +
            "where rt.userId = :userId and rt.revokedAt is null")
     int revokeAllByUserId(@Param("userId") UUID userId);
 
     @Modifying
-    @Query("update RefreshTokenEntity rt set rt.revokedAt = CURRENT_TIMESTAMP " +
+    @Query("update refresh_token rt set rt.revokedAt = CURRENT_TIMESTAMP " +
            "where rt.tokenHash = :hash and rt.revokedAt is null")
     int revokeByHash(@Param("hash") String hash);
 
     @Modifying
-    @Query("delete from RefreshTokenEntity rt where rt.expiresAt < :now")
+    @Query("delete from refresh_token rt where rt.expiresAt < :now")
     int deleteAllExpired(@Param("now") OffsetDateTime now);
 }
