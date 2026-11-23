@@ -23,24 +23,17 @@ public class AnswerEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
-    private QuestionEntity questionEntity;
+    private QuestionEntity question;
 
     public AnswerEntity() {}
 
-    public AnswerEntity(String description, String canonicalKey, boolean correct, boolean active) {
-        this.description = description;
-        this.canonicalKey = canonicalKey;
-        this.correct = correct;
-        this.active = active;
-    }
-
-    public AnswerEntity(UUID id, String description, String canonicalKey, boolean correct, boolean active, QuestionEntity questionEntity) {
+    public AnswerEntity(UUID id, String description, String canonicalKey, boolean correct, boolean active, QuestionEntity question) {
         this.id = id;
         this.description = description;
         this.canonicalKey = canonicalKey;
         this.correct = correct;
         this.active = active;
-        this.questionEntity = questionEntity;
+        this.question = question;
     }
 
     public UUID getId() {
@@ -80,11 +73,11 @@ public class AnswerEntity {
     }
 
     public QuestionEntity getQuestion() {
-        return questionEntity;
+        return question;
     }
 
-    public void setQuestion(QuestionEntity questionEntity) {
-        this.questionEntity = questionEntity;
+    public void setQuestion(QuestionEntity question) {
+        this.question = question;
     }
 
     @Override
@@ -95,7 +88,7 @@ public class AnswerEntity {
                 ", canonicalKey='" + canonicalKey + '\'' +
                 ", correct='" + correct + '\'' +
                 ", active=" + active +
-                ", question=" + (questionEntity != null ? questionEntity.getId() : null) +
+                ", question=" + (question != null ? question.getId() : null) +
                 '}';
     }
 
