@@ -10,7 +10,7 @@ import java.util.Random;
 public class QuestionTextService {
 
   private static final int SAFE_MAX_VARIANTS = 20;
-  private final MessageSource messageSource;
+  private final MessageSource messageSource; // TODO: decouple this from this layer
   private final Random random;
 
   public QuestionTextService(MessageSource messageSource, Random random) {
