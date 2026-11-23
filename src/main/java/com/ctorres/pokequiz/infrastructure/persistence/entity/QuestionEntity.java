@@ -15,15 +15,15 @@ public class QuestionEntity {
     @Column(nullable = false)
     private boolean active;
 
-    @Column(nullable = true, name = "front_image_url")
+    @Column(name = "front_image_url")
     private String frontImageUrl;
 
-    @Column(nullable = true, name = "back_image_url")
+    @Column(name = "back_image_url")
     private String backImageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
-    private QuizEntity quizEntity;
+    private QuizEntity quiz;
 
     @OneToMany(mappedBy = "question",
             fetch = FetchType.LAZY,
@@ -34,25 +34,7 @@ public class QuestionEntity {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private final Set<UserAnswerEntity> userAnswerEntities = new HashSet<>();
 
-    protected QuestionEntity() {
-    }
-
-    public QuestionEntity(
-            String description,
-            boolean active,
-            String frontImageUrl,
-            String backImageUrl,
-            QuizEntity quizEntity,
-            Set<AnswerEntity> answerEntities,
-            Set<UserAnswerEntity> userAnswerEntities) {
-        this.description = description;
-        this.active = active;
-        this.frontImageUrl = frontImageUrl;
-        this.backImageUrl = backImageUrl;
-        this.quizEntity = quizEntity;
-        this.setAnswers(answerEntities);
-        this.setUserAnswers(userAnswerEntities);
-    }
+    protected QuestionEntity() {}
 
     public QuestionEntity(
             UUID id,
@@ -60,7 +42,7 @@ public class QuestionEntity {
             boolean active,
             String frontImageUrl,
             String backImageUrl,
-            QuizEntity quizEntity,
+            QuizEntity quiz,
             Set<AnswerEntity> answerEntities,
             Set<UserAnswerEntity> userAnswerEntities) {
         this.id = id;
@@ -68,7 +50,7 @@ public class QuestionEntity {
         this.active = active;
         this.frontImageUrl = frontImageUrl;
         this.backImageUrl = backImageUrl;
-        this.quizEntity = quizEntity;
+        this.quiz = quiz;
         this.setAnswers(answerEntities);
         this.setUserAnswers(userAnswerEntities);
     }
@@ -133,7 +115,7 @@ public class QuestionEntity {
     }
 
     public QuizEntity getQuiz() {
-        return quizEntity;
+        return quiz;
     }
 
     @Override
