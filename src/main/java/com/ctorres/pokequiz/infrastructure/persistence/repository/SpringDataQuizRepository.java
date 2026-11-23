@@ -28,9 +28,16 @@ public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID
             """)
     Optional<QuizEntity> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") UUID quizId, @Param("userId") UUID userId);
 
+    @Query("""
+            SELECT q FROM quiz q
+            WHERE q.id = :quizId
+              AND q.userEntity.id = :userId
+            """)
     Optional<QuizEntity> findQuizByIdAndUserId(@Param("id") UUID quizId, @Param("userId") UUID userId);
 
-    @QueryHints({@QueryHint(name = "javax.persistence.query.timeout", value = "3000")})
+    @QueryHints({
+            @QueryHint(name = "jakarta.persistence.query.timeout", value = "3000")}
+    )
     @Modifying(flushAutomatically = true)
     @Query("""
             update quiz q set
