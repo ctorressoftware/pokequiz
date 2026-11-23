@@ -33,7 +33,7 @@ public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID
             WHERE q.id = :quizId
               AND q.userEntity.id = :userId
             """)
-    Optional<QuizEntity> findQuizByIdAndUserId(@Param("id") UUID quizId, @Param("userId") UUID userId);
+    Optional<QuizEntity> findQuizByIdAndUserId(@Param("quizId") UUID quizId, @Param("userId") UUID userId);
 
     @QueryHints({
             @QueryHint(name = "jakarta.persistence.query.timeout", value = "3000")}
