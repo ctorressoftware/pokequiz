@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 
 import java.util.UUID;
 
-@Entity
+@Entity(name = "difficultLevel")
 public class DifficultLevelEntity {
     @Id
     private UUID id;

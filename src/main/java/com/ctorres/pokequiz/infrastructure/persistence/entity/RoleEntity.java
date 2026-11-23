@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table(name = "role")
+@Entity(name = "role")
 public class RoleEntity {
     @Id
     private UUID id;

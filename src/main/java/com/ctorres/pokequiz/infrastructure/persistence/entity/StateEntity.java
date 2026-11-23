@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 
 import java.util.UUID;
 
-@Entity
+@Entity(name = "state")
 public class StateEntity {
     @Id
     private UUID id;

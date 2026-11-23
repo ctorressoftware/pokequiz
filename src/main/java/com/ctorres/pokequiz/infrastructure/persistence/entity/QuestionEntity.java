@@ -4,7 +4,7 @@ import java.util.*;
 
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "question")
 public class QuestionEntity {
     @Id
     private UUID id;
