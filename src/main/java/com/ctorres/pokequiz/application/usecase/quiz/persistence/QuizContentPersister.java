@@ -48,7 +48,8 @@ public class QuizContentPersister {
                     item.question().pokemonBackImage(),
                     quiz,
                     new HashSet<>(),
-                    null);
+                    new HashSet<>()
+            );
 
             var answers = item.answers().stream()
                     .map(answer -> Answer.create(

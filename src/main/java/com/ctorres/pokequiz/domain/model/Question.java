@@ -31,8 +31,8 @@ public record Question(
                 frontImageUrl,
                 backImageUrl,
                 Objects.requireNonNull(quiz),
-                answers,
-                userAnswers
+                Objects.requireNonNull(answers),
+                Objects.requireNonNull(userAnswers)
         );
     }
 
