@@ -406,3 +406,7 @@ databaseChangeLog:
 - include:
     file: 2026-01-22-T18-47-update-state-rows.yaml
     relativeToChangelogFile: true
+
+- include:
+    file: 2026-11-23-T22-15-reset-and-migrate-identifiers-to-uuid.yaml
+    relativeToChangelogFile: true
