@@ -20,18 +20,18 @@ public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID
             select distinct q
             from quiz q
             left join fetch q.questionEntities qu
-            join fetch q.stateEntity
-            join fetch q.difficultLevelEntity
+            join fetch q.state
+            join fetch q.difficultLevel
             left join fetch qu.answerEntities
             left join fetch qu.userAnswerEntities
-            where q.id = :id and q.userEntity.id = :userId
+            where q.id = :id and q.user.id = :userId
             """)
     Optional<QuizEntity> findQuizWithQuestionsAndAnswersByIdAndUserId(@Param("id") UUID quizId, @Param("userId") UUID userId);
 
     @Query("""
             SELECT q FROM quiz q
             WHERE q.id = :quizId
-              AND q.userEntity.id = :userId
+              AND q.user.id = :userId
             """)
     Optional<QuizEntity> findQuizByIdAndUserId(@Param("quizId") UUID quizId, @Param("userId") UUID userId);
 
@@ -41,8 +41,8 @@ public interface SpringDataQuizRepository extends JpaRepository<QuizEntity, UUID
     @Modifying(flushAutomatically = true)
     @Query("""
             update quiz q set
-            q.stateEntity = :newStateEntity
-            where q.id = :quizId and q.stateEntity = :previousStateEntity
+            q.state = :newStateEntity
+            where q.id = :quizId and q.state = :previousStateEntity
             """)
     int compareAndSetState(
             @Param("quizId") UUID quizId,
