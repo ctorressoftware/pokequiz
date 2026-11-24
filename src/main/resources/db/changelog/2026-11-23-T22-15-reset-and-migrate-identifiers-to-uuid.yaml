@@ -1,0 +1,147 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-11-23-T22-15-truncate-tables
+      author: Carlos Eduardo Torres Graciano
+      runInTransaction: true
+      preConditions:
+        - onFail: HALT
+        - onError: HALT
+        - dbms:
+            type: postgresql
+        - sqlCheck:
+            expectedResult: "18"
+            sql: >
+              SELECT COUNT(*) FROM information_schema.columns
+              WHERE table_schema = current_schema()
+                AND data_type = 'bigint'
+                AND (table_name, column_name) IN (
+                  ('users', 'id'), ('role', 'id'), ('state', 'id'),
+                  ('difficult_level', 'id'), ('quiz', 'id'), ('quiz', 'state_id'),
+                  ('quiz', 'difficult_level_id'), ('quiz', 'user_id'), ('question', 'id'),
+                  ('question', 'quiz_id'), ('answer', 'id'), ('answer', 'question_id'),
+                  ('user_answer', 'id'), ('user_answer', 'question_id'), ('refresh_token', 'id'),
+                  ('refresh_token', 'user_id'), ('user_role', 'user_id'), ('user_role', 'role_id')
+                );
+      changes:
+        - sql:
+            sql: >
+              TRUNCATE TABLE users, role, state, difficult_level, quiz,
+              question, answer, user_answer, refresh_token, user_role;
+
+  - changeSet:
+      id: 2026-11-23-T22-15-convert-identifiers-to-uuid
+      author: Carlos Eduardo Torres Graciano
+      runInTransaction: true
+      changes:
+        - sql:
+            splitStatements: true
+            sql: |
+              -- Drop only the nine existing foreign keys.
+              ALTER TABLE answer DROP CONSTRAINT fk8frr4bcabmmeyyu60qt7iiblo;
+              ALTER TABLE question DROP CONSTRAINT fkb0yh0c1qaxfwlcnwo9dms2txf;
+              ALTER TABLE quiz DROP CONSTRAINT fk_quiz_state_id;
+              ALTER TABLE quiz DROP CONSTRAINT fkoj71coq74ryc5c9c9o482p8mm;
+              ALTER TABLE user_answer DROP CONSTRAINT fkpsk90eok3ounaet92hku3gny1;
+              ALTER TABLE quiz DROP CONSTRAINT fkrpsckfmmmojw04kjico9jg7kb;
+              ALTER TABLE user_role DROP CONSTRAINT fk_user_role_user;
+              ALTER TABLE user_role DROP CONSTRAINT fk_user_role_role;
+              ALTER TABLE refresh_token DROP CONSTRAINT fk_refresh_token_user;
+
+              -- Remove numeric ID generators before changing their types.
+              ALTER TABLE users ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE role ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE difficult_level ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE quiz ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE question ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE answer ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE user_answer ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+              ALTER TABLE refresh_token ALTER COLUMN id DROP IDENTITY IF EXISTS, ALTER COLUMN id DROP DEFAULT;
+
+              -- Drop conventional legacy serial sequences (if still present).
+              DROP SEQUENCE IF EXISTS users_id_seq;
+              DROP SEQUENCE IF EXISTS role_id_seq;
+              DROP SEQUENCE IF EXISTS difficult_level_id_seq;
+              DROP SEQUENCE IF EXISTS quiz_id_seq;
+              DROP SEQUENCE IF EXISTS question_id_seq;
+              DROP SEQUENCE IF EXISTS answer_id_seq;
+              DROP SEQUENCE IF EXISTS user_answer_id_seq;
+              DROP SEQUENCE IF EXISTS refresh_token_id_seq;
+
+              -- All tables must be empty. Casting numeric text to UUID intentionally
+              -- fails if a legacy row was inserted after the truncate.
+              ALTER TABLE users ALTER COLUMN id TYPE uuid USING id::text::uuid;
+              ALTER TABLE role ALTER COLUMN id TYPE uuid USING id::text::uuid;
+              ALTER TABLE state ALTER COLUMN id TYPE uuid USING id::text::uuid;
+              ALTER TABLE difficult_level ALTER COLUMN id TYPE uuid USING id::text::uuid;
+              ALTER TABLE quiz
+                  ALTER COLUMN id TYPE uuid USING id::text::uuid,
+                  ALTER COLUMN state_id TYPE uuid USING state_id::text::uuid,
+                  ALTER COLUMN difficult_level_id TYPE uuid USING difficult_level_id::text::uuid,
+                  ALTER COLUMN user_id TYPE uuid USING user_id::text::uuid;
+              ALTER TABLE question
+                  ALTER COLUMN id TYPE uuid USING id::text::uuid,
+                  ALTER COLUMN quiz_id TYPE uuid USING quiz_id::text::uuid;
+              ALTER TABLE answer
+                  ALTER COLUMN id TYPE uuid USING id::text::uuid,
+                  ALTER COLUMN question_id TYPE uuid USING question_id::text::uuid;
+              ALTER TABLE user_answer
+                  ALTER COLUMN id TYPE uuid USING id::text::uuid,
+                  ALTER COLUMN question_id TYPE uuid USING question_id::text::uuid;
+              ALTER TABLE refresh_token
+                  ALTER COLUMN id TYPE uuid USING id::text::uuid,
+                  ALTER COLUMN user_id TYPE uuid USING user_id::text::uuid;
+              ALTER TABLE user_role
+                  ALTER COLUMN user_id TYPE uuid USING user_id::text::uuid,
+                  ALTER COLUMN role_id TYPE uuid USING role_id::text::uuid;
+
+              -- Match the mandatory associations and fields in the current JPA model.
+              ALTER TABLE quiz ALTER COLUMN state_id SET NOT NULL,
+                  ALTER COLUMN difficult_level_id SET NOT NULL, ALTER COLUMN user_id SET NOT NULL;
+              ALTER TABLE question ALTER COLUMN quiz_id SET NOT NULL;
+              ALTER TABLE user_answer ALTER COLUMN question_id SET NOT NULL;
+              ALTER TABLE answer ALTER COLUMN correct SET NOT NULL;
+
+              -- Restore the original foreign keys and referential actions.
+              ALTER TABLE answer ADD CONSTRAINT fk8frr4bcabmmeyyu60qt7iiblo
+                  FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+              ALTER TABLE question ADD CONSTRAINT fkb0yh0c1qaxfwlcnwo9dms2txf
+                  FOREIGN KEY (quiz_id) REFERENCES quiz(id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+              ALTER TABLE quiz ADD CONSTRAINT fk_quiz_state_id
+                  FOREIGN KEY (state_id) REFERENCES state(id) ON DELETE RESTRICT ON UPDATE NO ACTION;
+              ALTER TABLE quiz ADD CONSTRAINT fkoj71coq74ryc5c9c9o482p8mm
+                  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+              ALTER TABLE user_answer ADD CONSTRAINT fkpsk90eok3ounaet92hku3gny1
+                  FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+              ALTER TABLE quiz ADD CONSTRAINT fkrpsckfmmmojw04kjico9jg7kb
+                  FOREIGN KEY (difficult_level_id) REFERENCES difficult_level(id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+              ALTER TABLE user_role ADD CONSTRAINT fk_user_role_user
+                  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE NO ACTION;
+              ALTER TABLE user_role ADD CONSTRAINT fk_user_role_role
+                  FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE RESTRICT ON UPDATE NO ACTION;
+              ALTER TABLE refresh_token ADD CONSTRAINT fk_refresh_token_user
+                  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+  - changeSet:
+      id: 2026-11-23-T22-15-seed-uuid-catalogs
+      author: Carlos Eduardo Torres Graciano
+      runInTransaction: true
+      changes:
+        - sql:
+            splitStatements: true
+            sql: |
+              -- State IDs must match QuizState.java exactly.
+              INSERT INTO state (id, description, code, active) VALUES
+                  ('1fc99a3f-aeba-442b-ae12-6f2a6a82308e', 'CREATED', 'CREATED', true),
+                  ('c3deb037-55cc-4981-8d3d-cefd57b9ac93', 'GENERATING', 'GENERATING', true),
+                  ('0e633055-4c24-4881-a47e-f41d9fd1358c', 'READY', 'READY', true),
+                  ('1d8f8fa8-af1a-444e-95b1-87922a544a57', 'IN_PROGRESS', 'IN_PROGRESS', true),
+                  ('a9454c45-ba1c-4101-b696-56d23fcb5c10', 'COMPLETED', 'COMPLETED', true),
+                  ('11424db6-cb75-4d12-b1ac-e8ecfbf57187', 'GENERATING_ERROR', 'GENERATING_ERROR', true);
+
+              INSERT INTO role (id, name, description, active) VALUES
+                  ('bfb6bf9f-982e-5328-9241-b9fa1ee636c6', 'USER', 'Normal user', true),
+                  ('dfdb3449-aee8-5193-b376-c3d27cc030bc', 'ADMIN', 'Administrative user', true);
+
+              INSERT INTO difficult_level (id, description, active) VALUES
+                  ('127cb2dd-bfc3-573e-aff2-1b91b6d9008e', 'NORMAL', true),
+                  ('ffebd0f0-addc-52d8-9e5d-fa50e3c4f2ed', 'HARD', true);
