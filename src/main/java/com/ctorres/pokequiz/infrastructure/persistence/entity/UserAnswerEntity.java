@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity(name = "userAnswer")
+@Table(name = "user_answer")
 public class UserAnswerEntity {
     @Id
     private UUID id;

@@ -3,10 +3,12 @@ package com.ctorres.pokequiz.infrastructure.persistence.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.UUID;
 
 @Entity(name = "difficultLevel")
+@Table(name = "difficult_level")
 public class DifficultLevelEntity {
     @Id
     private UUID id;
@@ -17,8 +19,7 @@ public class DifficultLevelEntity {
     @Column(nullable = false)
     private boolean active;
 
-    public DifficultLevelEntity() {
-    }
+    public DifficultLevelEntity() {}
 
     public DifficultLevelEntity(UUID id, String description, boolean active) {
         this.id = id;

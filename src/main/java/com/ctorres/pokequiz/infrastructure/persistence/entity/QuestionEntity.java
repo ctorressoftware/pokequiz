@@ -15,10 +15,10 @@ public class QuestionEntity {
     @Column(nullable = false)
     private boolean active;
 
-    @Column(name = "front_image_url")
+    @Column(name = "front_image_url", length = 300)
     private String frontImageUrl;
 
-    @Column(name = "back_image_url")
+    @Column(name = "back_image_url", length = 300)
     private String backImageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

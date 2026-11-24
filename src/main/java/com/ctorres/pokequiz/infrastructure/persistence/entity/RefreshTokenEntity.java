@@ -24,7 +24,7 @@ public class RefreshTokenEntity {
   @Column(name = "expires_at", nullable = false)
   private OffsetDateTime expiresAt;
 
-  @Column(name = "revoked_at", nullable = true)
+  @Column(name = "revoked_at")
   private OffsetDateTime revokedAt;
 
   @Column(name = "replaced_by_hash", length = 64)
@@ -33,7 +33,7 @@ public class RefreshTokenEntity {
   @Column(name = "ip_address", length = 45)
   private String ip;
 
-  @Column(name = "user_agent", length = 255)
+  @Column(name = "user_agent")
   private String userAgent;
 
   public UUID getId() {
