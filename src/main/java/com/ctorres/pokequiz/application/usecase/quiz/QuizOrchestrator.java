@@ -143,11 +143,7 @@ public class QuizOrchestrator
 
         var isQuizCompleted = quiz.getState().code().equals(QuizState.COMPLETED.getCode());
 
-        if (isQuizCompleted) {
-            var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
-            var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-            return new CompleteQuizResult(quiz, EvaluationResult.of(evaluation.result(), evaluation.score()));
-        }
+        if (isQuizCompleted) return getQuizResult(quiz);
 
         quizStateService.markInProgress(quiz);
         final var questionsById = userAnswerAssembler.questionsById(quiz.getQuestions());
@@ -160,8 +156,15 @@ public class QuizOrchestrator
         userAnswerRepository.saveAll(new ArrayList<>(userAnswersByQuestionId.values()));
         quizStateService.markCompleted(quiz);
 
+        return getQuizResult(quiz);
+    }
+
+    private CompleteQuizResult getQuizResult(Quiz quiz) {
         var toEvaluate = evaluatableQuestionAssembler.assemble(quiz.getQuestions());
         var evaluation = quizEvaluationCore.processQuizResult(toEvaluate);
-        return new CompleteQuizResult(quiz, EvaluationResult.of(evaluation.result(), evaluation.score()));
+        return new CompleteQuizResult(
+                quiz,
+                EvaluationResult.of(evaluation.result(), evaluation.score())
+        );
     }
 }
