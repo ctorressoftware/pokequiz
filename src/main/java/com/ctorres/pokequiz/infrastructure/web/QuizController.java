@@ -16,6 +16,8 @@ import com.ctorres.pokequiz.infrastructure.web.request.quiz.GenerateQuizContentR
 import com.ctorres.pokequiz.infrastructure.web.response.quiz.CreateQuizResponse;
 import com.ctorres.pokequiz.application.usecase.quiz.QuizOrchestrator;
 import com.ctorres.pokequiz.infrastructure.security.AuthUser;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizDto;
+import com.ctorres.pokequiz.infrastructure.web.response.quiz.QuizResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,48 +59,91 @@ public class QuizController {
 
     @PostMapping("/generateAndSaveContent")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<GenerateQuizResult>> generateAndSaveContent(
+    public ResponseEntity<ApiResponse<QuizResponse>> generateAndSaveContent(
             @RequestBody GenerateQuizContentRequest request,
             @RequestHeader(name = "Accept-Language", required = false) Locale locale,
-            @AuthenticationPrincipal AuthUser user) {
-
-        GenerateQuizResult result = quizOrchestrator.generateAndSaveContent(new GenerateQuizCommand(
+            @AuthenticationPrincipal AuthUser user
+    ) {
+        GenerateQuizCommand command = new GenerateQuizCommand(
                 request.getQuizId(),
                 request.getQuestionsQuantity(),
                 locale,
                 userMapper.map(user)
-        ));
+        );
 
-        return ResponseEntity.ok(ApiResponse.success(result));
+        GenerateQuizResult result = quizOrchestrator.generateAndSaveContent(command);
+
+        return ResponseEntity.ok(ApiResponse.success(new QuizResponse(
+                new QuizDto(
+                        result.quiz().getId(),
+                        result.quiz().getStartDate(),
+                        result.quiz().getEndDate(),
+                        result.quiz().getState(),
+                        result.quiz().getDifficultLevel(),
+                        result.quiz().getQuestions(),
+                        result.quiz().getUser().username()
+                ),
+                result.result()
+        )));
     }
 
     @GetMapping("/getQuizById")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<GetQuizByIdResult>> getQuizById(
+    public ResponseEntity<ApiResponse<QuizResponse>> getQuizById(
             @RequestParam UUID quizId,
-            @AuthenticationPrincipal AuthUser user) {
-        var response = quizOrchestrator.getQuizById(new GetQuizByIdCommand(quizId, userMapper.map(user)));
-        return ResponseEntity.ok(ApiResponse.success(response));
+            @AuthenticationPrincipal AuthUser user
+    ) {
+        GetQuizByIdCommand command = new GetQuizByIdCommand(
+                quizId,
+                userMapper.map(user)
+        );
+
+        GetQuizByIdResult result = quizOrchestrator.getQuizById(command);
+
+        return ResponseEntity.ok(ApiResponse.success(new QuizResponse(
+                new QuizDto(
+                        result.quiz().getId(),
+                        result.quiz().getStartDate(),
+                        result.quiz().getEndDate(),
+                        result.quiz().getState(),
+                        result.quiz().getDifficultLevel(),
+                        result.quiz().getQuestions(),
+                        result.quiz().getUser().username()
+                ),
+                result.result()
+        )));
     }
 
     @PostMapping("/completeQuizAnswers")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<CompleteQuizResult>> completeQuizAnswers(
+    public ResponseEntity<ApiResponse<QuizResponse>> completeQuizAnswers(
             @Valid @RequestBody EvaluateAnswersRequest request, // TODO: Configure @Valid in each request
-            @AuthenticationPrincipal AuthUser user) {
-
-        var response = quizOrchestrator.completeQuizAnswers(new CompleteQuizCommand(
+            @AuthenticationPrincipal AuthUser user
+    ) {
+        CompleteQuizCommand command = new CompleteQuizCommand(
                 request.getQuizId(),
-                request.getUserAnswersDtos().stream().map(u ->
-                        new SubmittedUserAnswer(
+                request.getUserAnswersDtos().stream()
+                        .map(u -> new SubmittedUserAnswer(
                                 u.getQuestionId(),
                                 u.getDescription(),
                                 u.getValue()
-                        )
-                ).collect(Collectors.toSet()),
+                        )).collect(Collectors.toSet()),
                 userMapper.map(user)
-        ));
+        );
 
-        return ResponseEntity.ok(ApiResponse.success(response));
+        CompleteQuizResult result = quizOrchestrator.completeQuizAnswers(command);
+
+        return ResponseEntity.ok(ApiResponse.success(new QuizResponse(
+                new QuizDto(
+                        result.quiz().getId(),
+                        result.quiz().getStartDate(),
+                        result.quiz().getEndDate(),
+                        result.quiz().getState(),
+                        result.quiz().getDifficultLevel(),
+                        result.quiz().getQuestions(),
+                        result.quiz().getUser().username()
+                ),
+                result.result()
+        )));
     }
 }
