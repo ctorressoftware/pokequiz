@@ -1,14 +1,11 @@
 package com.ctorres.pokequiz.application.usecase.quiz.persistence;
 
-import com.ctorres.pokequiz.application.port.out.QuestionRepository;
 import com.ctorres.pokequiz.domain.model.Answer;
 import com.ctorres.pokequiz.domain.model.Question;
 import com.ctorres.pokequiz.domain.model.Quiz;
 import com.ctorres.pokequiz.application.usecase.quiz.exception.GenerationModuleException;
 import com.ctorres.pokequiz.application.usecase.quiz.QuestionService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,15 +17,15 @@ import java.util.stream.Collectors;
 public class QuizContentPersister {
     private final QuestionService questionService;
     private final QuizStateService quizStateService;
-    private final QuestionRepository questionRepository;
+    private final QuestionPersister questionPersister;
 
     public QuizContentPersister(
             QuestionService questionService,
             QuizStateService quizStateService,
-            QuestionRepository questionRepository) {
+            QuestionPersister questionPersister) {
         this.questionService = questionService;
         this.quizStateService = quizStateService;
-        this.questionRepository = questionRepository;
+        this.questionPersister = questionPersister;
     }
 
     private List<Question> createQuizContent(Quiz quiz, int questionsQuantity, Locale locale) {
@@ -67,14 +64,11 @@ public class QuizContentPersister {
         }).toList();
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
     public Collection<Question> createAndSaveQuizContent(Quiz quiz, int questionsQuantity, Locale locale) {
         quizStateService.claimGenerating(quiz);
         try {
-            var questions = createQuizContent(quiz, questionsQuantity, locale);
-            var inserted = questionRepository.saveAll(questions);
-            quizStateService.markReady(quiz);
-            return inserted;
+            Collection<Question> questions = createQuizContent(quiz, questionsQuantity, locale);
+            return questionPersister.save(quiz, questions);
         } catch (RuntimeException e) {
             quizStateService.markGeneratingError(quiz);
             throw e;
