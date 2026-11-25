@@ -25,6 +25,7 @@ import com.ctorres.pokequiz.domain.exception.DifficultLevelNotFoundException;
 import com.ctorres.pokequiz.domain.exception.QuizNotFoundException;
 import com.ctorres.pokequiz.domain.model.Quiz;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -99,7 +100,7 @@ public class QuizOrchestrator
         return new GetQuizByIdResult(quiz, null);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     public GenerateQuizResult generateAndSaveContent(GenerateQuizCommand command) {
         final UUID quizId = command.quizId();
         final int questionsQuantity = command.questionsQuantity();
