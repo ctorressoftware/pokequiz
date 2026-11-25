@@ -20,6 +20,7 @@ public class QuizStateService {
         this.stateRepository = stateRepository;
     }
 
+    @Transactional
     public void claimGenerating(Quiz quiz) {
         var created = stateRepository.getReferenceById(QuizState.CREATED.getId());
         var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
@@ -28,6 +29,7 @@ public class QuizStateService {
         quiz.setState(generating);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public void markReady(Quiz quiz) {
         var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
         var ready = stateRepository.getReferenceById(QuizState.READY.getId());
@@ -52,7 +54,7 @@ public class QuizStateService {
         quiz.setState(completed);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void markGeneratingError(Quiz quiz) {
         var generating = stateRepository.getReferenceById(QuizState.GENERATING.getId());
         var generatingError = stateRepository.getReferenceById(QuizState.GENERATING_ERROR.getId());
